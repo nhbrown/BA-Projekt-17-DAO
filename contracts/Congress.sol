@@ -173,7 +173,7 @@ contract Congress is owned, tokenRecipient {
         string jobDescription,
         bytes transactionBytecode
     )
-        onlyMembers public
+        onlyOwner public
         returns (uint proposalID)
     {
         proposalID = proposals.length++;
