@@ -202,7 +202,7 @@ contract Congress is owned, tokenRecipient {
      * @param etherAmount amount of ether to send
      * @param jobDescription Description of job
      * @param transactionBytecode bytecode of transaction
-     */
+     
     function newProposalInEther(
         address beneficiary,
         uint etherAmount,
@@ -214,6 +214,7 @@ contract Congress is owned, tokenRecipient {
     {
         return newProposal(beneficiary, etherAmount * 1 ether, jobDescription, transactionBytecode);
     }
+    */
 
     /**
      * Check if a proposal code matches
