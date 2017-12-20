@@ -14,8 +14,9 @@ contract TestCongress {
     *  Testet, ob ProposalID´s übereinstimmen.
     */
   function testNewProposalAdded() {
-    uint expectedID = congress.newProposal(beneficiary, weiAmount, jobDiscription, transactionByteCode);
-    Assert.equal(congress.newProposal(beneficiary, weiAmount, jobDescription, transactionByteCode), expectedID, "Es soll eine Adresse ausgegeben werden");
+    uint firstExpectedId = congress.newProposal(beneficiary, weiAmount, jobDescription, transactionByteCode);
+    uint secondExpectedId = congress.newProposal(beneficiary, weiAmount, jobDescription, transactionByteCode);
+    Assert.notEqual(firstExpectedId, secondExpectedId, "Id´s müssen sich unterscheiden");
   }
   /**
     *  Testet, ob ein neuer Member hinzugefügt wurde.
