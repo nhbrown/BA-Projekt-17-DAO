@@ -10,29 +10,38 @@ import "../contracts/Congress.sol";
 
 contract TestCongress {
   Congress congress = Congress(DeployedAddresses.Congress());
+ /**
+  * Tested, ob eine Owner-Adresse in gültiger Form vorliegt. 
+  */
+  function testOwned() {
+    address expectedOwner = congress.owner;
+    Assert.isNotZero(expectedOwner);
+  }
   /**
-    *  Testet, ob ProposalID´s übereinstimmen.
+    *  Testet, ob ProposalID´s unterschiedlich sind.
     */
   function testNewProposalAdded() {
     uint firstExpectedId = congress.newProposal(beneficiary, weiAmount, jobDescription, transactionByteCode);
     uint secondExpectedId = congress.newProposal(beneficiary, weiAmount, jobDescription, transactionByteCode);
-    Assert.notEqual(firstExpectedId, secondExpectedId, "Id´s müssen sich unterscheiden");
+    Assert.notEqual(firstExpectedId, secondExpectedId, "Proposal-Id´s müssen sich unterscheiden.");
   }
   /**
-    *  Testet, ob ein neuer Member hinzugefügt wurde.
+    *  Testet, ob hinzugefügte Adressen unterschiedlich sind.
     */
   function testAddNewMember() {
     congress.addMember(tragetMember, membername);
-    Member expectedAddedMember = Member[targetmember];
-    Assert.equal(Member[targetMember], expectedAddedMember,"Member sollte in Member[] aufgenommen worden sein");
+    congress.addMember(tragetMember, membername);
+    Member firstExpectedAddedMember = Member[targetmember];
+    Member secondExpectedAddedMember = Member[targetmember];
+    Assert.notEqual(firstExpectedAddedMember.member, secondExpectedAddedMember.member,"Adressen müssen unterschiedlich sein.");
   } 
   /**
     *  Testet, ob ein spezifischer Member gelöscht wurde.
     */ 
   function testDeleteMember() {
     Member expectDeleted = congress.Member[targetmember];
-    congress.removeMember(targetmember);
-    Assert.notEqual(congress.Member[targetmember].member, expecteDeleted.member, "Member unterscheiden sich")
+    congress.removeMember(expectDeleted);
+    Assert.notEqual(congress.Member[targetmember].member, expecteDeleted.member, "Member an Stelle im Array unterscheidet sich nicht.")
   } 
   /**
     *  Testet, ob der Owner geändert wurde.
