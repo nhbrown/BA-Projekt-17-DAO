@@ -53,8 +53,8 @@ contract Congress is owned, tokenRecipient {
     event ChangeOfRules(uint newMinimumQuorum, uint newDebatingPeriodInMinutes, int newMajorityMargin);
 
     struct Proposal {
-        address recipient;
-        uint amount;
+        // address recipient;
+        // uint amount;
         string description;
         uint votingDeadline;
         bool executed;
@@ -69,13 +69,13 @@ contract Congress is owned, tokenRecipient {
     struct Member {
         address member;
         string name;
-        uint memberSince;
+        // uint memberSince;
     }
 
     struct Vote {
         bool inSupport;
         address voter;
-        string justification;
+        // string justification;
     }
 
     // Modifier that allows only shareholders to vote and create new proposals
@@ -128,7 +128,7 @@ contract Congress is owned, tokenRecipient {
     function removeMember(address targetMember) onlyOwner public {
         require(memberId[targetMember] != 0);
 
-        for (uint i = memberId[targetMember]; i<members.length-1; i++){
+        for (uint i = memberId[targetMember]; i<members.length-1; i++) {
             members[i] = members[i+1];
         }
         delete members[members.length-1];
@@ -301,5 +301,13 @@ contract Congress is owned, tokenRecipient {
 
         // Fire Events
         ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
+    }
+    
+    function getContractAddress() public returns (address) {
+        return this;
+    }
+    
+    function getMembers() public returns (Member[]) {
+        return members;
     }
 }
