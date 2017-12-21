@@ -44,9 +44,9 @@ contract Congress is owned, tokenRecipient {
     Proposal[] public proposals;
     uint public numProposals;
     mapping (address => uint) public memberId;
-    Member[] public members;
+    address[] public members;
 
-    event ProposalAdded(uint proposalID, address recipient, uint amount, string description);
+    event ProposalAdded(uint proposalID, string description);
     event Voted(uint proposalID, bool position, address voter, string justification);
     event ProposalTallied(uint proposalID, int result, uint quorum, bool active);
     event MembershipChanged(address member, bool isMember);
@@ -57,8 +57,8 @@ contract Congress is owned, tokenRecipient {
         // uint amount;
         string description;
         uint votingDeadline;
-        bool executed;
-        bool proposalPassed;
+        bool executed; // Proposal ist auf der Blockchain
+        bool proposalPassed; // Anforderungen für den Proposal sind True
         uint numberOfVotes;
         int currentResult;
         bytes32 proposalHash;
@@ -66,11 +66,11 @@ contract Congress is owned, tokenRecipient {
         mapping (address => bool) voted;
     }
 
-    struct Member {
-        address member;
-        string name;
+    //struct Member {
+    //    address member;
+        // string name;
         // uint memberSince;
-    }
+    //}
 
     struct Vote {
         bool inSupport;
@@ -107,14 +107,15 @@ contract Congress is owned, tokenRecipient {
      * @param targetMember ethereum address to be added
      * @param memberName public name for that member
      */
-    function addMember(address targetMember, string memberName) onlyOwner public {
+    function addMember(address targetMember) onlyOwner public {
         uint id = memberId[targetMember];
         if (id == 0) {
             memberId[targetMember] = members.length;
             id = members.length++;
         }
 
-        members[id] = Member({member: targetMember, memberSince: now, name: memberName});
+        members[id] = targetMember;
+        // Member({member: targetMember, memberSince: now, name: memberName});
         MembershipChanged(targetMember, true);
     }
 
@@ -168,8 +169,8 @@ contract Congress is owned, tokenRecipient {
      * @param transactionBytecode bytecode of transaction
      */
     function newProposal(
-        address beneficiary,
-        uint weiAmount,
+        //address beneficiary,
+        //uint weiAmount,
         string jobDescription,
         bytes transactionBytecode
     )
@@ -178,15 +179,15 @@ contract Congress is owned, tokenRecipient {
     {
         proposalID = proposals.length++;
         Proposal storage p = proposals[proposalID];
-        p.recipient = beneficiary;
-        p.amount = weiAmount;
+        // p.recipient = beneficiary;
+        // p.amount = weiAmount;
         p.description = jobDescription;
-        p.proposalHash = keccak256(beneficiary, weiAmount, transactionBytecode);
+        p.proposalHash = keccak256(beneficiary, weiAmount, transactionBytecode); // ?
         p.votingDeadline = now + debatingPeriodInMinutes * 1 minutes;
         p.executed = false;
         p.proposalPassed = false;
         p.numberOfVotes = 0;
-        ProposalAdded(proposalID, beneficiary, weiAmount, jobDescription);
+        ProposalAdded(proposalID, jobDescription);
         numProposals = proposalID+1;
 
         return proposalID;
@@ -226,15 +227,13 @@ contract Congress is owned, tokenRecipient {
      */
     function checkProposalCode(
         uint proposalNumber,
-        address beneficiary,
-        uint weiAmount,
         bytes transactionBytecode
     )
         constant public
         returns (bool codeChecksOut)
     {
         Proposal storage p = proposals[proposalNumber];
-        return p.proposalHash == keccak256(beneficiary, weiAmount, transactionBytecode);
+        return p.proposalHash == keccak256(beneficiary, weiAmount, transactionBytecode); //Überprüfen
     }
 
     /**
@@ -249,7 +248,7 @@ contract Congress is owned, tokenRecipient {
     function vote(
         uint proposalNumber,
         bool supportsProposal,
-        string justificationText
+        // string justificationText
     )
         onlyMembers public
         returns (uint voteID)
@@ -265,7 +264,7 @@ contract Congress is owned, tokenRecipient {
         }
 
         // Create a log of this event
-        Voted(proposalNumber,  supportsProposal, msg.sender, justificationText);
+        Voted(proposalNumber,  supportsProposal, msg.sender);
         return p.numberOfVotes;
     }
 
@@ -282,7 +281,7 @@ contract Congress is owned, tokenRecipient {
 
         require(now > p.votingDeadline                                            // If it is past the voting deadline
             && !p.executed                                                         // and it has not already been executed
-            && p.proposalHash == keccak256(p.recipient, p.amount, transactionBytecode)  // and the supplied code matches the proposal
+            && p.proposalHash == keccak256(p.recipient, p.amount, transactionBytecode)  // and the supplied code matches the proposal // Überprüfen
             && p.numberOfVotes >= minimumQuorum);                                  // and a minimum quorum has been reached...
 
         // ...then execute result
