@@ -84,4 +84,7 @@ contract TestCongress {
     Assert.notEqual(firstExpectedVoteId, secondExpectedVoteId, "Zwei Abstimmungen sollen unterschiedliche ID´s haben.");
   }
 
+    // testVoteMoreThanOnce
+    // testProposalDescription
+
 }
