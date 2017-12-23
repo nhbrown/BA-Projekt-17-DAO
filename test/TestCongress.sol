@@ -81,10 +81,26 @@ contract TestCongress {
   function testVoteSuccessful() {
     uint firstExpectedVoteId = congress.vote(proposalNumber, supportsProposal, justificationText);
     uint secondExpectedVoteId = congress.vote(proposalNumber, supportsProposal; justificationText);
+    uint expectedNumberOfVotes = congress.proposals[proposalID].numberOfVotes;
+    Assert.isNotZero(expectedNubmerOfVotes, "Darf nicht 0 sein nachdem gevoted wurde.");
+    Assert.equal(expectedNubmerOfVotes, 2, "Es muss zwei Mal gevoted worden sein.");
     Assert.notEqual(firstExpectedVoteId, secondExpectedVoteId, "Zwei Abstimmungen sollen unterschiedliche ID´s haben.");
   }
 
     // testVoteMoreThanOnce
+  function testVoteMoreThanOnce() {
+    uint firstVoteID = congress.vote(proposalNumber, supportsproposal, justificationtext);
+    bool expectedTrue = congress.proposals[proposalNumber].voted[msg.sender];
+    uint secondVoteID =  congress.vote(proposalnumber, supportsproposal, justificationtext); // sollte eigentlich aborted werden laut code
+    bool secondexpectedTrue = congress.proposals[proposalNumber].voted[msg.sender]; // soll trotz zweitem Wahlveruch true bleiben!
+    Assert.isTrue(expectedTrue, "Nach Stimmenabgabe muss festgehalten sein, dass die Adresse gewählt hat.");
+    Assert.isTrue(secondExpectedTrue, "Ein zweiter Wahlversuch ändert nichts am Wahrheitsgehalt der ersten Stimmenabgabe.");
+  }
     // testProposalDescription
+   function testProposalDescription() {
+     uint expectedProposalId = congress.newProposal(beneficiary, weiamount, jobDescription, transactionByteCode);
+     string expectedDesctiption = congress.proposals[proposalnumber].description;
+     Assert.isNotEmpty(expectedDescription, "Proposal muss eine Beschreibung haben.");
+   } 
 
 }
