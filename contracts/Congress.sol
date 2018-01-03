@@ -53,12 +53,10 @@ contract Congress is owned, tokenRecipient {
     event ChangeOfRules(uint newMinimumQuorum, uint newDebatingPeriodInMinutes, int newMajorityMargin);
 
     struct Proposal {
-        // address recipient;
-        // uint amount;
         string description;
         uint votingDeadline;
-        bool executed; // Proposal ist auf der Blockchain
-        bool proposalPassed; // Anforderungen für den Proposal sind True
+        bool executed;
+        bool proposalPassed;
         uint numberOfVotes;
         int currentResult;
         bytes32 proposalHash;
@@ -66,16 +64,9 @@ contract Congress is owned, tokenRecipient {
         mapping (address => bool) voted;
     }
 
-    //struct Member {
-    //    address member;
-        // string name;
-        // uint memberSince;
-    //}
-
     struct Vote {
         bool inSupport;
         address voter;
-        // string justification;
     }
 
     // Modifier that allows only shareholders to vote and create new proposals
@@ -115,7 +106,6 @@ contract Congress is owned, tokenRecipient {
         }
 
         members[id] = targetMember;
-        // Member({member: targetMember, memberSince: now, name: memberName});
         MembershipChanged(targetMember, true);
     }
 
@@ -169,8 +159,6 @@ contract Congress is owned, tokenRecipient {
      * @param transactionBytecode bytecode of transaction
      */
     function newProposal(
-        //address beneficiary,
-        //uint weiAmount,
         string jobDescription,
         bytes transactionBytecode
     )
@@ -179,10 +167,8 @@ contract Congress is owned, tokenRecipient {
     {
         proposalID = proposals.length++;
         Proposal storage p = proposals[proposalID];
-        // p.recipient = beneficiary;
-        // p.amount = weiAmount;
         p.description = jobDescription;
-        p.proposalHash = keccak256(beneficiary, weiAmount, transactionBytecode); // ?
+        p.proposalHash = keccak256(transactionBytecode);
         p.votingDeadline = now + debatingPeriodInMinutes * 1 minutes;
         p.executed = false;
         p.proposalPassed = false;
@@ -192,30 +178,6 @@ contract Congress is owned, tokenRecipient {
 
         return proposalID;
     }
-
-    /**
-     * Add proposal in Ether
-     *
-     * Propose to send `etherAmount` ether to `beneficiary` for `jobDescription`. `transactionBytecode ? Contains : Does not contain` code.
-     * This is a convenience function to use if the amount to be given is in round number of ether units.
-     *
-     * @param beneficiary who to send the ether to
-     * @param etherAmount amount of ether to send
-     * @param jobDescription Description of job
-     * @param transactionBytecode bytecode of transaction
-     
-    function newProposalInEther(
-        address beneficiary,
-        uint etherAmount,
-        string jobDescription,
-        bytes transactionBytecode
-    )
-        onlyMembers public
-        returns (uint proposalID)
-    {
-        return newProposal(beneficiary, etherAmount * 1 ether, jobDescription, transactionBytecode);
-    }
-    */
 
     /**
      * Check if a proposal code matches
@@ -233,7 +195,7 @@ contract Congress is owned, tokenRecipient {
         returns (bool codeChecksOut)
     {
         Proposal storage p = proposals[proposalNumber];
-        return p.proposalHash == keccak256(beneficiary, weiAmount, transactionBytecode); //Überprüfen
+        return p.proposalHash == keccak256(transactionBytecode);
     }
 
     /**
@@ -248,7 +210,6 @@ contract Congress is owned, tokenRecipient {
     function vote(
         uint proposalNumber,
         bool supportsProposal,
-        // string justificationText
     )
         onlyMembers public
         returns (uint voteID)
@@ -281,7 +242,7 @@ contract Congress is owned, tokenRecipient {
 
         require(now > p.votingDeadline                                            // If it is past the voting deadline
             && !p.executed                                                         // and it has not already been executed
-            && p.proposalHash == keccak256(p.recipient, p.amount, transactionBytecode)  // and the supplied code matches the proposal // Überprüfen
+            && p.proposalHash == keccak256(transactionBytecode)                     // and the supplied code matches the proposal
             && p.numberOfVotes >= minimumQuorum);                                  // and a minimum quorum has been reached...
 
         // ...then execute result
