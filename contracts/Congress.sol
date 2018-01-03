@@ -47,7 +47,7 @@ contract Congress is owned, tokenRecipient {
     address[] public members;
 
     event ProposalAdded(uint proposalID, string description);
-    event Voted(uint proposalID, bool position, address voter, string justification);
+    event Voted(uint proposalID, bool position, address voter);
     event ProposalTallied(uint proposalID, int result, uint quorum, bool active);
     event MembershipChanged(address member, bool isMember);
     event ChangeOfRules(uint newMinimumQuorum, uint newDebatingPeriodInMinutes, int newMajorityMargin);
@@ -78,11 +78,7 @@ contract Congress is owned, tokenRecipient {
     /**
      * Constructor function
      */
-    function Congress (
-        uint minimumQuorumForProposals,
-        uint minutesForDebate,
-        int marginOfVotesForMajority
-    )  payable public {
+    function Congress (uint minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority)  payable public {
         changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
         // It’s necessary to add an empty first member
         addMember(0);
@@ -93,10 +89,9 @@ contract Congress is owned, tokenRecipient {
     /**
      * Add member
      *
-     * Make `targetMember` a member named `memberName`
+     * Make `targetMember` a member.
      *
      * @param targetMember ethereum address to be added
-     * @param memberName public name for that member
      */
     function addMember(address targetMember) onlyOwner public {
         uint id = memberId[targetMember];
@@ -136,11 +131,7 @@ contract Congress is owned, tokenRecipient {
      * @param minutesForDebate the minimum amount of delay between when a proposal is made and when it can be executed
      * @param marginOfVotesForMajority the proposal needs to have 50% plus this number
      */
-    function changeVotingRules(
-        uint minimumQuorumForProposals,
-        uint minutesForDebate,
-        int marginOfVotesForMajority
-    ) onlyOwner public {
+    function changeVotingRules(uint minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority) onlyOwner public {
         minimumQuorum = minimumQuorumForProposals;
         debatingPeriodInMinutes = minutesForDebate;
         majorityMargin = marginOfVotesForMajority;
@@ -153,8 +144,6 @@ contract Congress is owned, tokenRecipient {
      *
      * Propose to send `weiAmount / 1e18` ether to `beneficiary` for `jobDescription`. `transactionBytecode ? Contains : Does not contain` code.
      *
-     * @param beneficiary who to send the ether to
-     * @param weiAmount amount of ether to send, in wei
      * @param jobDescription Description of job
      * @param transactionBytecode bytecode of transaction
      */
@@ -183,8 +172,6 @@ contract Congress is owned, tokenRecipient {
      * Check if a proposal code matches
      *
      * @param proposalNumber ID number of the proposal to query
-     * @param beneficiary who to send the ether to
-     * @param weiAmount amount of ether to send
      * @param transactionBytecode bytecode of transaction
      */
     function checkProposalCode(
@@ -205,7 +192,6 @@ contract Congress is owned, tokenRecipient {
      *
      * @param proposalNumber number of proposal
      * @param supportsProposal either in favor or against it
-     * @param justificationText optional justification text
      */
     function vote(
         uint proposalNumber,
@@ -240,18 +226,16 @@ contract Congress is owned, tokenRecipient {
     function executeProposal(uint proposalNumber, bytes transactionBytecode) public {
         Proposal storage p = proposals[proposalNumber];
 
-        require(now > p.votingDeadline                                            // If it is past the voting deadline
-            && !p.executed                                                         // and it has not already been executed
-            && p.proposalHash == keccak256(transactionBytecode)                     // and the supplied code matches the proposal
-            && p.numberOfVotes >= minimumQuorum);                                  // and a minimum quorum has been reached...
+        // If it is past the voting deadline and it has not already been executed
+        // and the supplied code matches the proposal and a minimum quorum has been reached...
+        require(now > p.votingDeadline && !p.executed && p.proposalHash == keccak256(transactionBytecode) && p.numberOfVotes >= minimumQuorum);                                  
 
         // ...then execute result
-
         if (p.currentResult > majorityMargin) {
             // Proposal passed; execute the transaction
 
             p.executed = true; // Avoid recursive calling
-            require(p.recipient.call.value(p.amount)(transactionBytecode));
+            //require(p.recipient.call.value(p.amount)(transactionBytecode));
 
             p.proposalPassed = true;
         } else {
@@ -263,11 +247,11 @@ contract Congress is owned, tokenRecipient {
         ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
     }
     
-    function getContractAddress() public returns (address) {
+    function getContractAddress() internal view returns (address) {
         return this;
     }
     
-    function getMembers() public returns (adress[]) {
+    function getMembers() internal view returns (address[]) {
         return members;
     }
 }
