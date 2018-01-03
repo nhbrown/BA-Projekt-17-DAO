@@ -85,9 +85,9 @@ contract Congress is owned, tokenRecipient {
     )  payable public {
         changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
         // It’s necessary to add an empty first member
-        addMember(0, "");
+        addMember(0);
         // and let's add the founder, to save a step later
-        addMember(owner, 'founder');
+        addMember(owner);
     }
 
     /**
@@ -209,7 +209,7 @@ contract Congress is owned, tokenRecipient {
      */
     function vote(
         uint proposalNumber,
-        bool supportsProposal,
+        bool supportsProposal
     )
         onlyMembers public
         returns (uint voteID)
@@ -267,7 +267,7 @@ contract Congress is owned, tokenRecipient {
         return this;
     }
     
-    function getMembers() public returns (Member[]) {
+    function getMembers() public returns (adress[]) {
         return members;
     }
 }
