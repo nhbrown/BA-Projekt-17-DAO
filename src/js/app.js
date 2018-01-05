@@ -36,11 +36,18 @@ App = {
 
     // Set the provider for our contract
     App.contracts.Congress.setProvider(App.web3Provider);
+
+      return App.bindEvents();
     },
 
      /**
      * Ab hier Applikationsfunktionalitäten
      */
+
+
+     //bindEvents: function () {
+     //    $(document).on('click', Buttonidentifier , App.eineFunktion);
+     //}
 
     /**
      * Funktion, um eine Instance zu bekommen (Vielleicht geht das so auch, ansonsten benötigt jede function scheinbar:
