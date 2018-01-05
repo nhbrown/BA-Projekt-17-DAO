@@ -37,4 +37,23 @@ App = {
     // Set the provider for our contract
     App.contracts.Congress.setProvider(App.web3Provider);
     },
+
+     /**
+     * Ab hier Applikationsfunktionalitäten
+     */
+
+    /**
+     * Funktion, um eine Instance zu bekommen (Vielleicht geht das so auch, ansonsten benötigt jede function scheinbar:
+     *  App.contracts.Congress.deployed().then(function(instance){
+            congressInstance = instance;
+        ) siehe Pet-Shop
+     */
+    getInstance: function() {
+        var congressInstance;
+
+        App.contracts.Congress.deployed().then(function(instance){
+            congressInstance = instance;
+            return congressInstance;
+        })
+    }
 };
