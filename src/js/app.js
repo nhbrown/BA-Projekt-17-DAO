@@ -45,10 +45,42 @@ App = {
      */
 
 
-     //bindEvents: function () {
-     //    $(document).on('click', Buttonidentifier , App.eineFunktion);
-     //}
+     bindEvents: function () {
+         $(document).on('click', '.btn-create-congress', App.createCongress);
+     },
+     
+     /**
+     * Congress Erstellen
+     */
+     createCongress: function (event) {
+      event.preventDefault();
 
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
+        App.contracts.Congress.deployed().then(function(instance) {
+         congressInstance = instance;
+
+         return congressInstance.Congress(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority); // wie geben wir die Adressen hier hinein?
+        }).then(function(result){
+          return App.addMembers(members); //members stehen für Adressen. Datentyp?
+        }).catch(funtion(err) {
+          console.log(errmessage);
+        });
+        })
+      },
+    
+    addMembers: function(members) {
+      for (i = 0; i < members.length; i++)
+       if (members[i] !== '0x0000000000000000000000000000000000000000') {
+         congressInstance.addMember(member[i]);
+       }
+
+    }
     /**
      * Funktion, um eine Instance zu bekommen (Vielleicht geht das so auch, ansonsten benötigt jede function scheinbar:
      *  App.contracts.Congress.deployed().then(function(instance){
