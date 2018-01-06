@@ -251,7 +251,13 @@ contract Congress is owned, tokenRecipient {
         return this;
     }
     
-    function getMembers() internal view returns (address[]) {
+    function getMembers() external view returns (address[]) {
         return members;
+    }
+
+    function memberExists(address targetMember) external view returns (bool) {
+        uint id = memberId[targetMember];
+
+        return members[id] == targetMember;
     }
 }
