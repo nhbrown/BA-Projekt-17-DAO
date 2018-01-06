@@ -93,7 +93,7 @@ contract Congress is owned, tokenRecipient {
      *
      * @param targetMember ethereum address to be added
      */
-    function addMember(address targetMember) onlyOwner public {
+    function addMember(address targetMember) public { //deleted onlyOwner modifier for testing purposes
         uint id = memberId[targetMember];
         if (id == 0) {
             memberId[targetMember] = members.length;
@@ -247,7 +247,7 @@ contract Congress is owned, tokenRecipient {
         ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
     }
     
-    function getContractAddress() internal view returns (address) {
+    function getContractAddress() external view returns (address) {
         return this;
     }
     
