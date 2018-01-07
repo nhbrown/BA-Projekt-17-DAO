@@ -93,7 +93,7 @@ contract Congress is owned, tokenRecipient {
      *
      * @param targetMember ethereum address to be added
      */
-    function addMember(address targetMember) public { //deleted onlyOwner modifier for testing purposes
+    function addMember(address targetMember) onlyOwner public {
         uint id = memberId[targetMember];
         if (id == 0) {
             memberId[targetMember] = members.length;
