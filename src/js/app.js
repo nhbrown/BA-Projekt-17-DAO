@@ -22,7 +22,8 @@ App = {
       // If no injected web3 instance is detected, fallback to the TestRPC
         App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
       }
-        web3 = new Web3(App.web3Provider);
+
+      web3 = new Web3(App.web3Provider);
   
       return App.initContract();
     },
@@ -30,14 +31,18 @@ App = {
      * Initialisiere Contracts
      */
     initContract: function() {
+
+      $.getJSON('Congress.json', function(data) {
     // Get the necessary contract artifact file and instantiate it with truffle-contract
       var CongressArtifact = data;
       App.contracts.Congress = TruffleContract(CongressArtifact);
 
     // Set the provider for our contract
-    App.contracts.Congress.setProvider(App.web3Provider);
+      App.contracts.Congress.setProvider(App.web3Provider);
+      });
 
       return App.bindEvents();
+
     },
 
      /**
