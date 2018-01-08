@@ -15,10 +15,6 @@ contract owned {
     function transferOwnership(address newOwner) onlyOwner  public {
         owner = newOwner;
     }
-
-    function getOwner() external view returns (address) {
-        return owner;
-    }
 }
 
 contract tokenRecipient {
