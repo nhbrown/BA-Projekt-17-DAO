@@ -15,6 +15,10 @@ contract owned {
     function transferOwnership(address newOwner) onlyOwner  public {
         owner = newOwner;
     }
+
+    function getOwner() external view returns (address) {
+        return owner;
+    }
 }
 
 contract tokenRecipient {
@@ -247,17 +251,39 @@ contract Congress is owned, tokenRecipient {
         ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
     }
     
+    /**
+     * Returns the address of this contract.
+     *
+     * @dev Is this really necessary? I mean, we are deploying the contract so as
+            the owner we should store the deployed addresses which makes this function
+            higly unnecessary. I'm leaving it in for now.
+     * @return An address representing this contract.
+     */
     function getContractAddress() external view returns (address) {
         return this;
     }
-    
-    function getMembers() external view returns (address[]) {
-        return members;
-    }
 
+    /**
+     * Check wether or not a given address exists as a member of this contract.
+     * 
+     * @param targetMember The address to be checked for member status.
+     * @return A boolean representing wether or not the given address is a member of this contract.
+     */
     function memberExists(address targetMember) external view returns (bool) {
         uint id = memberId[targetMember];
 
         return members[id] == targetMember;
     }
+
+    /**
+     * Getter for the array which holds the addresses of the members of this contract.
+     * 
+     * @dev Not really useful, because indexes are based on a mapping of the addresses 
+            to unsigned integers, which could make accesing them outside of this contract
+            potentially harder. The function memberExists is way more useful.
+     * @return An array of addresses.
+     */
+    //function getMembers() external view returns (address[]) {
+    //    return members;
+    //}
 }
