@@ -171,7 +171,7 @@ contract Congress is owned, tokenRecipient {
 
         return proposalID;
     }
-
+    
     /**
      * Check if a proposal code matches
      *
