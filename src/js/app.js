@@ -46,16 +46,18 @@ App = {
     },
 
      /**
-     * Ab hier Applikationsfunktionalitäten
+     * Events binden.
      */
-
-
      bindEvents: function () {
-         $(document).on('click', '.btn-create-congress', App.createCongress);
+         $(document).on('click', '.btn-create-congress', App.createCongress); // Bind Button "create_congress" on page "create_congress.html"
+         $(document).on('click', '.btn-create-bmc', App.createBMC); // Bind Button "Create BMC" on page "create_bmc.html"
+         $(document).on('click', '.btn-success', App.votePositive); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-join-congress', App.joinCongress); // Bind Button "Join" on Page "join_congress.html"
      },
      
      /**
-     * Congress Erstellen
+     * Congress Erstellen 
      */
      createCongress: function (event) {
       event.preventDefault();
@@ -73,12 +75,15 @@ App = {
          return congressInstance.Congress(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority); // wie geben wir die Adressen hier hinein?
         }).then(function(result){
           return App.addMembers(members); //members stehen für Adressen. Datentyp?
-        }).catch(funtion(err) {
+        }).catch(function(err) {
           console.log(errmessage);
         });
-        })
+        });
       },
     
+   /**
+     * Member hinzufügen 
+     */
     addMembers: function(members) {
       for (i = 0; i < members.length; i++)
        if (members[i] !== '0x0000000000000000000000000000000000000000') {
