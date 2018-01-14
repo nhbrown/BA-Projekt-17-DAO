@@ -62,6 +62,21 @@ App = {
      createCongress: function (event) {
       event.preventDefault();
 
+      var minimumQuorumForProposals = document.getElementById("formInput85"); 
+      var minutesForDebate = document.getElementById("formInput93");
+      var marginOfVotesForMajority = document.getElementById("formInput99");
+      var allMembers = document.getElementById("adresses");
+      var allMembersCorrectString = allMembers.replace(/\s/g, "");
+      var numberOfMembers = allMembersCorrectString.length / 42; //42 Chars für eine Adresse
+      var members = [];
+
+      //for (i = 0; i < numberOfMembers; i++){
+      
+           // members[i] = allMembers.slice(0, 42); liefert erste Adresse
+           // members[i] = allMembers.slice(42, 84); liefert zweite Adresse
+           
+        //}
+
       var congressInstance;
 
       //web3.eth.getAccounts(function(error, accounts) {
@@ -79,7 +94,6 @@ App = {
         }).catch(function(err) {
           console.log(errmessage);
         });
-        
       },
     
    /**
@@ -98,11 +112,13 @@ App = {
      */
     createBMC: function(event){
       // Wie bekommen wir die BMC Elemente in ein Arrray?
+      //bmc[8] = 
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
       
-        for (i = 0; i < 9; i++)
-        congressInstance.newProposal(bmc[i], transactionBytecode);
+        for (i = 0; i < 9; i++){ 
+        congressInstance.newProposal(bmc[i], transactionBytecode); 
+        }
       }
     },
 
@@ -111,6 +127,12 @@ App = {
      */
     votePositive: function(event){
 
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+
+        congressInstance.vote(proposalnumber, true);
+      }
+
     },
 
     /**
@@ -118,7 +140,13 @@ App = {
      */
     voteNegative: function(event){
 
-    },
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+
+        congressInstance.vote(proposalnumber, false);
+
+      }
+  },
 
     /**
      * Congress beitreten
@@ -140,8 +168,10 @@ App = {
             return congressInstance;
         })
     },
+    
+};
 
-    /**
+  /**
      * ? (Aus Pet-Shop)
      */
     $(function() {
@@ -149,5 +179,3 @@ App = {
         App.init();
       });
     });
-    
-};
