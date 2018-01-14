@@ -64,33 +64,68 @@ App = {
 
       var congressInstance;
 
-      web3.eth.getAccounts(function(error, accounts) {
-        if (error) {
-           console.log(error);
-        }
+      //web3.eth.getAccounts(function(error, accounts) {
+       // if (error) {
+         //  console.log(error);
+        //}
+        
 
         App.contracts.Congress.deployed().then(function(instance) {
          congressInstance = instance;
 
          return congressInstance.Congress(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority); // wie geben wir die Adressen hier hinein?
         }).then(function(result){
-          return App.addMembers(members); //members stehen für Adressen. Datentyp?
+          return App.addMembers(members); //members stehen für Adressen. Datentyp? Wie bekommen wir einzelne Adressen?
         }).catch(function(err) {
           console.log(errmessage);
         });
-        });
+        
       },
     
    /**
      * Member hinzufügen 
      */
     addMembers: function(members) {
-      for (i = 0; i < members.length; i++)
+      for (i = 1; i < members.length; i++){ // Nullte Stelle nicht belegen
        if (members[i] !== '0x0000000000000000000000000000000000000000') {
          congressInstance.addMember(member[i]);
        }
+      }
+    },
 
-    }
+    /**
+     * BMC Erstellen 
+     */
+    createBMC: function(event){
+      // Wie bekommen wir die BMC Elemente in ein Arrray?
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+      
+        for (i = 0; i < 9; i++)
+        congressInstance.newProposal(bmc[i], transactionBytecode);
+      }
+    },
+
+    /**
+     * Positiv wählen 
+     */
+    votePositive: function(event){
+
+    },
+
+    /**
+     * Negativ wählen 
+     */
+    voteNegative: function(event){
+
+    },
+
+    /**
+     * Congress beitreten
+     */
+    joinCongress: function(event){
+
+    },
     /**
      * Funktion, um eine Instance zu bekommen (Vielleicht geht das so auch, ansonsten benötigt jede function scheinbar:
      *  App.contracts.Congress.deployed().then(function(instance){
@@ -104,5 +139,15 @@ App = {
             congressInstance = instance;
             return congressInstance;
         })
-    }
+    },
+
+    /**
+     * ? (Aus Pet-Shop)
+     */
+    $(function() {
+      $(window).load(function() {
+        App.init();
+      });
+    });
+    
 };
