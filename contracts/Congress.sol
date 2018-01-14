@@ -62,6 +62,7 @@ contract Congress is owned, tokenRecipient {
         bytes32 proposalHash;
         Vote[] votes;
         mapping (address => bool) voted;
+        bool isValid; //set to true when data is added
     }
 
     struct Vote {
@@ -95,6 +96,7 @@ contract Congress is owned, tokenRecipient {
      */
     function addMember(address targetMember) onlyOwner public {
         uint id = memberId[targetMember];
+
         if (id == 0) {
             memberId[targetMember] = members.length;
             id = members.length++;
@@ -165,9 +167,11 @@ contract Congress is owned, tokenRecipient {
         ProposalAdded(proposalID, jobDescription);
         numProposals = proposalID+1;
 
+        p.isValid = true; //data has been added
+
         return proposalID;
     }
-
+    
     /**
      * Check if a proposal code matches
      *
@@ -247,11 +251,68 @@ contract Congress is owned, tokenRecipient {
         ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
     }
     
-    function getContractAddress() internal view returns (address) {
+    /**
+     * Returns the address of this contract.
+     *
+     * @dev Is this really necessary? I mean, we are deploying the contract so as
+            the owner we should store the deployed addresses which makes this function
+            higly unnecessary. I'm leaving it in for now.
+     * @return An address representing this contract.
+     */
+    function getContractAddress() external view returns (address) {
         return this;
     }
-    
-    function getMembers() internal view returns (address[]) {
-        return members;
+
+    /**
+     * Check wether or not a given address exists as a member of this contract.
+     * 
+     * @param targetMember The address to be checked for member status.
+     * @return A boolean representing wether or not the given address is a member of this contract.
+     */
+    function memberExists(address targetMember) external view returns (bool) {
+        uint id = memberId[targetMember];
+
+        if (id >= members.length) {
+            return false;
+        }
+
+        return members[id] == targetMember;
     }
+
+    /**
+     * Check wether or not a proposal corresponding to the given proposalID exists.
+     * 
+     * @param proposalID The ID of the proposal to be checked.
+     * @return A boolean representing wether or not a proposal with the given ID was created.
+     */
+    function proposalExists(uint proposalID) external view returns (bool) {
+        if (proposalID >= proposals.length) {
+            return false;
+        }
+
+        return proposals[proposalID].isValid;
+    }
+
+    /**
+     * Check wether or not a member has successfully voted on a specific proposal.
+     *
+     * @param targetMember The address of the member to be checked.
+     * @param proposalID The ID of the proposal to be checked.
+     * @return A boolean representing wether or not the specified member has successfully voted.
+     */
+    function memberHasVoted(address targetMember, uint proposalID) external view returns (bool) {
+        return proposals[proposalID].voted[targetMember];
+    }
+
+    /**
+     * Getter for the array which holds the addresses of the members of this contract.
+     * 
+     * @dev Not really useful, because indexes are based on a mapping of the addresses 
+            to unsigned integers, which could make accesing them outside of this contract
+            potentially harder. The function memberExists is way more useful.
+     * @return An array of addresses.
+     */
+    //function getMembers() external view returns (address[]) {
+    //    return members;
+    //}
 }
