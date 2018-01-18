@@ -66,13 +66,19 @@ App = {
     var minimumQuorumForProposals = document.getElementById("formInput85");
     var minutesForDebate = document.getElementById("formInput93");
     var marginOfVotesForMajority = document.getElementById("formInput99");
-    var allMembers = document.getElementById("adresses");
-    var allMembersCorrectString = allMembers.replace(/\s/g, "");
-    var numberOfMembers = allMembersCorrectString.length / 42; //42 Chars für eine Adresse
+    
+    var allMembers = document.getElementById("adresses").value;
     var members = [];
+    var member = "";
 
-    for (i = 0, j = 0, k = 42; i < numberOfMembers; i++ , j + 42, k + 42) {
-      members[i] = allMembers.slice(j, k);
+    for (var i = 0; i < allMembers.length; ++i) {
+      if (allMembers[i] != ",") {
+        member += allMembers[i];
+      }
+      else {
+        members[members.length] = member;
+        member = "";
+      }
     }
 
     var congressInstance;
@@ -82,11 +88,10 @@ App = {
     //  console.log(error);
     //}
 
-
     App.contracts.Congress.deployed().then(function (instance) {
       congressInstance = instance;
 
-      return congressInstance.Congress(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority); // wie geben wir die Adressen hier hinein?
+      return congressInstance.Congress(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
     }).then(function (result) {
       return App.addMembers(members); //members stehen für Adressen. Datentyp? Wie bekommen wir einzelne Adressen?
     }).catch(function (err) {
