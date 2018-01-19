@@ -63,9 +63,9 @@ App = {
   createCongress: function (event) {
     event.preventDefault();
 
-    var minimumQuorumForProposals = document.getElementById("formInput85");
-    var minutesForDebate = document.getElementById("formInput93");
-    var marginOfVotesForMajority = document.getElementById("formInput99");
+    var minimumQuorumForProposals = document.getElementById("votes");
+    var minutesForDebate = document.getElementById("time");
+    var marginOfVotesForMajority = document.getElementById("quorum");
     
     var allMembers = document.getElementById("adresses").value;
     var members = [];
@@ -81,21 +81,10 @@ App = {
       }
     }
 
-    var congressInstance;
-
-    //web3.eth.getAccounts(function(error, accounts) {
-    // if (error) {
-    //  console.log(error);
-    //}
-
-    App.contracts.Congress.deployed().then(function (instance) {
-      congressInstance = instance;
-
-      return congressInstance.Congress(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
-    }).then(function (result) {
-      return App.addMembers(members); //members stehen für Adressen. Datentyp? Wie bekommen wir einzelne Adressen?
-    }).catch(function (err) {
-      console.log(errmessage);
+    App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function(instance) {
+      console.log(instance.address); // Print the new address
+    }).catch(function(err) {
+      console.log(err.message); // There was an error! Handle it.
     });
   },
 
