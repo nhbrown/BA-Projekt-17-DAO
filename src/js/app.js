@@ -51,9 +51,25 @@ App = {
      bindEvents: function () {
          $(document).on('click', '.btn-create-congress', App.createCongress); // Bind Button "create_congress" on page "create_congress.html"
          $(document).on('click', '.btn-create-bmc', App.createBMC); // Bind Button "Create BMC" on page "create_bmc.html"
-         $(document).on('click', '.btn-success', App.votePositive); // Bind Buotton "Agree" on page "vote.html"
-         $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss" on page "vote.html" 
          $(document).on('click', '.btn-join-congress', App.joinCongress); // Bind Button "Join" on Page "join_congress.html"
+         $(document).on('click', '.btn-success0', App.votePositive0); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger0', App.voteNegative0); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-success1', App.votePositive1); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger1', App.voteNegative1); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-success2', App.votePositive2); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger2', App.voteNegative2); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-success3', App.votePositive3); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger3', App.voteNegative3); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-success4', App.votePositive4); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger4', App.voteNegative4); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-success5', App.votePositive5); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger5', App.voteNegative5); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-success6', App.votePositive6); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger6', App.voteNegative6); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-success7', App.votePositive7); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger7', App.voteNegative7); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-success8', App.votePositive8); // Bind Buotton "Agree" on page "vote.html"
+         $(document).on('click', '.btn-danger8', App.voteNegative8); // Bind Button "Dismiss" on page "vote.html" 
      },
      
      /**
@@ -104,8 +120,6 @@ App = {
      * BMC Erstellen 
      */
     createBMC: function(event){
-      // Wie bekommen wir die BMC Elemente in ein Arrray?
-      //bmc[8] = 
       var keyPartners = document.getElementById("partners");
       var keyActivities = document.getElementById("activities");
       var keyRessources = document.getElementById("ressources");
@@ -115,8 +129,7 @@ App = {
       var customerSegments = document.getElementById("cs"); 
       var costStructure = document.getElementById("cost");
       var revenueStream = document.getElementById("revenue");
-      var bmc = [keypartners, keyActivities, keyRessources, customerRelationship, channels, customerSegments, costStructure, revenueStream];
-
+      var bmc = [keyPartners, keyActivities, keyRessources, valueProposition, customerRelationship, channels, customerSegments, costStructure, revenueStream];
 
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
@@ -128,30 +141,187 @@ App = {
     },
 
     /**
-     * Positiv wählen 
+     * Positiv wählen für Element Key-Partners. 
      */
-    votePositive: function(event){
-
+    votePositive0: function(event){
+      var proposalNumber = 0;
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
-
-        congressInstance.vote(proposalnumber, true);
+        congressInstance.vote(proposalNumber, true);
       }
-
+    },
+    /**
+     * Negativ wählen für Element Key-Partners. 
+     */
+    voteNegative0: function(event){
+      var proposalNumber = 0;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, false);
+      }
+    },
+     /**
+     * Positiv wählen für Element Key-Activities. 
+     */
+    votePositive1: function(event){
+      var proposalNumber = 1;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, true);
+      }
+    },
+    /**
+     * Negativ wählen für Element Key-Activities. 
+     */
+    voteNegative1: function(event){
+      var proposalNumber = 1;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, false);
+      }
+    },
+     /**
+     * Positiv wählen für Element Key-Ressources. 
+     */
+    votePositive2: function(event){
+      var proposalNumber = 2;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, true);
+      }
+    },
+    /**
+     * Negativ wählen für Element Key-Ressources. 
+     */
+    voteNegative2: function(event){
+      var proposalNumber = 2;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, false);
+      }
+    },
+     /**
+     * Positiv wählen für Element Valueproposition. 
+     */
+    votePositive3: function(event){
+      var proposalNumber = 3;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, true);
+      }
+    },
+    /**
+     * Negativ wählen für Element Valueproposotion. 
+     */
+    voteNegative3: function(event){
+      var proposalNumber = 3;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, false);
+      }
+    },
+     /**
+     * Positiv wählen für Element Customer Relationship. 
+     */
+    votePositive4: function(event){
+      var proposalNumber = 4;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, true);
+      }
+    },
+    /**
+     * Negativ wählen für Element Customer Relationship. 
+     */
+    voteNegative4: function(event){
+      var proposalNumber = 4;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, false);
+      }
+    },
+     /**
+     * Positiv wählen für Element Channels. 
+     */
+    votePositive5: function(event){
+      var proposalNumber = 5;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, true);
+      }
+    },
+    /**
+     * Negativ wählen für Element Channels. 
+     */
+    voteNegative5: function(event){
+      var proposalNumber = 5;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, false);
+      }
+    },
+     /**
+     * Positiv wählen für Element Customer Segments. 
+     */
+    votePositive6: function(event){
+      var proposalNumber = 6;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, true);
+      }
+    },
+    /**
+     * Negativ wählen für Element Customer Segments. 
+     */
+    voteNegative6: function(event){
+      var proposalNumber = 6;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, false);
+      }
+    },
+     /**
+     * Positiv wählen für Element Cost Structure. 
+     */
+    votePositive7: function(event){
+      var proposalNumber = 7;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, true);
+      }
+    },
+    /**
+     * Negativ wählen für Element Cost Structure. 
+     */
+    voteNegative7: function(event){
+      var proposalNumber = 7;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, false);
+      }
+    },
+     /**
+     * Positiv wählen für Element Revenue Stream. 
+     */
+    votePositive8: function(event){
+      var proposalNumber = 8;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, true);
+      }
+    },
+    /**
+     * Negativ wählen für Element Revenue Stream. 
+     */
+    voteNegative8: function(event){
+      var proposalNumber = 8;
+      App.contracts.Congress.deployed().then(function(instance) {
+        congressInstance = instance;
+        congressInstance.vote(proposalNumber, false);
+      }
     },
 
-    /**
-     * Negativ wählen 
-     */
-    voteNegative: function(event){
-
-      App.contracts.Congress.deployed().then(function(instance) {
-        congressInstance = instance;
-
-        congressInstance.vote(proposalnumber, false);
-
-      }
-  },
+    
 
     /**
      * Congress beitreten
