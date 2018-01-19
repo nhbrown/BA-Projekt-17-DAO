@@ -1,19 +1,16 @@
-/**
-   * Applikation mit Web3 instanziieren nach dem Pet-Shop Tuorial
-   */
 App = {
   web3Provider: null,
   contracts: {},
 
   /**
-   * Initialisiere Web3
+   * Initialize this app by initializing Web3 instance.
    */
   init: function () {
     return App.initWeb3();
   },
 
   /**
-   * Initialisiere Web3
+   * Initialize provider for Web3 instance.
    */
   initWeb3: function () {
     // Is there is an injected web3 instance?
@@ -31,7 +28,7 @@ App = {
   },
 
   /**
-   * Initialisiere Contracts
+   * Pull contract artifact file and initialize it with truffle-contract.
    */
   initContract: function () {
     $.getJSON('Congress.json', function (data) {
@@ -47,7 +44,7 @@ App = {
   },
 
   /**
-   * Events binden.
+   * Bind on-click events from HTML pages to JS functions.
    */
   bindEvents: function () {
     $(document).on('click', '.btn-create-congress', App.createCongress); // Bind Button "create_congress" on page "create_congress.html"
@@ -58,7 +55,7 @@ App = {
   },
 
   /**
-   * Congress Erstellen 
+   * Create a new congress with given parameters and parse addresses.
    */
   createCongress: function (event) {
     event.preventDefault();
@@ -66,7 +63,7 @@ App = {
     var minimumQuorumForProposals = document.getElementById("votes");
     var minutesForDebate = document.getElementById("time");
     var marginOfVotesForMajority = document.getElementById("quorum");
-    
+
     var allMembers = document.getElementById("adresses").value;
     var members = [];
     var member = "";
@@ -81,22 +78,38 @@ App = {
       }
     }
 
-    App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function(instance) {
-      console.log(instance.address); // Print the new address
-    }).catch(function(err) {
-      console.log(err.message); // There was an error! Handle it.
+    var congress;
+
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+      console.log("Hi, I'm now working on creating your contract!");
+
+      App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
+        console.log("Contract created successfully! Here's the address: " + instance.address);
+        congress = instance;
+        console.log("Instance successfully assigned to variable congress!");
+        App.addMembers(congress, members);
+      }).catch(function (err) {
+        console.log(err.message); // There was an error! Handle it.
+      });
     });
   },
 
   /**
      * Member hinzufügen 
      */
-  addMembers: function (members) {
-    for (i = 1; i < members.length; i++) { // Nullte Stelle nicht belegen
+  addMembers: function (instance, members) {
+    console.log("Just letting you know that I'm now adding members! Yaay!");
+
+    for (i = 0; i < members.length; ++i) {
       if (members[i] !== '0x0000000000000000000000000000000000000000') {
-        congressInstance.addMember(member[i]);
+        instance.addMember(members[i])
       }
     }
+
+    console.log("Successfully added all members! Awesome!");
   },
 
   /**
@@ -142,7 +155,7 @@ App = {
   /**
    * Congress beitreten
    */
-  joinCongress: function (event) {},
+  joinCongress: function (event) { },
 
   /**
    * Funktion, um eine Instance zu bekommen (Vielleicht geht das so auch, ansonsten benötigt jede function scheinbar:
@@ -160,8 +173,8 @@ App = {
   }
 };
 
-$(function() {
-  $(window).load(function() {
+$(function () {
+  $(window).load(function () {
     App.init();
   });
 });
