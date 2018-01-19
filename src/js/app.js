@@ -66,31 +66,24 @@ App = {
       var minutesForDebate = document.getElementById("formInput93");
       var marginOfVotesForMajority = document.getElementById("formInput99");
       var allMembers = document.getElementById("adresses");
-      var allMembersCorrectString = allMembers.replace(/\s/g, "");
+      var allMembersCorrectString = allMembers.replace(/\s/g, "").replace(", ", "").replace("; ", ""); // geht das eleganter?
       var numberOfMembers = allMembersCorrectString.length / 42; //42 Chars für eine Adresse
       var members = [];
 
-      //for (i = 0; i < numberOfMembers; i++){
+      for (i = 1; i < numberOfMembers; i++){ // Nulte Stelle nicht belegen im Array wegen der member[] Struktur im Dao
       
-           // members[i] = allMembers.slice(0, 42); liefert erste Adresse
-           // members[i] = allMembers.slice(42, 84); liefert zweite Adresse
-           
-        //}
+           members[i] = allMembers.slice(0, 42); //liefert erste Adresse
+           allMembers = allMembers.substring(42, allMembers.lenght);    
+        }
 
       var congressInstance;
-
-      //web3.eth.getAccounts(function(error, accounts) {
-       // if (error) {
-         //  console.log(error);
-        //}
-        
 
         App.contracts.Congress.deployed().then(function(instance) {
          congressInstance = instance;
 
-         return congressInstance.Congress(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority); // wie geben wir die Adressen hier hinein?
+         return congressInstance.Congress(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority); 
         }).then(function(result){
-          return App.addMembers(members); //members stehen für Adressen. Datentyp? Wie bekommen wir einzelne Adressen?
+          return App.addMembers(members); 
         }).catch(function(err) {
           console.log(errmessage);
         });
@@ -100,7 +93,7 @@ App = {
      * Member hinzufügen 
      */
     addMembers: function(members) {
-      for (i = 1; i < members.length; i++){ // Nullte Stelle nicht belegen
+      for (i = 1; i < members.length; i++){ // Nullte Stelle nicht belegen im Dao
        if (members[i] !== '0x0000000000000000000000000000000000000000') {
          congressInstance.addMember(member[i]);
        }
@@ -113,6 +106,18 @@ App = {
     createBMC: function(event){
       // Wie bekommen wir die BMC Elemente in ein Arrray?
       //bmc[8] = 
+      var keyPartners = document.getElementById("partners");
+      var keyActivities = document.getElementById("activities");
+      var keyRessources = document.getElementById("ressources");
+      var valueProposition = document.getElementById("value");
+      var customerRelationship = document.getElementById("cr");
+      var channels = document.getElementById("channels");
+      var customerSegments = document.getElementById("cs"); 
+      var costStructure = document.getElementById("cost");
+      var revenueStream = document.getElementById("revenue");
+      var bmc = [keypartners, keyActivities, keyRessources, customerRelationship, channels, customerSegments, costStructure, revenueStream];
+
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
       
