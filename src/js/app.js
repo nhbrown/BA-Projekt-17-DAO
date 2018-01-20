@@ -89,26 +89,31 @@ App = {
       for (i = 1; i < numberOfMembers; i++){ // Nulte Stelle nicht belegen im Array wegen der member[] Struktur im Dao
       
            members[i] = allMembers.slice(0, 42); //liefert erste Adresse
-           allMembers = allMembers.substring(42, allMembers.lenght);    
+           allMembers = allMembers.substring(42, allMembers.lenght); // Schneidet bereits hinzugefügte Adresse ab    
         }
 
       var congressInstance;
 
-        App.contracts.Congress.deployed().then(function(instance) {
-         congressInstance = instance;
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
 
-         return congressInstance.Congress(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority); 
-        }).then(function(result){
-          return App.addMembers(members); 
-        }).catch(function(err) {
-          console.log(errmessage);
+        App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
+          console.log("Contract created successfully! Here's the address: " + instance.address);
+          congressInstance = instance;
+          console.log("Instance successfully assigned to variable congress!");
+          App.addMembers(congressInstance, members);
+        }).catch(function (err) {
+          console.log(err.message); // There was an error! Handle it.
         });
-      },
+      });
+  },
     
    /**
      * Member hinzufügen 
      */
-    addMembers: function(members) {
+    addMembers: function(congressInstance, members) {
       for (i = 1; i < members.length; i++){ // Nullte Stelle nicht belegen im Dao
        if (members[i] !== '0x0000000000000000000000000000000000000000') {
          congressInstance.addMember(member[i]);
@@ -132,7 +137,7 @@ App = {
       var bmc = [keyPartners, keyActivities, keyRessources, valueProposition, customerRelationship, channels, customerSegments, costStructure, revenueStream];
       // Zuordnung an stellen im Array bedingt die Struktur der Votingfunktionen
       App.contracts.Congress.deployed().then(function(instance) {
-        congressInstance = instance;
+        congressInstance = instance; 
       
         for (i = 0; i < 9; i++){ 
         congressInstance.newProposal(bmc[i], transactionBytecode); //transactionbytecode?
