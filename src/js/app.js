@@ -46,7 +46,7 @@ App = {
     },
 
      /**
-     * Events binden.
+     * Alle Events binden.
      */
      bindEvents: function () {
          $(document).on('click', '.btn-create-congress', App.createCongress); // Bind Button "create_congress" on page "create_congress.html"
@@ -486,7 +486,7 @@ App = {
         if (error) {
            console.log(error);
         }
-        
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
