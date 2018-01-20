@@ -136,200 +136,390 @@ App = {
       var revenueStream = document.getElementById("revenue");
       var bmc = [keyPartners, keyActivities, keyRessources, valueProposition, customerRelationship, channels, customerSegments, costStructure, revenueStream];
       // Zuordnung an stellen im Array bedingt die Struktur der Votingfunktionen
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance; 
-      
+    
         for (i = 0; i < 9; i++){ 
         congressInstance.newProposal(bmc[i], transactionBytecode); //transactionbytecode?
         }
-      }
-    }, // hier verbirgt sich irgendwo oberhalb ein Komma- oder Semikolon-Fehler
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     }); 
+    }, 
 
     /**
      * Positiv wählen für Element Key-Partners. 
      */
     votePositive0: function(event){
       var proposalNumber = 0;
+      var congressInstance; 
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     }); 
     },
     /**
      * Negativ wählen für Element Key-Partners. 
      */
     voteNegative0: function(event){
       var proposalNumber = 0;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, false);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
      /**
      * Positiv wählen für Element Key-Activities. 
      */
     votePositive1: function(event){
       var proposalNumber = 1;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     }); 
     },
     /**
      * Negativ wählen für Element Key-Activities. 
      */
     voteNegative1: function(event){
       var proposalNumber = 1;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, false);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
      /**
      * Positiv wählen für Element Key-Ressources. 
      */
     votePositive2: function(event){
       var proposalNumber = 2;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
     /**
      * Negativ wählen für Element Key-Ressources. 
      */
     voteNegative2: function(event){
       var proposalNumber = 2;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, false);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
      /**
      * Positiv wählen für Element Valueproposition. 
      */
     votePositive3: function(event){
       var proposalNumber = 3;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
     /**
      * Negativ wählen für Element Valueproposotion. 
      */
     voteNegative3: function(event){
       var proposalNumber = 3;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, false);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
      /**
      * Positiv wählen für Element Customer Relationship. 
      */
     votePositive4: function(event){
       var proposalNumber = 4;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
     /**
      * Negativ wählen für Element Customer Relationship. 
      */
     voteNegative4: function(event){
       var proposalNumber = 4;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, false);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
      /**
      * Positiv wählen für Element Channels. 
      */
     votePositive5: function(event){
       var proposalNumber = 5;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
     /**
      * Negativ wählen für Element Channels. 
      */
     voteNegative5: function(event){
       var proposalNumber = 5;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, false);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
      /**
      * Positiv wählen für Element Customer Segments. 
      */
     votePositive6: function(event){
       var proposalNumber = 6;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
     /**
      * Negativ wählen für Element Customer Segments. 
      */
     voteNegative6: function(event){
       var proposalNumber = 6;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, false);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
      /**
      * Positiv wählen für Element Cost Structure. 
      */
     votePositive7: function(event){
       var proposalNumber = 7;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
     /**
      * Negativ wählen für Element Cost Structure. 
      */
     voteNegative7: function(event){
       var proposalNumber = 7;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, false);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
      /**
      * Positiv wählen für Element Revenue Stream. 
      */
     votePositive8: function(event){
       var proposalNumber = 8;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+        
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, true);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
     /**
      * Negativ wählen für Element Revenue Stream. 
      */
     voteNegative8: function(event){
       var proposalNumber = 8;
+      var congressInstance;
+
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+           console.log(error);
+        }
+
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
         congressInstance.vote(proposalNumber, false);
-      }
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+     });
     },
 
     
 
     /**
-     * Congress beitreten
+     * Congress beitreten ???
      */
     joinCongress: function(event){
       var adress = document.getElementById("formInput218"); // und ab hier?
@@ -349,7 +539,7 @@ App = {
             congressInstance = instance;
             return congressInstance;
         })
-    },
+    }
     
 };
 
