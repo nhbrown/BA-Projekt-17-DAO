@@ -130,15 +130,15 @@ App = {
       var costStructure = document.getElementById("cost");
       var revenueStream = document.getElementById("revenue");
       var bmc = [keyPartners, keyActivities, keyRessources, valueProposition, customerRelationship, channels, customerSegments, costStructure, revenueStream];
-
+      // Zuordnung an stellen im Array bedingt die Struktur der Votingfunktionen
       App.contracts.Congress.deployed().then(function(instance) {
         congressInstance = instance;
       
         for (i = 0; i < 9; i++){ 
-        congressInstance.newProposal(bmc[i], transactionBytecode); 
+        congressInstance.newProposal(bmc[i], transactionBytecode); //transactionbytecode?
         }
       }
-    },
+    }, // hier verbirgt sich irgendwo oberhalb ein Komma- oder Semikolon-Fehler
 
     /**
      * Positiv wählen für Element Key-Partners. 
@@ -327,7 +327,9 @@ App = {
      * Congress beitreten
      */
     joinCongress: function(event){
-
+      var adress = document.getElementById("formInput218"); // und ab hier?
+      var adressCorrectString = adress.replace(/\s/g, "").replace(", ", "").replace("; ", "");
+        
     },
     /**
      * Funktion, um eine Instance zu bekommen (Vielleicht geht das so auch, ansonsten benötigt jede function scheinbar:
