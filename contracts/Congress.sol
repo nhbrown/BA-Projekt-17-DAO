@@ -262,6 +262,13 @@ contract Congress is owned, tokenRecipient {
     function getContractAddress() external view returns (address) {
         return this;
     }
+    
+    /**
+     * Returns the Proposal Array of this contract.
+     */
+    function getProposals() returns (Proposal[]){
+        return proposals;
+    }
 
     /**
      * Check wether or not a given address exists as a member of this contract.

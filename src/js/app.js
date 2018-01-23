@@ -70,6 +70,7 @@ App = {
          $(document).on('click', '.btn-danger7', App.voteNegative7); // Bind Button "Dismiss" on page "vote.html" 
          $(document).on('click', '.btn-success8', App.votePositive8); // Bind Buotton "Agree" on page "vote.html"
          $(document).on('click', '.btn-danger8', App.voteNegative8); // Bind Button "Dismiss" on page "vote.html" 
+         $(document).on('click', '.btn-show', App.loadBMC); // Bind Button "Show more" on page "vote.html" 
      },
      
      /**
@@ -515,6 +516,27 @@ App = {
       });
      });
     },
+
+    loadBMC: function(event){
+
+    var congressInstance;
+    var bmc;
+
+    App.contracts.Congress.deployed().then(function(instance) {
+    congressInstance = instance;
+    
+    bmc = congressInstance.getProposals.call(); //ab jetzt Array
+    
+    document.getElementById("keyPartners").innerHTML = bmc[0];
+    document.getElementById("keyActivities").innerHTML = bmc[1];
+    document.getElementById("keyRessources").innerHTML = bmc[2];
+    document.getElementById("valuePropostition").innerHTML = bmc[3] ;
+    document.getElementById("customerRelationship").innerHTML = bmc[4] ;
+    document.getElementById("customerSegments").innerHTML = bmc[6] ;
+    document.getElementById("channels").innerHTML = bmc[5] ;
+    document.getElementById("costStructure").innerHTML = bmc[7] ;
+    document.getElementById("revenueStream").innerHTML = bmc[8];
+    }
 
     
 
