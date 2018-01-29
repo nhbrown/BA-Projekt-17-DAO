@@ -81,6 +81,8 @@ App = {
     App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
       sessionStorage.setItem("instanceAddress", instance.address);
 
+      window.alert("Your congress has been successfully created! The address of your contract is: " + instance.address);
+
       App.addMembers(instance, members);
 
       web3.eth.filter('latest', function (error, result) {
