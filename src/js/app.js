@@ -80,20 +80,19 @@ App = {
 
     var congress;
 
-    web3.eth.getAccounts(function (error, accounts) {
-      if (error) {
-        console.log(error);
-      }
-      console.log("Hi, I'm now working on creating your contract!");
+    App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
+      congress = instance;
+      App.addMembers(congress, members);
 
-      App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
-        console.log("Contract created successfully! Here's the address: " + instance.address);
-        congress = instance;
-        console.log("Instance successfully assigned to variable congress!");
-        App.addMembers(congress, members);
-      }).catch(function (err) {
-        console.log(err.message); // There was an error! Handle it.
+      web3.eth.filter('latest', function (error, result) {
+        if (!error) {
+          window.location.href = "create_bmc.html";
+        } else {
+          console.log(error.message);
+        }
       });
+    }).catch(function (err) {
+      console.log(err.message); // There was an error! Handle it.
     });
   },
 
@@ -101,30 +100,26 @@ App = {
      * Member hinzufügen 
      */
   addMembers: function (instance, members) {
-    console.log("Just letting you know that I'm now adding members! Yaay!");
-
     for (i = 0; i < members.length; ++i) {
       if (members[i] !== '0x0000000000000000000000000000000000000000') {
-        instance.addMember(members[i])
+        instance.addMember(members[i]);
       }
     }
-
-    console.log("Successfully added all members! Awesome!");
   },
 
   /**
    * BMC Erstellen 
    */
   createBMC: function (event) {
-    // Wie bekommen wir die BMC Elemente in ein Arrray?
-    //bmc[8] = 
-    App.contracts.Congress.deployed().then(function (instance) {
-      congressInstance = instance;
+    var bmc = [document.getElementById("partners"), document.getElementById("activities"), document.getElementById("ressources"),
+    document.getElementById("value"), document.getElementById("cr"), document.getElementById("channels"),
+    document.getElementById("cs"), document.getElementById("cost"), document.getElementById("revenue")];
 
-      for (i = 0; i < 9; i++) {
-        congressInstance.newProposal(bmc[i], transactionBytecode);
+    App.contracts.Congress.deployed().then(function (instance) {
+      for (i = 0; i < 9; ++i) {
+        instance.newProposal(bmc[i], 0x123);
       }
-    });
+    })
   },
 
   /**
@@ -163,14 +158,14 @@ App = {
           congressInstance = instance;
       ) siehe Pet-Shop
   */
-  getInstance: function () {
-    var congressInstance;
+  //getInstance: function () {
+  //  var congressInstance;
 
-    App.contracts.Congress.deployed().then(function (instance) {
-      congressInstance = instance;
-      return congressInstance;
-    });
-  }
+  //  App.contracts.Congress.deployed().then(function (instance) {
+  //    congressInstance = instance;
+  //    return congressInstance;
+  //  });
+  //}
 };
 
 $(function () {
