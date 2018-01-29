@@ -78,11 +78,10 @@ App = {
       }
     }
 
-    var congress;
-
     App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
-      congress = instance;
-      App.addMembers(congress, members);
+      sessionStorage.setItem("instanceAddress", instance.address);
+
+      App.addMembers(instance, members);
 
       web3.eth.filter('latest', function (error, result) {
         if (!error) {
@@ -115,11 +114,13 @@ App = {
     document.getElementById("value"), document.getElementById("cr"), document.getElementById("channels"),
     document.getElementById("cs"), document.getElementById("cost"), document.getElementById("revenue")];
 
-    App.contracts.Congress.deployed().then(function (instance) {
+    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+      console.log(instance.address);
+
       for (i = 0; i < 9; ++i) {
-        instance.newProposal(bmc[i], 0x123);
+        instance.newProposal(bmc[i], "0x123");
       }
-    })
+    });
   },
 
   /**
@@ -127,11 +128,6 @@ App = {
    */
   votePositive: function (event) {
 
-    App.contracts.Congress.deployed().then(function (instance) {
-      congressInstance = instance;
-
-      congressInstance.vote(proposalnumber, true);
-    })
   },
 
   /**
@@ -139,33 +135,14 @@ App = {
    */
   voteNegative: function (event) {
 
-    App.contracts.Congress.deployed().then(function (instance) {
-      congressInstance = instance;
-
-      congressInstance.vote(proposalnumber, false);
-
-    });
   },
 
   /**
    * Congress beitreten
    */
-  joinCongress: function (event) { },
+  joinCongress: function (event) {
 
-  /**
-   * Funktion, um eine Instance zu bekommen (Vielleicht geht das so auch, ansonsten benötigt jede function scheinbar:
-   *  App.contracts.Congress.deployed().then(function(instance){
-          congressInstance = instance;
-      ) siehe Pet-Shop
-  */
-  //getInstance: function () {
-  //  var congressInstance;
-
-  //  App.contracts.Congress.deployed().then(function (instance) {
-  //    congressInstance = instance;
-  //    return congressInstance;
-  //  });
-  //}
+  }
 };
 
 $(function () {
