@@ -149,7 +149,25 @@ App = {
    * Congress beitreten
    */
   joinCongress: function (event) {
+    var addressToJoin = document.getElementById("addressField").value;
 
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      } else {
+        App.contracts.Congress.at(addressToJoin).then(function (instance) {
+          sessionStorage.setItem("instanceAddress", instance.address);
+
+          if (instance.memberExists(accounts[0])) {
+            window.location.href = "vote.html";
+          } else {
+            console.log("This account is not eligible to enter this congress!");
+          }
+        }).catch(function (err) {
+          console.log(err.message); // There was an error! Handle it.
+        });
+      }
+    });
   }
 };
 
