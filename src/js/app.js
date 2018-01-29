@@ -96,7 +96,7 @@ App = {
   },
 
   /**
-     * Member hinzufügen 
+     * Add member addresses to contract as individual transactions.
      */
   addMembers: function (instance, members) {
     for (i = 0; i < members.length; ++i) {
@@ -107,19 +107,27 @@ App = {
   },
 
   /**
-   * BMC Erstellen 
+   * Add elements of BMC as individual proposals to contract.
    */
   createBMC: function (event) {
-    var bmc = [document.getElementById("partners"), document.getElementById("activities"), document.getElementById("ressources"),
-    document.getElementById("value"), document.getElementById("cr"), document.getElementById("channels"),
-    document.getElementById("cs"), document.getElementById("cost"), document.getElementById("revenue")];
+    var bmc = [document.getElementById("partners").value, document.getElementById("activities").value, document.getElementById("ressources").value,
+    document.getElementById("value").value, document.getElementById("cr").value, document.getElementById("channels").value,
+    document.getElementById("cs").value, document.getElementById("cost").value, document.getElementById("revenue").value];
 
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-      console.log(instance.address);
-
       for (i = 0; i < 9; ++i) {
         instance.newProposal(bmc[i], "0x123");
       }
+
+      web3.eth.filter('latest', function (error, result) {
+        if (!error) {
+          window.location.href = "vote.html";
+        } else {
+          console.log(error.message);
+        }
+      });
+    }).catch(function (err) {
+      console.log(err.message); // There was an error! Handle it.
     });
   },
 
