@@ -38,9 +38,12 @@ contract TestCongress {
     Assert.equal(false, congress.memberExists(memberTwo), "Member with the address 0x456 should not exist.");
   }
 
-  function testGetProperAddressOfContract() public {
-    Assert.equal(congress, congress.getContractAddress(), "The proper address of the contract should be returned.");
-  }
+  /**
+   * This is unnecessary.
+   */
+  //function testGetProperAddressOfContract() public {
+  //  Assert.equal(congress, congress.getContractAddress(), "The proper address of the contract should be returned.");
+  //}
 
   function testOwnerOfCongressIsThisContract() public {
     Assert.equal(this, congress.owner(), "This contract should be the owner of the contract.");

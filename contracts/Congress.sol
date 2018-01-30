@@ -250,18 +250,6 @@ contract Congress is owned, tokenRecipient {
         // Fire Events
         ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
     }
-    
-    /**
-     * Returns the address of this contract.
-     *
-     * @dev Is this really necessary? I mean, we are deploying the contract so as
-            the owner we should store the deployed addresses which makes this function
-            higly unnecessary. I'm leaving it in for now.
-     * @return An address representing this contract.
-     */
-    function getContractAddress() external view returns (address) {
-        return this;
-    }
 
     /**
      * Check wether or not a given address exists as a member of this contract.
@@ -282,6 +270,9 @@ contract Congress is owned, tokenRecipient {
     /**
      * Check wether or not a proposal corresponding to the given proposalID exists.
      * 
+     * @dev Has no use in the frontend code, only used for testing purposes. 
+            Can be disabled for production.
+     *
      * @param proposalID The ID of the proposal to be checked.
      * @return A boolean representing wether or not a proposal with the given ID was created.
      */
@@ -296,6 +287,8 @@ contract Congress is owned, tokenRecipient {
     /**
      * Check wether or not a member has successfully voted on a specific proposal.
      *
+     * @dev This method really only exists for testing purposes. Can be disabled for production.
+     *
      * @param targetMember The address of the member to be checked.
      * @param proposalID The ID of the proposal to be checked.
      * @return A boolean representing wether or not the specified member has successfully voted.
@@ -303,6 +296,20 @@ contract Congress is owned, tokenRecipient {
     function memberHasVoted(address targetMember, uint proposalID) external view returns (bool) {
         return proposals[proposalID].voted[targetMember];
     }
+
+    function getProposalDescription(uint proposalID) public constant returns (string) {
+        return proposals[proposalID].description;
+    }
+    /**
+     * Returns the address of this contract.
+     *
+     * @dev Disabled because it is not useful. The address of a contract is public
+            and therefore has an automatic getter method.
+     * @return An address representing this contract.
+     */
+    //function getContractAddress() external view returns (address) {
+    //    return this;
+    //}
 
     /**
      * Getter for the array which holds the addresses of the members of this contract.
