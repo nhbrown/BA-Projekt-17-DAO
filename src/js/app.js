@@ -49,8 +49,8 @@ App = {
   bindEvents: function () {
     $(document).on('click', '.btn-create-congress', App.createCongress); // Bind Button "create_congress" on page "create_congress.html"
     $(document).on('click', '.btn-create-bmc', App.createBMC); // Bind Button "Create BMC" on page "create_bmc.html"
-    $(document).on('click', '.btn-success', App.votePositive); // Bind Buotton "Agree" on page "vote.html"
-    $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss" on page "vote.html" 
+    $(document).on('click', '.btn-agree', App.votePositive); // Bind Buotton "Agree" on page "vote.html"
+    $(document).on('click', '.btn-dismiss', App.voteNegative); // Bind Button "Dismiss" on page "vote.html" 
     $(document).on('click', '.btn-join-congress', App.joinCongress); // Bind Button "Join" on Page "join_congress.html"
   },
 
@@ -103,7 +103,9 @@ App = {
   addMembers: function (instance, members) {
     for (i = 0; i < members.length; ++i) {
       if (members[i] !== '0x0000000000000000000000000000000000000000') {
-        instance.addMember(members[i]);
+        instance.addMember(members[i]).catch(function (err) {
+          console.log(err.message);
+        });
       }
     }
   },
@@ -118,7 +120,9 @@ App = {
 
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
       for (i = 0; i < 9; ++i) {
-        instance.newProposal(bmc[i], "0x123");
+        instance.newProposal(bmc[i], "0x123").catch(function (err) { //does the transaction bytecode actually matter?
+          console.log(err.message);
+        });
       }
 
       web3.eth.filter('latest', function (error, result) {
@@ -137,14 +141,50 @@ App = {
    * Positiv wählen 
    */
   votePositive: function (event) {
+    var proposalNumber = document.activeElement.id;
 
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      } else {
+        App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+          if (instance.memberExists.call(accounts[0])) {
+            instance.vote(proposalNumber, true).catch(function (err) {
+              console.log(err.message);
+            });
+          } else {
+            console.log("This account is not eligible to vote in this congress!");
+          }
+        }).catch(function (err) {
+          console.log(err.message);
+        });
+      }
+    });
   },
 
   /**
    * Negativ wählen 
    */
   voteNegative: function (event) {
+    var proposalNumber = document.activeElement.id;
 
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      } else {
+        App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+          if (instance.memberExists.call(accounts[0])) {
+            instance.vote(proposalNumber, false).catch(function (err) {
+              console.log(err.message);
+            });
+          } else {
+            console.log("This account is not eligible to vote in this congress!");
+          }
+        }).catch(function (err) {
+          console.log(err.message);
+        });
+      }
+    });
   },
 
   /**
@@ -160,7 +200,7 @@ App = {
         App.contracts.Congress.at(addressToJoin).then(function (instance) {
           sessionStorage.setItem("instanceAddress", instance.address);
 
-          if (instance.memberExists(accounts[0])) {
+          if (instance.memberExists.call(accounts[0])) {
             window.location.href = "vote.html";
           } else {
             console.log("This account is not eligible to enter this congress!");
