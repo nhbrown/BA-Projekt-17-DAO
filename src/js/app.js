@@ -114,31 +114,51 @@ App = {
    * Add elements of BMC as individual proposals to contract.
    */
   createBMC: function (event) {
-    var bmc = [document.getElementById("partners").value, document.getElementById("activities").value, document.getElementById("ressources").value,
+    var bmc = [document.getElementById("partners").value, document.getElementById("activities").value, document.getElementById("resources").value,
     document.getElementById("value").value, document.getElementById("cr").value, document.getElementById("channels").value,
     document.getElementById("cs").value, document.getElementById("cost").value, document.getElementById("revenue").value];
 
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-      for (i = 0; i < 9; ++i) {
-        instance.newProposal(bmc[i], "0x123").catch(function (err) { //does the transaction bytecode actually matter?
-          console.log(err.message);
+      instance.newProposal(bmc[0], "0x123").then(function (err, res) {
+        instance.newProposal(bmc[1], "0x123").then(function (err, res) {
+          instance.newProposal(bmc[2], "0x123").then(function (err, res) {
+            instance.newProposal(bmc[3], "0x123").then(function (err, res) {
+              instance.newProposal(bmc[4], "0x123").then(function (err, res) {
+                instance.newProposal(bmc[5], "0x123").then(function (err, res) {
+                  instance.newProposal(bmc[6], "0x123").then(function (err, res) {
+                    instance.newProposal(bmc[7], "0x123").then(function (err, res) {
+                      instance.newProposal(bmc[8], "0x123").then(function (err, res) {
+                        window.location.href = "vote.html";
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
         });
-      }
-
-      web3.eth.filter('latest', function (error, result) {
-        if (!error) {
-          window.location.href = "vote.html";
-        } else {
-          console.log(error.message);
-        }
       });
     }).catch(function (err) {
-      console.log(err.message); // There was an error! Handle it.
+      console.log(err.message);
     });
+
+    //for (i = 0; i < 9; ++i) {
+    //  instance.newProposal(bmc[i], "0x123").catch(function (err) { //does the transaction bytecode actually matter?
+    //    console.log(err.message);
+    //  });
+    //}
+
+    //web3.eth.filter('latest', function (error, result) {
+    //  if (!error) {
+    //    window.location.href = "vote.html";
+    //  } else {
+    //    console.log(error.message);
+    //  }
+    //});
   },
 
   /**
-   * Positiv wählen 
+   * Vote positively on selected proposal. 
    */
   votePositive: function (event) {
     var proposalNumber = document.activeElement.id;
@@ -156,14 +176,14 @@ App = {
             console.log("This account is not eligible to vote in this congress!");
           }
         }).catch(function (err) {
-          console.log(err.message);
+          console.log(err.message); // There was an error! Handle it.
         });
       }
     });
   },
 
   /**
-   * Negativ wählen 
+   * Vote negatively on selected proposal. 
    */
   voteNegative: function (event) {
     var proposalNumber = document.activeElement.id;
@@ -181,23 +201,21 @@ App = {
             console.log("This account is not eligible to vote in this congress!");
           }
         }).catch(function (err) {
-          console.log(err.message);
+          console.log(err.message); // There was an error! Handle it.
         });
       }
     });
   },
 
   /**
-   * Congress beitreten
+   * Join a contract at a specific address.
    */
   joinCongress: function (event) {
-    var addressToJoin = document.getElementById("addressField").value;
-
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
       } else {
-        App.contracts.Congress.at(addressToJoin).then(function (instance) {
+        App.contracts.Congress.at(document.getElementById("addressField").value).then(function (instance) {
           sessionStorage.setItem("instanceAddress", instance.address);
 
           if (instance.memberExists.call(accounts[0])) {
@@ -210,11 +228,44 @@ App = {
         });
       }
     });
+  },
+
+  /**
+   * Initialize the descriptions of the proposals.
+   */
+  getProposalDescriptions: function () {
+    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+      for (var i = 0; i < 9; ++i) {
+        (function (cntr) {
+          instance.getProposalDescription.call(cntr).then(function (res, err) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(cntr + " " + res);
+              var parent = document.getElementById("body-" + cntr);
+              parent.insertBefore(document.createTextNode(res), parent.firstChild);
+            }
+          });
+        })(i);
+      }
+    });
   }
 };
 
 $(function () {
   $(window).load(function () {
     App.init();
+
+    window.setTimeout(function () {
+      if (window.location.pathname == "/vote.html") {
+        App.getProposalDescriptions();
+      }
+    }, 100);
+
+    window.onbeforeunload = function() {
+      if (window.location.pathname == "/create_bmc.html") {
+        return "Please fill out all elements and commit them to the blockchain before leaving!"
+      }
+    }
   });
 });
