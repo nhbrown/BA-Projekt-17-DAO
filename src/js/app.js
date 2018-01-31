@@ -87,6 +87,7 @@ App = {
 
       web3.eth.filter('latest', function (error, result) {
         if (!error) {
+          sessionStorage.setItem("login", true);
           window.location.href = "create_bmc.html";
         } else {
           console.log(error.message);
@@ -168,13 +169,17 @@ App = {
         console.log(error);
       } else {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-          if (instance.memberExists.call(accounts[0])) {
-            instance.vote(proposalNumber, true).catch(function (err) {
+          instance.memberExists.call(accounts[0]).then(function (res, err) {
+            if (err) {
               console.log(err.message);
-            });
-          } else {
-            console.log("This account is not eligible to vote in this congress!");
-          }
+            } else {
+              if (res) {
+                instance.vote(proposalNumber, true);
+              } else {
+                window.alert("This account is not eligible to vote in this congress!");
+              }
+            }
+          });
         }).catch(function (err) {
           console.log(err.message); // There was an error! Handle it.
         });
@@ -193,13 +198,17 @@ App = {
         console.log(error);
       } else {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-          if (instance.memberExists.call(accounts[0])) {
-            instance.vote(proposalNumber, false).catch(function (err) {
+          instance.memberExists.call(accounts[0]).then(function (res, err) {
+            if (err) {
               console.log(err.message);
-            });
-          } else {
-            console.log("This account is not eligible to vote in this congress!");
-          }
+            } else {
+              if (res) {
+                instance.vote(proposalNumber, false);
+              } else {
+                window.alert("This account is not eligible to vote in this congress!");
+              }
+            }
+          });
         }).catch(function (err) {
           console.log(err.message); // There was an error! Handle it.
         });
@@ -218,11 +227,18 @@ App = {
         App.contracts.Congress.at(document.getElementById("addressField").value).then(function (instance) {
           sessionStorage.setItem("instanceAddress", instance.address);
 
-          if (instance.memberExists.call(accounts[0])) {
-            window.location.href = "vote.html";
-          } else {
-            console.log("This account is not eligible to enter this congress!");
-          }
+          instance.memberExists.call(accounts[0]).then(function (res, err) {
+            if (err) {
+              console.log(err.message);
+            } else {
+              if (res) {
+                sessionStorage.setItem("login", true);
+                window.location.href = "vote.html";
+              } else {
+                window.alert("This account is not eligible to join this congress!");
+              }
+            }
+          });
         }).catch(function (err) {
           console.log(err.message); // There was an error! Handle it.
         });
@@ -241,7 +257,6 @@ App = {
             if (err) {
               console.log(err);
             } else {
-              console.log(cntr + " " + res);
               var parent = document.getElementById("body-" + cntr);
               parent.insertBefore(document.createTextNode(res), parent.firstChild);
             }
@@ -256,16 +271,16 @@ $(function () {
   $(window).load(function () {
     App.init();
 
+    window.onbeforeunload = function () {
+      if (window.location.pathname == "/create_bmc.html") {
+        return "";
+      }
+    };
+
     window.setTimeout(function () {
       if (window.location.pathname == "/vote.html") {
         App.getProposalDescriptions();
       }
     }, 100);
-
-    window.onbeforeunload = function() {
-      if (window.location.pathname == "/create_bmc.html") {
-        return "Please fill out all elements and commit them to the blockchain before leaving!"
-      }
-    }
   });
 });
