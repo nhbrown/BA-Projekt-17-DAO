@@ -263,17 +263,29 @@ App = {
           });
         })(i);
       }
+    }).catch(function (err) {
+      console.log(err.message);
     });
   }
 };
 
 $(function () {
   $(window).load(function () {
+    if (window.location.pathname == "/create_bmc.html" || window.location.pathname == "/vote.html") {
+      if (!sessionStorage.getItem("login")) {
+        console.log("Test");
+        window.location.href = "index.html";
+      }
+    }
+
     App.init();
 
     window.onbeforeunload = function () {
-      if (window.location.pathname == "/create_bmc.html") {
-        return "";
+      if (sessionStorage.getItem("login")) {
+        if (window.location.pathname == "/create_bmc.html") {
+          //sessionStorage.setItem("login", false);
+          return "";
+        }
       }
     };
 
