@@ -60,9 +60,9 @@ App = {
   createCongress: function (event) {
     event.preventDefault();
 
-    var minimumQuorumForProposals = document.getElementById("votes");
-    var minutesForDebate = document.getElementById("time");
-    var marginOfVotesForMajority = document.getElementById("quorum");
+    var minimumQuorumForProposals = App.checkNumerical(document.getElementById("votes").value, "Number of minimum required Votes");
+    var minutesForDebate = App.checkNumerical(document.getElementById("time").value, "Voting Time");
+    var marginOfVotesForMajority = App.checkNumerical(document.getElementById("quorum").value, "Minimum required Quorum");
 
     var allMembers = document.getElementById("adresses").value;
     var members = [];
@@ -73,7 +73,7 @@ App = {
         member += allMembers[i];
       }
       else {
-        members[members.length] = member;
+        members[members.length] = App.checkAlphanumerical(member, "congress member addresses");
         member = "";
       }
     }
@@ -87,7 +87,6 @@ App = {
 
       web3.eth.filter('latest', function (error, result) {
         if (!error) {
-          sessionStorage.setItem("login", true);
           window.location.href = "create_bmc.html";
         } else {
           console.log(error.message);
@@ -115,9 +114,15 @@ App = {
    * Add elements of BMC as individual proposals to contract.
    */
   createBMC: function (event) {
-    var bmc = [document.getElementById("partners").value, document.getElementById("activities").value, document.getElementById("resources").value,
-    document.getElementById("value").value, document.getElementById("cr").value, document.getElementById("channels").value,
-    document.getElementById("cs").value, document.getElementById("cost").value, document.getElementById("revenue").value];
+    var bmc = [App.sanitize(document.getElementById("partners").value, "Key Partners"),
+    App.sanitize(document.getElementById("activities").value, "Key Activities"),
+    App.sanitize(document.getElementById("resources").value, "Key Resources"),
+    App.sanitize(document.getElementById("value").value, "Value Proposition"),
+    App.sanitize(document.getElementById("cr").value, "Customer Relationships"),
+    App.sanitize(document.getElementById("channels").value, "Channels"),
+    App.sanitize(document.getElementById("cs").value, "Customer Segments"),
+    App.sanitize(document.getElementById("cost").value, "Cost Structure"),
+    App.sanitize(document.getElementById("revenue").value, "Revenue Streams")];
 
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
       instance.newProposal(bmc[0], "0x123").then(function (err, res) {
@@ -142,20 +147,6 @@ App = {
     }).catch(function (err) {
       console.log(err.message);
     });
-
-    //for (i = 0; i < 9; ++i) {
-    //  instance.newProposal(bmc[i], "0x123").catch(function (err) { //does the transaction bytecode actually matter?
-    //    console.log(err.message);
-    //  });
-    //}
-
-    //web3.eth.filter('latest', function (error, result) {
-    //  if (!error) {
-    //    window.location.href = "vote.html";
-    //  } else {
-    //    console.log(error.message);
-    //  }
-    //});
   },
 
   /**
@@ -232,7 +223,6 @@ App = {
               console.log(err.message);
             } else {
               if (res) {
-                sessionStorage.setItem("login", true);
                 window.location.href = "vote.html";
               } else {
                 window.alert("This account is not eligible to join this congress!");
@@ -266,26 +256,89 @@ App = {
     }).catch(function (err) {
       console.log(err.message);
     });
+  },
+
+  /**
+   * Check user input to contain only numeric characters.
+   */
+  checkNumerical: function (input, fieldName) {
+    var re = /^[0-9]/; // regular expression to match only numeric characters
+    if (input === "") {
+      window.alert("Please enter a value for " + fieldName + "!");
+      throw new Error("Incorrect user input! Cancelling all further execution.")
+    } else {
+      if (!re.test(input)) {
+        window.alert(fieldName + " contains invalid charactes! Only numeric characters are allowed.");
+        throw new Error("Incorrect user input! Cancelling all further execution.")
+      } else {
+        return input;
+      }
+    }
+  },
+
+  /**
+   * Check user input to contain only alphanumeric characters.
+   */
+  checkAlphanumerical: function (input, fieldName) {
+    var re = /^[\w ]+$/; // regular expression to match only alphanumeric characters and spaces
+    if (input === "") {
+      window.alert("Please enter a value for " + fieldName + "!");
+      throw new Error("Incorrect user input! Cancelling all further execution.")
+    } else {
+      if (!re.test(input)) {
+        window.alert(fieldName + " contains invalid charactes! Only alphanumeric characters are allowed.");
+        throw new Error("Incorrect user input! Cancelling all further execution.")
+      } else {
+        return input;
+      }
+    }
+  },
+
+  /**
+   * Sanitize user input to prevent HTML injection.
+   */
+  sanitize: function (input, fieldName) {
+    if (input === "") {
+      window.alert("Please enter a value for " + fieldName + "!");
+      throw new Error("Incorrect user input! Cancelling all further execution.")
+    } else {
+      if (input.includes('<')) {
+        input.replace(/</g, '&lt');
+      }
+      if (input.includes('>')) {
+        input.replace(/>/g, '&gt');
+      }
+      if (input.includes('&')) {
+        input.replace(/&/g, '&amp');
+      }
+      if (input.includes('"')) {
+        input.replace(/"/g, '&quot');
+      }
+      if (input.includes("'")) {
+        input.replace(/'/g, '&39');
+      }
+
+      return input;
+    }
   }
 };
 
 $(function () {
   $(window).load(function () {
+
+    App.init();
+
     if (window.location.pathname == "/create_bmc.html" || window.location.pathname == "/vote.html") {
-      if (!sessionStorage.getItem("login")) {
-        console.log("Test");
+      if (performance.navigation.type == 0 || performance.navigation.type == 2) {
         window.location.href = "index.html";
       }
     }
 
-    App.init();
-
     window.onbeforeunload = function () {
-      if (sessionStorage.getItem("login")) {
-        if (window.location.pathname == "/create_bmc.html") {
-          //sessionStorage.setItem("login", false);
-          return "";
-        }
+      if (window.location.pathname == "/create_bmc.html") {
+        return "";
+      } else if (window.location.pathname == "/vote.html") {
+        return "";
       }
     };
 
