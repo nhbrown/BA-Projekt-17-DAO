@@ -328,12 +328,6 @@ $(function () {
 
     App.init();
 
-    if (window.location.pathname == "/create_bmc.html" || window.location.pathname == "/vote.html") {
-      if (performance.navigation.type == 0 || performance.navigation.type == 2) {
-        window.location.href = "index.html";
-      }
-    }
-
     window.onbeforeunload = function () {
       if (window.location.pathname == "/create_bmc.html") {
         return "";
