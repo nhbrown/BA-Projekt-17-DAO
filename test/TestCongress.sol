@@ -39,7 +39,7 @@ contract TestCongress {
   }
 
   /**
-   * This is unnecessary.
+   * @dev This is unnecessary.
    */
   //function testGetProperAddressOfContract() public {
   //  Assert.equal(congress, congress.getContractAddress(), "The proper address of the contract should be returned.");

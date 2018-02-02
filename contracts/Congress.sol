@@ -269,9 +269,6 @@ contract Congress is owned, tokenRecipient {
 
     /**
      * Check wether or not a proposal corresponding to the given proposalID exists.
-     * 
-     * @dev Has no use in the frontend code, only used for testing purposes. 
-            Can be disabled for production.
      *
      * @param proposalID The ID of the proposal to be checked.
      * @return A boolean representing wether or not a proposal with the given ID was created.
@@ -287,7 +284,8 @@ contract Congress is owned, tokenRecipient {
     /**
      * Check wether or not a member has successfully voted on a specific proposal.
      *
-     * @dev This method really only exists for testing purposes. Can be disabled for production.
+     * @dev This method really only exists for testing purposes. 
+            Can probably be disabled for production.
      *
      * @param targetMember The address of the member to be checked.
      * @param proposalID The ID of the proposal to be checked.
@@ -297,6 +295,12 @@ contract Congress is owned, tokenRecipient {
         return proposals[proposalID].voted[targetMember];
     }
 
+    /**
+     * Return the description of a given proposal.
+     *
+     * @param proposalID The ID of the proposal.
+     * @return A string representing the description of the proposal.
+     */
     function getProposalDescription(uint proposalID) public constant returns (string) {
         return proposals[proposalID].description;
     }
