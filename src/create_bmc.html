@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Create BMC</title>
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.css" rel="stylesheet">
+        <!-- Custom styles for this template -->
+        <link href="css/style.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    </head>
+    <body class="text-left">
+        <div class="container">
+            <div class="dropdown"> 
+                <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-family: Bell MT;"> Change Voting Terms </button>                 
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Add a member</a>
+                    <a class="dropdown-item" href="#">Delete a member</a>
+                    <a class="dropdown-item" href="#">Minimum requiered nummber of votes</a> 
+                    <a class="dropdown-item" href="#">Voting time</a> 
+                    <a class="dropdown-item" href="#">Minimum requiered quorum</a> 
+                </div>                 
+            </div>
+            <h2 style="font-family: Bell MT;" class="text-center text-sm-center text-md-center text-lg-center text-xl-center">Describe elements of Business Model Canvas:</h2>
+            <div id="carousel1" class="carousel slide" data-ride="carousel" data-interval="false" data-wrap="false"> 
+                <ol class="carousel-indicators" id="indicators"> 
+                    <li data-target="#carousel1" data-slide-to="0" class="active"></li>                     
+                    <li data-target="#carousel1" data-slide-to="1"></li>                     
+                    <li data-target="#carousel1" data-slide-to="2"></li>                     
+                    <li data-target="#carousel1" data-slide-to="3"></li>                     
+                    <li data-target="#carousel1" data-slide-to="4"></li>                     
+                    <li data-target="#carousel1" data-slide-to="5"></li>                     
+                    <li data-target="#carousel1" data-slide-to="6"></li>                     
+                    <li data-target="#carousel1" data-slide-to="7"></li>                     
+                    <li data-target="#carousel1" data-slide-to="8"></li>                     
+                </ol>                 
+                <div class="carousel-inner" style="font-family: Bell MT;"> 
+                    <div class="carousel-item active"> 
+                        <div class="form-group text-center" style="min-width: -6px;"> 
+                            <label for="formInput22">Key Partners</label>                             
+                            <textarea class="form-control" rows="15" id="partners"></textarea>                             
+                        </div>
+                    </div>                     
+                    <div class="carousel-item"> 
+                        <div class="form-group text-center"> 
+                            <label for="formInput22">Key Activities</label>                             
+                            <textarea class="form-control" id="activities" rows="15"></textarea>                             
+                        </div>                         
+                    </div>                     
+                    <div class="carousel-item"> 
+                        <div class="form-group text-center"> 
+                            <label for="formInput22">Key Resources</label>                             
+                            <textarea class="form-control" rows="15" id="resources"></textarea>                             
+                        </div>                         
+                    </div>
+                    <div class="carousel-item"> 
+                        <div class="form-group text-center"> 
+                            <label for="formInput22">Value Proposition</label>                             
+                            <textarea class="form-control" rows="15" id="value"></textarea>                             
+                        </div>                         
+                    </div>
+                    <div class="carousel-item"> 
+                        <div class="form-group text-center"> 
+                            <label for="formInput22">Customer Relationships</label>                             
+                            <textarea class="form-control" rows="15" id="cr"></textarea>                             
+                        </div>                         
+                    </div>
+                    <div class="carousel-item"> 
+                        <div class="form-group text-center"> 
+                            <label for="formInput22">Channels</label>                             
+                            <textarea class="form-control" rows="15" id="channels"></textarea>                             
+                        </div>                         
+                    </div>
+                    <div class="carousel-item"> 
+                        <div class="form-group text-center"> 
+                            <label for="formInput22">Customer Segments</label>                             
+                            <textarea class="form-control" rows="15" id="cs"></textarea>                             
+                        </div>                         
+                    </div>
+                    <div class="carousel-item"> 
+                        <div class="form-group text-center"> 
+                            <label for="formInput22">Cost Structure</label>                             
+                            <textarea class="form-control" rows="15" id="cost"></textarea>                             
+                        </div>                         
+                    </div>
+                    <div class="carousel-item"> 
+                        <div class="form-group text-center"> 
+                            <label for="formInput22">Revenue Streams</label>                             
+                            <textarea class="form-control" rows="15" id="revenue"></textarea>                             
+                        </div>                         
+                        <a class="btn bg-primary text-light border-primary float-right float-md-right float-sm-right float-lg-right float-xl-right btn-create-bmc" name="CreateBMC">Create BMC</a>
+                    </div>
+                </div>
+                <div class="text-center" id="slide_buttons">
+                    <a href="#carousel1" role="button" data-slide="prev">
+                        <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+                    </a>
+                    <a href="#carousel1" role="button" data-slide="next"> 
+                        <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>                         
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap core JavaScript
+    ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/popper.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="js/ie10-viewport-bug-workaround.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+
+        <!-- Benörtigte Plugins (PetShop) -->
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/web3.min.js"></script>
+        <script src="js/truffle-contract.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>
