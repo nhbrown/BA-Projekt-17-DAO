@@ -30,82 +30,60 @@
                 </div>                 
             </div>
             <h2 style="font-family: Bell MT;" class="text-center text-sm-center text-md-center text-lg-center text-xl-center">Describe elements of Business Model Canvas:</h2>
-            <div id="carousel1" class="carousel slide" data-ride="carousel" data-interval="false" data-wrap="false"> 
+            <div id="carousel" class="carousel slide" data-ride="carousel" data-interval="false" data-wrap="false"> 
                 <ol class="carousel-indicators" id="indicators"> 
-                    <li data-target="#carousel1" data-slide-to="0" class="active"></li>                     
-                    <li data-target="#carousel1" data-slide-to="1"></li>                     
-                    <li data-target="#carousel1" data-slide-to="2"></li>                     
-                    <li data-target="#carousel1" data-slide-to="3"></li>                     
-                    <li data-target="#carousel1" data-slide-to="4"></li>                     
-                    <li data-target="#carousel1" data-slide-to="5"></li>                     
-                    <li data-target="#carousel1" data-slide-to="6"></li>                     
-                    <li data-target="#carousel1" data-slide-to="7"></li>                     
-                    <li data-target="#carousel1" data-slide-to="8"></li>                     
+                    <li data-target="#carousel" data-slide-to="0" class="active"></li>                     
+                    <li data-target="#carousel" data-slide-to="1"></li>                     
+                    <li data-target="#carousel" data-slide-to="2"></li>                     
+                    <li data-target="#carousel" data-slide-to="3"></li>                     
+                    <li data-target="#carousel" data-slide-to="4"></li>                     
+                    <li data-target="#carousel" data-slide-to="5"></li>                     
+                    <li data-target="#carousel" data-slide-to="6"></li>                     
+                    <li data-target="#carousel" data-slide-to="7"></li>                     
+                    <li data-target="#carousel" data-slide-to="8"></li>                     
                 </ol>                 
                 <div class="carousel-inner" role="listbox" style="font-family: Bell MT;"> 
-                    <div class="carousel-item active"> 
-                        <div class="form-group text-center" style="min-width: -6px;"> 
-                            <label for="partners">Key Partners</label>                             
+                        <div class="carousel-item active"> 
+                            <label>Key Partners</label>                             
                             <textarea class="form-control" rows="15" id="partners"></textarea>                             
-                        </div>
-                    </div>                     
-                    <div class="carousel-item"> 
-                        <div class="form-group text-center"> 
-                            <label for="activities">Key Activities</label>                             
+                        </div>                     
+                        <div class="carousel-item"> 
+                            <label>Key Activities</label>                             
                             <textarea class="form-control" id="activities" rows="15"></textarea>                             
-                        </div>                         
-                    </div>                     
-                    <div class="carousel-item"> 
-                        <div class="form-group text-center"> 
-                            <label for="resources">Key Resources</label>                             
+                        </div>                     
+                        <div class="carousel-item"> 
+                            <label>Key Resources</label>                             
                             <textarea class="form-control" rows="15" id="resources"></textarea>                             
-                        </div>                         
-                    </div>
-                    <div class="carousel-item"> 
-                        <div class="form-group text-center"> 
-                            <label for="value">Value Proposition</label>                             
+                        </div>
+                        <div class="carousel-item"> 
+                            <label>Value Proposition</label>                             
                             <textarea class="form-control" rows="15" id="value"></textarea>                             
-                        </div>                         
-                    </div>
-                    <div class="carousel-item"> 
-                        <div class="form-group text-center"> 
-                            <label for="cr">Customer Relationships</label>                             
+                        </div>
+                        <div class="carousel-item"> 
+                            <label>Customer Relationships</label>                             
                             <textarea class="form-control" rows="15" id="cr"></textarea>                             
-                        </div>                         
-                    </div>
-                    <div class="carousel-item"> 
-                        <div class="form-group text-center"> 
-                            <label for="channels">Channels</label>                             
+                        </div>
+                        <div class="carousel-item"> 
+                            <label>Channels</label>                             
                             <textarea class="form-control" rows="15" id="channels"></textarea>                             
-                        </div>                         
-                    </div>
-                    <div class="carousel-item"> 
-                        <div class="form-group text-center"> 
-                            <label for="cs">Customer Segments</label>                             
+                        </div>
+                        <div class="carousel-item"> 
+                            <label>Customer Segments</label>                             
                             <textarea class="form-control" rows="15" id="cs"></textarea>                             
-                        </div>                         
-                    </div>
-                    <div class="carousel-item"> 
-                        <div class="form-group text-center"> 
-                            <label for="cost">Cost Structure</label>                             
-                            <textarea class="form-control" rows="15" id="cost"></textarea>                             
-                        </div>                         
-                    </div>
-                    <div class="carousel-item"> 
-                        <div class="form-group text-center"> 
-                            <label for="revenue">Revenue Streams</label>                             
-                            <textarea class="form-control" rows="15" id="revenue"></textarea>                             
-                        </div>                         
-                        <a class="btn bg-primary text-light border-primary float-right float-md-right float-sm-right float-lg-right float-xl-right btn-create-bmc" name="CreateBMC">Create BMC</a>
-                    </div>
+                        </div>
+                        <div class="carousel-item">
+                            <label>Cost Structure</label>                             
+                            <textarea class="form-control" rows="15" id="cost"></textarea>                     
+                        </div>
+                        <div class="carousel-item"> 
+                            <label>Revenue Streams</label>                             
+                            <textarea class="form-control" rows="15" id="revenue"></textarea>                                                  
+                            <a class="btn bg-primary text-light border-primary float-right float-md-right float-sm-right float-lg-right float-xl-right btn-create-bmc" name="CreateBMC">Create BMC</a>
+                        </div>    
                 </div>
                 <div class="text-center" id="slide_buttons">
-                    <a href="#carousel1" role="button" data-slide="prev">
-                        <button class="previous">Previous</button>
-                    </a>
-                    <a href="#carousel1" role="button" data-slide="next"> 
-                        <button class="next">Next</button>                         
-                    </a>
+                    <button href="#carousel" data-slide="prev">Previous</button>
+                    <button href="#carousel" data-slide="next">Next</button>
                 </div>
             </div>
         </div>
