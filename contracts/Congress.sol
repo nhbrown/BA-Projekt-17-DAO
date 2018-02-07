@@ -326,4 +326,211 @@ contract Congress is owned, tokenRecipient {
     //function getMembers() external view returns (address[]) {
     //    return members;
     //}
+
+    /**
+     * Calculate Voting Information
+     */
+
+     function getVotingInformation() onlyowner public returns (uint[] counts) {
+
+         //Proposal[] proposals = proposals; // contains all proposals
+         Votes[] votesPartners = proposals[0].votes;
+         Votes[] votesActivities = proposals[1].votes;
+         Votes[] votesResources = proposals[2].votes;
+         Votes[] votesValue = proposals[3].votes;
+         Votes[] votesCustomerRelation = proposals[4].votes;
+         Votes[] votesChannels = proposals[5].votes;
+         Votes[] votesCustomerSegments = proposals[6].votes;
+         Votes[] votesCosts = proposals[7].votes;
+         Votes[] votesRevenueStream = proposals[8].votes;
+
+         uint counterPositivePartners = 0;
+         uint counterNegativePartners = 0;
+         uint sumPartners = 0;
+         uint counterPositiveActivities = 0;
+         uint counterNegativeActivities = 0;
+         uint sumActivities = 0;
+         uint counterPositiveResources = 0;
+         uint counterNegativeResources = 0;
+         uint sumResources = 0;
+         uint counterPositiveValue = 0;
+         uint counterNegativeValue = 0;
+         uint sumValue = 0;
+         uint counterPositiveCustomerRelation = 0;
+         uint counterNegativeCustomerRelation = 0;
+         uint sumCustomerRelation = 0;
+         uint counterPositiveChannels = 0;
+         uint counterNegativeChannels = 0;
+         uint sumChannels = 0;
+         uint counterPositiveSegments = 0;
+         uint counterNegativeSegments = 0;
+         uint sumSegments = 0; 
+         uint counterPositiveCosts = 0;
+         uint counterNegativeCosts = 0;
+         uint sumCosts = 0;
+         uint counterPositiveRevenueStream = 0;
+         uint counterNegativeRevenueStream = 0;
+         uint sumRevenueStream = 0;
+         uint[27] counts; 
+
+
+         for (uint i = 0; i < votesPartners.length; i++)
+         {
+             if (votesPartners[i].inSupport) 
+             {
+                 counterPositivePartners = counterPositivePartners + 1;
+             }
+             else
+             {
+                 counterNegativePartners = counterNegativePartners + 1;
+             }
+
+         }
+         sumPartners = counterPositivePartners + counterNegativePartners;
+         counts[0] = counterPositivePartners;
+         counts[1] = counterNegativePartners;
+         counts[2] = sumPartners;
+
+         for (uint i = 0; i < votesActivities.length; i++)
+         {
+             if (votesActivities[i].inSupport) 
+             {
+                 counterPositiveActivities = counterPositiveActivities + 1;
+             }
+             else
+             {
+                 counterNegativeActivities = counterNegativeActivities + 1;
+             }
+
+         }
+         sumActivities = counterPositiveActivities + counterNegativeActivities;
+         counts[3] = counterPositiveActivities;
+         counts[4] = counterNegativeActivities;
+         coutns[5] = sumActivities; 
+
+         for (uint i = 0; i < votesResources.length; i++)
+         {
+             if (votesResources[i].inSupport) 
+             {
+                 counterPositiveResources = counterPositiveResources + 1;
+             }
+             else
+             {
+                 counterNegativeResources = counterNegativeResources + 1;
+             }
+
+         }
+         sumResources = counterPositiveResources + counterNegativeResources;
+         counts[6] = counterPositiveResources;
+         counts[7] = counterNegativeResources;
+         counts[8] = sumResources;
+
+         for (uint i = 0; i < votesValue.length; i++)
+         {
+             if (votesValue[i].inSupport) 
+             {
+                 counterPositiveValue = counterPositiveValue + 1;
+             }
+             else
+             {
+                 counterNegativeValue = counterNegativeValue + 1;
+             }
+
+         }
+         sumValue = counterPositiveValue + counterNegativeValue;
+         counts[9] = counterPositiveValue;
+         counts[10] = counterNegativeValue;
+         counts[11] = sumValue;
+
+         for (uint i = 0; i < votesCustomerRelation.length; i++)
+         {
+             if (votesCustomerRelation[i].inSupport) 
+             {
+                 counterPositiveCustomerRelation = counterPositiveCustomerRelation + 1;
+             }
+             else
+             {
+                 counterNegativeCustomerRelation = counterNegativeCustomerRelation + 1;
+             }
+
+         }
+         sumCustomerRelation = counterPositiveCustomerRelation + counterNegativeCustomerRelation;
+         counts[12] = counterPositiveCustomerRelation;
+         counts[13] = counterNegativeCustomerRelation;
+         coutns[14] = sumCustomerRelation;
+
+         for (uint i = 0; i < votesChannels.length; i++)
+         {
+             if (votesChannels[i].inSupport) 
+             {
+                 counterPositiveChannels = counterPositiveChannels + 1;
+             }
+             else
+             {
+                 counterNegativeChannels = counterNegativeChannels + 1;
+             }
+
+         }
+         sumChannels = counterPositiveChannels + counterNegativeChannels;
+         counts[15] = counterPositiveChannels;
+         counts[16] = counterNegativeChannels;
+         counts[17] = sumChannels;
+
+         for (uint i = 0; i < votesCustomerSegments.length; i++)
+         {
+             if (votesCustomerSegments[i].inSupport) 
+             {
+                 counterPositiveSegments = counterPositiveSegments + 1;
+             }
+             else
+             {
+                 counterNegativeSegments = counterNegativeSegments + 1;
+             }
+
+         }
+         sumSegments = counterPositiveSegments + counterNegativeSegments;
+         counts[18] = counterPositiveSegments;
+         counts[19] = counterNegativeSegments;
+         counts[20] = sumSegments;
+
+         for (uint i = 0; i < votesCosts.length; i++)
+         {
+             if (votesCost[i].inSupport) 
+             {
+                 counterPositiveCosts = counterPositiveCosts + 1;
+             }
+             else
+             {
+                 counterNegativeCosts = counterNegativeCosts + 1;
+             }
+
+         }
+         sumCosts = counterPositiveCosts + counterNegativeCosts;
+         counts[21] = counterPositiveCosts;
+         counts[22] = counterNegativeCosts;
+         counts[23] = sumcosts;
+
+         for (uint i = 0; i < votesRevenueStream.length; i++)
+         {
+             if (votesRevenueStream[i].inSupport) 
+             {
+                 counterPositiveRevenueStream = counterPositiveRevenueStream + 1;
+             }
+             else
+             {
+                 counterNegativeRevenueStream = counterNegativeRevenueStream + 1;
+             }
+
+         }
+         sumRevenueStream = counterPositiveRevenueStream + counterNegativeRevenueStream;
+         counts[24] = counterPositiveRevenueStream;
+         counts[25] = counterNegativeRevenueStream;
+         counts[26] = sumRevenueStream;
+
+         return counts;
+
+
+     }
+
+
 }

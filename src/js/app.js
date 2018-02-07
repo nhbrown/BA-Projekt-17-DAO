@@ -320,6 +320,72 @@ App = {
 
       return input;
     }
+  },
+  /**
+   * Calculate Voting Restults.
+   */
+  calculateVotingResults: function (instance){
+    var votingCounts = [];
+    votingCounts = instance.getVotingInformation.call();
+    //var ratios = []; //brauchen wir das Array überhaupt? 
+    var percentagePostivePartners = votingCounts[0] / votingCounts[2] * 100;
+    var percentageNegativePartners = votingCounts[1] / votingCounts[2] * 100;
+    var percentagePostiveActivities = votingCounts[3] / votingCounts[5] * 100;
+    var percentageNegativeActivities = votingCounts[4] / votingCounts[5] * 100;
+    var percentagePostiveResources = votingCounts[6] / votingCounts[8] * 100;
+    var percentageNegativeResources = votingCounts[7] / votingCounts[8] * 100;
+    var percentagePostiveValue = votingCounts[9] / votingCounts[11] * 100;
+    var percentageNegativeValue = votingCounts[10] / votingCounts[11] * 100;
+    var percentagePostiveRelation = votingCounts[12] / votingCounts[14] * 100;
+    var percentageNegativeRelation = votingCounts[13] / votingCounts[14] * 100;
+    var percentagePositiveChannels = votingCounts[15] / votingCounts[17] * 100;
+    var percentageNegativeChannels = votingCounts[16] / votingCounts[17] * 100;
+    var percentagePositiveSegments = votingCounts[18] / votingCounts[20] * 100;
+    var percentageNegativeSegments = votingCounts[19] / votingCounts[20] * 100;
+    var percentagePositiveCosts = votingCounts[21] / votingCounts[23] * 100;
+    var percentageNegativeCosts = votingCounts[22] / votingCounts[23] * 100;
+    var percentagePositiveRevenue = votingCounts[24] / votingCounts[26] * 100;
+    var percentageNegativeRevenue = votingCounts[25] / votingCounts[26] * 100;
+    /**ratio[0] = percentagePostivePartners;
+    ratio[1] = percentageNegativePartners;
+    ratio[2] = percentagePostiveActivities;
+    ratio[3] = percentageNegativeActivities;
+    ratio[4] = percentagePostiveResources;
+    ratio[5] = percentageNegativeResources;
+    ratio[6] = percentagePostiveValue;
+    ratio[7] = percentageNegativeValue;
+    ratio[8] = percentagePostiveRelation;
+    ratio[9] = percentageNegativeRelation;
+    ratio[10] = percentagePositiveChannels;
+    ratio[11] = percentageNegativeChannels;
+    ratio[12] = percentagePositiveSegments;
+    ratio[13] = percentageNegativeSegments;
+    ratio[14] = percentagePositiveCosts;
+    ratio[15] = percentageNegativeCosts;
+    ratio[16] = percentagePositiveRevenue;
+    ratio[17] = percentageNegativeRevenue;
+    */
+
+    
+    document.getElementById('positivePartner').innerHTML = percentagePositivePartners + '% positive';
+    document.getElementById('negativePartner').innerHTML = percentageNegativePartners + '% negative';
+    document.getElementById('positiveActivities').innerHTML = percentagePostiveActivities + '% positive';
+    document.getElementById('negativeActivities').innerHTML = percentageNegativeActivities + '% negative';
+    document.getElementById('positiveResources').innerHTML = percentagePostiveResources + '% positive';
+    document.getElementById('negativeResources').innerHTML = percentageNegativeResources + '% negative';
+    document.getElementById('positiveValue').innerHTML = percentagePostiveValue + '% positive';
+    document.getElementById('negativeValue').innerHTML = percentageNegativeValue + '% negative';
+    document.getElementById('positiveRelation').innerHTML = percentagePostiveRelation + '% positive';
+    document.getElementById('negativeRelation').innerHTML = percentageNegativeRelation + '% negative';
+    document.getElementById('positiveChannel').innerHTML = percentagePositiveChannels + '% positive';
+    document.getElementById('negativeChannel').innerHTML = percentageNegativeChannels + '% negative';
+    document.getElementById('positiveSegment').innerHTML = percentagePositiveSegments + '% positive';
+    document.getElementById('negativeSegment').innerHTML = percentageNegativeSegments + '% negative';
+    document.getElementById('positiveCosts').innerHTML = percentagePositiveCosts + '% positive';
+    document.getElementById('negativeCosts').innerHTML = percentageNegativeCosts + '% negative';
+    document.getElementById('positiveRevenue').innerHTML = percentagePositiveRevenue + '% positive';
+    document.getElementById('negativeRevenue').innerHTML = percentageNegativeRevenue + '% negative';
+    
   }
 };
 
