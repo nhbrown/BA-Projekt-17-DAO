@@ -334,15 +334,15 @@ contract Congress is owned, tokenRecipient {
      function getVotingInformation() onlyowner public returns (uint[] counts) {
 
          //Proposal[] proposals = proposals; // contains all proposals
-         Votes[] votesPartners = proposals[0].votes;
-         Votes[] votesActivities = proposals[1].votes;
-         Votes[] votesResources = proposals[2].votes;
-         Votes[] votesValue = proposals[3].votes;
-         Votes[] votesCustomerRelation = proposals[4].votes;
-         Votes[] votesChannels = proposals[5].votes;
-         Votes[] votesCustomerSegments = proposals[6].votes;
-         Votes[] votesCosts = proposals[7].votes;
-         Votes[] votesRevenueStream = proposals[8].votes;
+         Vote[] votesPartners = proposals[0].votes;
+         Vote[] votesActivities = proposals[1].votes;
+         Vote[] votesResources = proposals[2].votes;
+         Vote[] votesValue = proposals[3].votes;
+         Vote[] votesCustomerRelation = proposals[4].votes;
+         Vote[] votesChannels = proposals[5].votes;
+         Vote[] votesCustomerSegments = proposals[6].votes;
+         Vote[] votesCosts = proposals[7].votes;
+         Vote[] votesRevenueStream = proposals[8].votes;
 
          uint counterPositivePartners = 0;
          uint counterNegativePartners = 0;
