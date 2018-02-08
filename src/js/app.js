@@ -322,12 +322,14 @@ App = {
     }
   },
   /**
-   * Calculate Voting Restults.
+   * Calculate Voting Restults. (Statistik der Votes berechnen)
    */
   calculateVotingResults: function (instance){
-    var votingCounts = [];
-    votingCounts = instance.getVotingInformation.call();
+    //var votingCounts = [];
+    var votingCounts = instance.getVotingInformation.call(); //Array "counts[] aus Back-End"
     //var ratios = []; //brauchen wir das Array überhaupt? 
+    
+    //Berechnungen der Statistiken der einzelnen Elemente des BMC. Hier Reihenfolge des "counts[] Arrays aus dem Backend beachten"
     var percentagePostivePartners = votingCounts[0] / votingCounts[2] * 100;
     var percentageNegativePartners = votingCounts[1] / votingCounts[2] * 100;
     var percentagePostiveActivities = votingCounts[3] / votingCounts[5] * 100;
@@ -366,7 +368,7 @@ App = {
     ratio[17] = percentageNegativeRevenue;
     */
 
-    
+    //Anzeige der Statistiken im Browser
     document.getElementById('positivePartner').innerHTML = percentagePositivePartners + '% positive';
     document.getElementById('negativePartner').innerHTML = percentageNegativePartners + '% negative';
     document.getElementById('positiveActivities').innerHTML = percentagePostiveActivities + '% positive';

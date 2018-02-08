@@ -333,7 +333,7 @@ contract Congress is owned, tokenRecipient {
 
      function getVotingInformation() onlyowner public returns (uint[] counts) {
 
-         //Proposal[] proposals = proposals; // contains all proposals
+         //Vote-Arrays der einzelnen Elemente des BMC
          Vote[] votesPartners = proposals[0].votes;
          Vote[] votesActivities = proposals[1].votes;
          Vote[] votesResources = proposals[2].votes;
@@ -343,11 +343,11 @@ contract Congress is owned, tokenRecipient {
          Vote[] votesCustomerSegments = proposals[6].votes;
          Vote[] votesCosts = proposals[7].votes;
          Vote[] votesRevenueStream = proposals[8].votes;
-
-         uint counterPositivePartners = 0;
-         uint counterNegativePartners = 0;
-         uint sumPartners = 0;
-         uint counterPositiveActivities = 0;
+        //Counter für positive und negative Stimmen inklusive Summen aller Stimmenabgaben
+         uint counterPositivePartners = 0; //counter positiver Stimmen (Element Key Partners)
+         uint counterNegativePartners = 0; //counter negativer Stimmen (Element Key Partners)
+         uint sumPartners = 0;             //summe aller Abgegebenen Stimmen für BMC-Element (Element Key Partners)
+         uint counterPositiveActivities = 0; //folgende Felder analog s.o.
          uint counterNegativeActivities = 0;
          uint sumActivities = 0;
          uint counterPositiveResources = 0;
@@ -371,9 +371,9 @@ contract Congress is owned, tokenRecipient {
          uint counterPositiveRevenueStream = 0;
          uint counterNegativeRevenueStream = 0;
          uint sumRevenueStream = 0;
-         uint[27] counts; 
+         uint[27] counts; // Array aller counter und Summen für die Ausgabe an das Front-End. (Reihenfolge der Einfügungen entspricht der Reihenfolge der Felder dieser Funktion s.o.)
 
-
+         // nachfolgende Schleifen Zählen die positiven und negativen Stimmen der BMC Elemente der Vote Arrays
          for (uint i = 0; i < votesPartners.length; i++)
          {
              if (votesPartners[i].inSupport) 
@@ -527,7 +527,7 @@ contract Congress is owned, tokenRecipient {
          counts[25] = counterNegativeRevenueStream;
          counts[26] = sumRevenueStream;
 
-         return counts;
+         return counts; //Ausgabe der Zählungen als Array (Reihenfolge beachten im Frontend)
 
 
      }
