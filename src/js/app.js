@@ -324,7 +324,7 @@ App = {
 
 
   /**
-   * Fetch the Voting Restults. (Statistik der Votes berechnen)
+   * Fetch the voting restults from DAO. (Statistik der Votes berechnen)
    */
 
    fetchResults: function() {
@@ -339,19 +339,19 @@ App = {
        totalCounts[i] = [instance.Congress.proposals[i].numberOfVotes.call()];
       })
       }
-    overAllCounts[0] = positiveCounts;
-    overAllCounts[1] = totalCounts;
 
-    return overAllCounts;
+    return overAllCounts[positiveCounts, totalCounts];
 
     }).catch(function (err) {
       console.log(err.message);
     });
 
    },
+
    /**
-   * Calculate the Voting Restults. (Statistik der Votes berechnen)
+   * Calculate the voting restults. (Statistik der Votes berechnen) 
    */
+
    calculateResults: function(){
      var overAllCounts = App.fetchResults();
      var negativeVotes = [];
@@ -369,6 +369,10 @@ App = {
      }
      return overallResults[positiveRatios, negativeRatios]
    },
+
+   /**
+   * Show the voting restults in the browser. (Statistik der Votes berechnen) 
+   */
 
    showResults: function(event){
      var overallResults = App.calculateResults();
@@ -392,7 +396,6 @@ App = {
      document.getElementById('positiveRevenue').innerHTML = overallResults[0][8] + '% positive';
      document.getElementById('negativeRevenue').innerHTML = overallResults[1][8] + '% negative';
      
-
    }
   /**
    * Calculate Voting Restults. (Statistik der Votes berechnen)
