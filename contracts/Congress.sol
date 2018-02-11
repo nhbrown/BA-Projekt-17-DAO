@@ -58,7 +58,7 @@ contract Congress is owned, tokenRecipient {
         bool executed;
         bool proposalPassed;
         uint numberOfVotes;
-        int currentResult;
+        int currentResult; //counts positive votes
         bytes32 proposalHash;
         Vote[] votes;
         mapping (address => bool) voted;

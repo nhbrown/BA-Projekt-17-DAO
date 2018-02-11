@@ -321,6 +321,79 @@ App = {
       return input;
     }
   },
+
+
+  /**
+   * Fetch the Voting Restults. (Statistik der Votes berechnen)
+   */
+
+   fetchResults: function() {
+     var positiveCounts = [];
+     var totalCounts = [];
+     var overAllCounts = [];
+
+    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+      for (var i = 0; i < 9, ++i) {
+      (function (i){
+       positiveCounts[i] = [instance.Congress.proposals[i].currentResult.call()]; 
+       totalCounts[i] = [instance.Congress.proposals[i].numberOfVotes.call()];
+      })
+      }
+    overAllCounts[0] = positiveCounts;
+    overAllCounts[1] = totalCounts;
+
+    return overAllCounts;
+
+    }).catch(function (err) {
+      console.log(err.message);
+    });
+
+   },
+   /**
+   * Calculate the Voting Restults. (Statistik der Votes berechnen)
+   */
+   calculateResults: function(){
+     var overAllCounts = App.fetchResults();
+     var negativeVotes = [];
+     var positiveRatios = [];
+     var negativeRatios = [];
+     var overallResults = [];
+     // calculate negative votes
+     for (var i; i < 9; ++i){
+       negativeVotes[i] = overAllCounts[1][i] - overAllCounts[0][i];
+     }
+     // calculate positive and negative voting-% per BMC element
+     for(var i; i < 9; ++i){
+       positiveRatios[i] = overAllCounts[0][i] / overAllCounts[1][i] * 100;
+       negativeRatios[i] = negativeVotes[i] / overAllCounts[1][i] * 100;
+     }
+     return overallResults[positiveRatios, negativeRatios]
+   },
+
+   showResults: function(event){
+     var overallResults = App.calculateResults();
+
+     document.getElementById('positivePartner').innerHTML = overallResults[0][0] + '% positive';
+     document.getElementById('negativePartner').innerHTML = overallResults[1][0] + '% negative';
+     document.getElementById('positiveActivities').innerHTML = overallResults[0][1] + '% positive';
+     document.getElementById('negativeActivities').innerHTML = overallResults[1][1] + '% negative';
+     document.getElementById('positiveResources').innerHTML = overallResults[0][2] + '% positive';
+     document.getElementById('negativeResources').innerHTML = overallResults[1][2] + '% negative';
+     document.getElementById('positiveValue').innerHTML = overallResults[0][3] + '% positive';
+     document.getElementById('negativeValue').innerHTML = overallResults[1][3] + '% negative';
+     document.getElementById('positiveRelation').innerHTML = overallResults[0][4] + '% positive';
+     document.getElementById('negativeRelation').innerHTML = overallResults[1][4] + '% negative';
+     document.getElementById('positiveChannel').innerHTML = overallResults[0][5] + '% positive';
+     document.getElementById('negativeChannel').innerHTML = overallResults[1][5] + '% negative';
+     document.getElementById('positiveSegment').innerHTML = overallResults[0][6] + '% positive';
+     document.getElementById('negativeSegment').innerHTML = overallResults[1][6] + '% negative';
+     document.getElementById('positiveCosts').innerHTML = overallResults[0][7] + '% positive';
+     document.getElementById('negativeCosts').innerHTML = overallResults[1][7] + '% negative';
+     document.getElementById('positiveRevenue').innerHTML = overallResults[0][8] + '% positive';
+     document.getElementById('negativeRevenue').innerHTML = overallResults[1][8] + '% negative';
+     
+
+   }
   /**
    * Calculate Voting Restults. (Statistik der Votes berechnen)
    */
