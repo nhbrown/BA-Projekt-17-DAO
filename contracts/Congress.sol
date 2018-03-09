@@ -40,17 +40,17 @@ contract Congress is owned, tokenRecipient {
     // Contract Variables and events
     uint public minimumQuorum;
     uint public debatingPeriodInMinutes;
-    int public majorityMargin;
+    uint public majorityMargin;
     Proposal[] public proposals;
     uint public numProposals;
     mapping (address => uint) public memberId;
-    address[] public members;
+    Member[] public members;
 
     event ProposalAdded(uint proposalID, string description);
     event Voted(uint proposalID, bool position, address voter);
-    event ProposalTallied(uint proposalID, int result, uint quorum, bool active);
+    event ProposalTallied(uint proposalID, uint result, uint quorum, bool active);
     event MembershipChanged(address member, bool isMember);
-    event ChangeOfRules(uint newMinimumQuorum, uint newDebatingPeriodInMinutes, int newMajorityMargin);
+    event ChangeOfRules(uint newMinimumQuorum, uint newDebatingPeriodInMinutes, uint newMajorityMargin);
 
     struct Proposal {
         string description;
@@ -58,11 +58,16 @@ contract Congress is owned, tokenRecipient {
         bool executed;
         bool proposalPassed;
         uint numberOfVotes;
-        int currentResult;
+        uint currentResult;
         bytes32 proposalHash;
         Vote[] votes;
         mapping (address => bool) voted;
         bool isValid; //set to true when data is added
+    }
+
+    struct Member {
+        address memberAddress; // address of this member
+        uint weight; // vote weight of this member
     }
 
     struct Vote {
@@ -70,7 +75,7 @@ contract Congress is owned, tokenRecipient {
         address voter;
     }
 
-    // Modifier that allows only shareholders to vote and create new proposals
+    // Modifier that allows only members to vote and create new proposals
     modifier onlyMembers {
         require(memberId[msg.sender] != 0);
         _;
@@ -79,12 +84,12 @@ contract Congress is owned, tokenRecipient {
     /**
      * Constructor function
      */
-    function Congress (uint minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority)  payable public {
+    function Congress (uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority)  payable public {
         changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
         // It’s necessary to add an empty first member
-        addMember(0);
+        addMember(0, 0);
         // and let's add the founder, to save a step later
-        addMember(owner);
+        addMember(owner, 1);
     }
 
     /**
@@ -94,7 +99,7 @@ contract Congress is owned, tokenRecipient {
      *
      * @param targetMember ethereum address to be added
      */
-    function addMember(address targetMember) onlyOwner public {
+    function addMember(address targetMember, uint voteWeight) onlyOwner public {
         uint id = memberId[targetMember];
 
         if (id == 0) {
@@ -102,7 +107,9 @@ contract Congress is owned, tokenRecipient {
             id = members.length++;
         }
 
-        members[id] = targetMember;
+        members[id].memberAddress = targetMember;
+        members[id].weight = voteWeight;
+
         MembershipChanged(targetMember, true);
     }
 
@@ -119,6 +126,7 @@ contract Congress is owned, tokenRecipient {
         for (uint i = memberId[targetMember]; i<members.length-1; i++) {
             members[i] = members[i+1];
         }
+
         delete members[members.length-1];
         members.length--;
     }
@@ -133,7 +141,7 @@ contract Congress is owned, tokenRecipient {
      * @param minutesForDebate the minimum amount of delay between when a proposal is made and when it can be executed
      * @param marginOfVotesForMajority the proposal needs to have 50% plus this number
      */
-    function changeVotingRules(uint minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority) onlyOwner public {
+    function changeVotingRules(uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority) onlyOwner public {
         minimumQuorum = minimumQuorumForProposals;
         debatingPeriodInMinutes = minutesForDebate;
         majorityMargin = marginOfVotesForMajority;
@@ -204,14 +212,16 @@ contract Congress is owned, tokenRecipient {
         onlyMembers public
         returns (uint voteID)
     {
-        Proposal storage p = proposals[proposalNumber];         // Get the proposal
-        require(!p.voted[msg.sender]);         // If has already voted, cancel
+        Proposal storage p = proposals[proposalNumber]; // Get the proposal
+
+        require(!p.voted[msg.sender]);                  // If has already voted, cancel
         p.voted[msg.sender] = true;                     // Set this voter as having voted
         p.numberOfVotes++;                              // Increase the number of votes
-        if (supportsProposal) {                         // If they support the proposal
-            p.currentResult++;                          // Increase score
-        } else {                                        // If they don't
-            p.currentResult--;                          // Decrease the score
+
+        if (supportsProposal) {                                     // If they support the proposal
+            p.currentResult + members[memberId[msg.sender]].weight; // Increase score by vote weight
+        } else {                                                    // If they don't
+            p.currentResult - members[memberId[msg.sender]].weight; // Decrease the score by vote weight
         }
 
         // Create a log of this event
@@ -264,7 +274,7 @@ contract Congress is owned, tokenRecipient {
             return false;
         }
 
-        return members[id] == targetMember;
+        return members[id].memberAddress == targetMember;
     }
 
     /**
@@ -304,26 +314,4 @@ contract Congress is owned, tokenRecipient {
     function getProposalDescription(uint proposalID) public constant returns (string) {
         return proposals[proposalID].description;
     }
-    /**
-     * Returns the address of this contract.
-     *
-     * @dev Disabled because it is not useful. The address of a contract is public
-            and therefore has an automatic getter method.
-     * @return An address representing this contract.
-     */
-    //function getContractAddress() external view returns (address) {
-    //    return this;
-    //}
-
-    /**
-     * Getter for the array which holds the addresses of the members of this contract.
-     * 
-     * @dev Not really useful, because indexes are based on a mapping of the addresses 
-            to unsigned integers, which could make accesing them outside of this contract
-            potentially harder. The function memberExists is way more useful.
-     * @return An array of addresses.
-     */
-    //function getMembers() external view returns (address[]) {
-    //    return members;
-    //}
 }
