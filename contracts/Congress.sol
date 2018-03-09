@@ -218,10 +218,16 @@ contract Congress is owned, tokenRecipient {
         p.voted[msg.sender] = true;                     // Set this voter as having voted
         p.numberOfVotes++;                              // Increase the number of votes
 
-        if (supportsProposal) {                                     // If they support the proposal
-            p.currentResult + members[memberId[msg.sender]].weight; // Increase score by vote weight
-        } else {                                                    // If they don't
-            p.currentResult - members[memberId[msg.sender]].weight; // Decrease the score by vote weight
+        uint voteWeight = members[memberId[msg.sender]].weight;
+
+        if (supportsProposal) {                         // If they support the proposal
+            p.currentResult + voteWeight;               // Increase score by vote weight
+        } else {                                        // If they don't
+            if (voteWeight > p.currentResult) {         // and the weight is bigger than the current result
+                p.currentResult = 0;                    // set the current result to zero
+            } else {                                    // else
+                p.currentResult - voteWeight;           // Decrease the score by vote weight
+            }
         }
 
         // Create a log of this event
