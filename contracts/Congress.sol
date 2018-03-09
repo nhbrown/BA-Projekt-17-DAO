@@ -132,6 +132,18 @@ contract Congress is owned, tokenRecipient {
     }
 
     /**
+     * Changes the voting weight of the specified member.
+     *
+     * @param targetMember ethereum address of the member which voting weight should be changed
+     * @param newWeight the new voting weight
+     */
+    function changeVoteWeight(address targetMember, uint newWeight) onlyOwner public {
+        require(memberId[targetMember] != 0);
+
+        members[memberId[targetMember]].weight = newWeight;
+    }
+
+    /**
      * Change voting rules
      *
      * Make so that proposals need tobe discussed for at least `minutesForDebate/60` hours,
