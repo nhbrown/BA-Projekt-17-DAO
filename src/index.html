@@ -1,45 +1,415 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <title>Homepage</title>
-        <!-- Bootstrap core CSS -->
-        <link href="css/bootstrap.css" rel="stylesheet">
-        <!-- Custom styles for this template -->
-        <link href="css/style.css" rel="stylesheet">
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    </head>
-    <body class="text-sm-center text-md-center text-center float-none float-sm-none float-md-none bg-white">
-        <div class="container">
-            <h1 class="text-sm-center text-md-center float-sm-none mt-5 p-5 float-none float-md-none text-center w-100 h-100"><b style="font-family: Bell MT;
-    text-align: center;">BMC-Voting-Đapp</b></h1>
-            <a class="btn btn-lg btn-light btn-outline-dark text-center text-sm-center text-md-center text-dark text-capitalize w-50 ml-auto mr-auto mt-5 display-4" name="createC" href="create_congress.html" style="font-family: Bell MT;">Create Congress</a>
-            <a class="btn btn-lg btn-block mt-5 btn-light btn-outline-dark text-center text-sm-center text-md-center float-none float-sm-none float-md-none ml-auto mr-auto w-50" href="join_congress.html" style="font-family: Bell MT;">Join Congress</a>
-        </div>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/jquery.min.js"></script>
-        <script src="js/popper.js"></script>
-        <script src="js/ie10-viewport-bug-workaround.js"></script>
-        <!-- Bootstrap core JavaScript
-    ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<html>
+<head>
+	<title>BMC-Voting-Dapp</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
 
-         <!-- Benörtigte Plugins (PetShop) -->
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/web3.min.js"></script>
-        <script src="js/truffle-contract.js"></script>
-        <script src="js/app.js"></script>
-    </body>
+<h1 id="title">BMC-Voting-Dapp</h1>
+	
+<section id="create_congress">
+	<p>
+  		<button type="button" data-toggle="collapse" data-target="#createC" aria-expanded="false" aria-controls="createC" id="cc_button">Create a New Congress and BMC</button>
+	</p>
+	<div class="collapse multi-collapse" id="createC">
+	<div class="card card-body">
+		<div class="row" id="first_row">
+  		<div class="col">
+    		
+      			<div class="card card-body" id="first_card">
+        			<form>
+  						<div class="form-group">
+    						<label for="congressname">Congress Name</label>
+    						<input type="text" class="form-control" id="congressname" placeholder="Enter Congress Name">
+  						</div>
+  						<div class="form-group">
+    						<label for="numberofvotes">Number of Minimum Required Votes</label>
+    						<input type="number" class="form-control" id="numberofvotes" placeholder="Enter Minimum Number of Votes">
+  						</div>
+  						<div class="form-group">
+    						<label for="votingtime">Voting Time</label>
+    						<input type="number" class="form-control" id="votingtime" placeholder="Enter Voting Time in Minutes">
+  						</div>
+  						<div class="form-group">
+    						<label for="quorum">Minimum Required Quorum</label>
+    						<input type="number" class="form-control" id="quorum" placeholder="Enter Minimum Quorum in %">
+  						</div>
+  					</form>
+      			</div>
+    		
+  		</div>
+
+  		<div class="col">
+    		
+					<div class="card card-body" id="second_card">
+    				<p>Congress Member Addresses (separate with commata)</p>
+        			<textarea id="adresses" class="form-control" rows="12" placeholder="0x123,0x456,0x789,"></textarea>
+      		</div>
+    		
+  		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			
+				<div class="card card-body" id="third_card">
+					<div class="form-group">
+					<p>Key Partners</p>
+						<textarea id="partners" class="form-control" rows="4"></textarea>
+					</div>
+						<div class="form-group">
+					<p>Key Activities </p>
+        		<textarea id="activites" class="form-control" rows="4"></textarea>
+					</div>
+						<div class="form-group">
+						<p>Key Ressources</p>
+        		<textarea id="ressources" class="form-control" rows="4"></textarea>
+					</div>
+					</div>
+			
+		</div>
+
+		<div class="col">
+				
+					<div class="card card-body" id="fourth_card">
+						<div class="form-group">
+						<p>Customer Relationship</p>
+							<textarea id="relationship" class="form-control" rows="4"></textarea>
+						</div>
+							<div class="form-group">
+						<p>Channels</p>
+							<textarea id="channel" class="form-control" rows="4"></textarea>
+						</div>
+							<div class="form-group">
+							<p>Curtomer Segments</p>
+							<textarea id="segment" class="form-control" rows="4"></textarea>
+						</div>
+						</div>
+						<button type="submit" class="btn btn-primary" id="create_button">Create</button>
+				
+			</div>
+
+			<div class="col">
+					
+						<div class="card card-body" id="fifth_card">
+							<div class="form-group">
+							<p>Value Proposition</p>
+								<textarea id="value" class="form-control" rows="4"></textarea>
+							</div>
+								<div class="form-group">
+							<p>Revenue Streams</p>
+								<textarea id="revenue" class="form-control" rows="4"></textarea>
+							</div>
+								<div class="form-group">
+								<p>Cost Structure</p>
+								<textarea id="cost" class="form-control" rows="4"></textarea>
+							</div>
+							</div>
+				</div>	
+				</div>
+			</div>
+	</div>
+</section>
+
+
+<section id="join_congress">
+		<p>
+				<button type="button" data-toggle="collapse" data-target="#joincongress" aria-expanded="false" aria-controls="joincongress" id="j_button">Join a Congress</button>
+		</p>
+			<div class="col">
+				<div class="collapse multi-collapse" id="joincongress">
+						<div class="card card-body" id="jc_card">
+							<form>
+							<div class="form-group">
+								<label for="congressadress">Congress Address</label>
+								<input type="text" class="form-control" id="congressadress" placeholder="Enter Congress Address">
+								<button type="submit" class="btn btn-primary" id="join">Join</button>
+							</div>
+						</form>
+						</div>
+				</div>
+			</div>
+	</section>
+
+	<section id="vote_proposal">
+        <p>
+              <button type="button" data-toggle="collapse" data-target="#existingcongress" aria-expanded="false" aria-controls="existingcongress" id="v_button">Vote on Proposals</button>
+        </p>
+    
+        <div class="collapse multi-collapse" id="existingcongress">
+             <div class="card card-body" id="vote_card">
+                  <button type="button" data-toggle="collapse" data-target="#test" aria-expanded="false" aria-controls="test" id="cn_button">Congress Name</button>
+                      <div class="collapse multi-collapse" id="test">
+                          <div class="card card-body">
+                              <div class="row"> 
+                                    <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keypartners">
+                                      Key Partners
+                                    </button>
+    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="keypartners" tabindex="-1" role="dialog" aria-labelledby="keypartners" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="keypartners">Key Partners</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-success">Agree</button>
+                                            <button type="button" class="btn btn-danger">Disagree</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                
+                             
+    
+                            
+                                  
+                                    <button type="button" class="col-sm-4" data-toggle="modal" data-target="#customerrelationships">
+                                      Customer Relationship
+                                    </button>
+    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="customerrelationships" tabindex="-1" role="dialog" aria-labelledby="customerrelationships" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="customerrelationships">Customer Relationships</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-success">Agree</button>
+                                            <button type="button" class="btn btn-danger">Disagree</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+    
+    
+
+                                    <button type="button" class="col-sm-4" data-toggle="modal" data-target="#valueproposition">
+                                      Value Proposition
+                                    </button>
+    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="valueproposition" tabindex="-1" role="dialog" aria-labelledby="valueproposition" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="valueproposition">Value Proposition</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-success">Agree</button>
+                                            <button type="button" class="btn btn-danger">Disagree</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+    
+                            </div>
+    
+    
+                             
+    
+    <!--second row of modals-->
+                                 <div class="row">
+    
+                                     <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keyactivities">
+                                      Key Activities
+                                    </button>
+    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="keyactivities" tabindex="-1" role="dialog" aria-labelledby="keyactivities" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="keyactivities">Key Activities</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-success">Agree</button>
+                                            <button type="button" class="btn btn-danger">Disagree</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                 
+    
+    
+                                     <button type="button" class="col-sm-4" data-toggle="modal" data-target="#channels">
+                                      Channels
+                                    </button>
+    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="channels" tabindex="-1" role="dialog" aria-labelledby="channels" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="channels">Channel</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-success">Agree</button>
+                                            <button type="button" class="btn btn-danger">Disagree</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+    
+    
+    
+                                    <button type="button" class="col-sm-4" data-toggle="modal" data-target="#revenuestreams">
+                                      Revenue Streams
+                                    </button>
+    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="revenuestreams" tabindex="-1" role="dialog" aria-labelledby="revenuestreams" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="revenuestreams">Revenue Streams</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-success">Agree</button>
+                                            <button type="button" class="btn btn-danger">Disagree</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+    
+                                 </div>
+                            
+    
+    <!--third row of modals-->
+                                 <div class="row">
+                                     
+                                     <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keyresourcess">
+                                      Key Ressources
+                                    </button>
+    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="keyresourcess" tabindex="-1" role="dialog" aria-labelledby="keyresourcess" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="keyresourcess">Key Ressources</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-success">Agree</button>
+                                            <button type="button" class="btn btn-danger">Disagree</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+    
+    
+    
+    
+    
+                                    <button type="button" class="col-sm-4" data-toggle="modal" data-target="#customersegments">
+                                      Customer Segments
+                                    </button>
+    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="customersegments" tabindex="-1" role="dialog" aria-labelledby="customersegments" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="customersegments">Customer Segments</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-success">Agree</button>
+                                            <button type="button" class="btn btn-danger">Disagree</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <button type="button" class="col-sm-4" data-toggle="modal" data-target="#coststructure">
+                                      Cost structure
+                                    </button>
+    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="coststructure" tabindex="-1" role="dialog" aria-labelledby="coststructure" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="coststructure">Cost structure</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            ...
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-success">Agree</button>
+                                            <button type="button" class="btn btn-danger">Disagree</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+    
+                                 </div>
+    
+    
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
 </html>
