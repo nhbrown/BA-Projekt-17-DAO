@@ -47,8 +47,8 @@ App = {
    * Bind on-click events from HTML page to JS functions.
    */
   bindEvents: function () {
-    //$("#create_button").click(App.createCongress);
-    $(document).on('click', '.btn btn-primary', App.createCongress); // Bind Button "create_congress"
+    $("#create_button").click(App.createCongress);
+    //$(document).on('click', '.create_button', App.createCongress); // Bind Button "create_congress"
     $(document).on('click', '.join', App.joinCongress); // Bind Button "Join" 
     $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
     $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
@@ -85,12 +85,11 @@ App = {
       window.alert("Your congress has been successfully created! The address of your contract is: " + instance.address);
 
       App.addMembers(instance, members);
+      App.createBMC();
 
       web3.eth.filter('latest', function (error, result) {
         if (!error) {
-          App.createBMC();
           document.getElementById("vote_proposal").style.visibility = 'visible';
-          App.getProposalDescriptions();
         } else {
           console.log(error.message);
         }
@@ -106,7 +105,7 @@ App = {
   addMembers: function (instance, members) {
     for (i = 0; i < members.length; ++i) {
       if (members[i] !== '0x0000000000000000000000000000000000000000') {
-        instance.addMember(members[i]).catch(function (err) {
+        instance.addMember(members[i], 1).catch(function (err) {
           console.log(err.message);
         });
       }
@@ -137,7 +136,7 @@ App = {
                   instance.newProposal(bmc[6], "0x123").then(function (err, res) {
                     instance.newProposal(bmc[7], "0x123").then(function (err, res) {
                       instance.newProposal(bmc[8], "0x123").then(function (err, res) {
-                        //window.location.href = "vote.html";
+                        App.getProposalDescriptions();
                       });
                     });
                   });
