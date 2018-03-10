@@ -1,6 +1,12 @@
 import "./Congress.sol";
 pragma solidity ^0.4.16;
 
+
+/**
+* Disclaimer: This contract contains only ideas for a contract that manages all BMC-Congresses.
+*             This contract is not finished and therefore not executable at this stage of development.
+*/
+
 /**
 * A contract wich is managing all BMC-Voting Congresses
 */
@@ -50,20 +56,20 @@ contract ManageCongress is owned, tokenRecipient{
     uint public numCongresses;
     mapping (address => uint) public memberId;
     Congress[] public congresses;
-    uint overAllCongresses;
+    //uint overAllCongresses;
 
     event CongressAdded(uint congressID, string name);
     
     //Congresse in denen noch abgestimmt werden kann
     struct openCongresses{
-        Congress[] = openCGR;
+        Congress[] openCGR;
         uint counter;
     
     }
 
     //Congresse in denen nicht mehr abgestimmt werden kann
     struct closedCongresses{
-        Congress[] = closedCGR;
+        Congress[] closedCGR;
         uint counter;
 
     }
@@ -73,6 +79,7 @@ contract ManageCongress is owned, tokenRecipient{
      */
 
     function ManageCongress() payable public {
+        addMember(0);
         addMember(owner);
     }
 
@@ -83,11 +90,11 @@ contract ManageCongress is owned, tokenRecipient{
      *
      * @param targetMember ethereum address to be added
      */
-    function addMember(address targetMember) onlyOwner public {
-        uint id = memberId[targetMember];
+    function addMember(address targetMemberCongress) onlyOwner public {
+        uint id = memberId[targetMemberCongress];
 
         if (id == 0) {
-            memberId[targetMember] = members.length;
+            memberId[targetMemberCongress] = members.length;
             id = members.length++;
         }
 
@@ -102,10 +109,10 @@ contract ManageCongress is owned, tokenRecipient{
      *
      * @param targetMember ethereum address to be removed
      */
-    function removeMember(address targetMember) onlyOwner public {
-        require(memberId[targetMember] != 0);
+    function removeMember(address targetMemberCongress) onlyOwner public {
+        require(memberId[targetMemberCongress] != 0);
 
-        for (uint i = memberId[targetMember]; i<members.length-1; i++) {
+        for (uint i = memberId[targetMemberCongress]; i<members.length-1; i++) {
             members[i] = members[i+1];
         }
         delete members[members.length-1];
@@ -113,10 +120,11 @@ contract ManageCongress is owned, tokenRecipient{
     }
 
      /**
-     * Add a new Congress
+     * Add a new Congress to Struct Open Congresses
      */
-     function addCongress() onlyOwner public returns (bool) {
-       Congress cgr = Congress(int minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority); //?
+     function addCongress(address targerMemberCongress) onlyOwner public returns (bool) {
+       //Congress cgr = Congress(int minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority); //?
+       
        congressID = congresses.length++;
        openCGRID = openCongresses.openCGR.length++;
        Congress storage cgr = congresses[congressID]; //alle CGR
@@ -127,14 +135,25 @@ contract ManageCongress is owned, tokenRecipient{
 
      function moveToClosedCongresses(Congress cgr) onlyOwner public returns(bool){
         closedCongressID = closedCongresses.closedCGR.length++;
-        Congress storage cgr = closedcongresses.closedCGR[closedCongressID];
+        Congress storage cgr = closedCongresses.closedCGR[closedCongressID];
         closedCongresses.counter = closedCongresses.counter++;
         openCongresses.counter = openCongresses.counter--;
-        openCongresses.openCGR[cgr.ID] = null;
+        openCongresses.openCGR[cgr.ID] = 0xabc; 
      }
 
      function openCongress(address cgr) onlyOwner public returns(Congress){
+         
+         for (uint i = 0; i < openCongresses.openCGR.length; i++ ){
+             if(openCongresses.openCGR[i].this == cgr){
+             return openCongresses.openCGR[i];
+             }
+         }
 
+        for (uint i = 0; i < closedCongresses.closedCGR.length; i++ ){
+             if(closedCongresses.closedCGR[i].this == cgr){
+             return closedCongresses.closedCGR[i];
+             }
+         }
      }
 
      
