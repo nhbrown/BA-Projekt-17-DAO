@@ -44,10 +44,11 @@ App = {
   },
 
   /**
-   * Bind on-click events from HTML pages to JS functions.
+   * Bind on-click events from HTML page to JS functions.
    */
   bindEvents: function () {
-    $(document).on('click', '.create_button', App.createCongress); // Bind Button "create_congress"
+    //$("#create_button").click(App.createCongress);
+    $(document).on('click', '.btn btn-primary', App.createCongress); // Bind Button "create_congress"
     $(document).on('click', '.join', App.joinCongress); // Bind Button "Join" 
     $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
     $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
@@ -326,7 +327,7 @@ App = {
 };
 
 $(function () {
-  $(window).load(function () {
+  $(window).on('load', function () {
 
     App.init();
 
