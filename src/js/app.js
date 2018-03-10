@@ -47,11 +47,10 @@ App = {
    * Bind on-click events from HTML pages to JS functions.
    */
   bindEvents: function () {
-    $(document).on('click', '.btn-create-congress', App.createCongress); // Bind Button "create_congress" on page "create_congress.html"
-    $(document).on('click', '.btn-create-bmc', App.createBMC); // Bind Button "Create BMC" on page "create_bmc.html"
-    $(document).on('click', '.btn-agree', App.votePositive); // Bind Buotton "Agree" on page "vote.html"
-    $(document).on('click', '.btn-dismiss', App.voteNegative); // Bind Button "Dismiss" on page "vote.html" 
-    $(document).on('click', '.btn-join-congress', App.joinCongress); // Bind Button "Join" on Page "join_congress.html"
+    $(document).on('click', '.create_button', App.createCongress); // Bind Button "create_congress"
+    $(document).on('click', '.join', App.joinCongress); // Bind Button "Join" 
+    $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
+    $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
   },
 
   /**
@@ -60,8 +59,9 @@ App = {
   createCongress: function (event) {
     event.preventDefault();
 
-    var minimumQuorumForProposals = App.checkNumerical(document.getElementById("votes").value, "Number of minimum required Votes");
-    var minutesForDebate = App.checkNumerical(document.getElementById("time").value, "Voting Time");
+    var congressName = App.sanitize(document.getElementById("congressname").value, "Congress Name");
+    var minimumQuorumForProposals = App.checkNumerical(document.getElementById("numberofvotes").value, "Number of minimum required Votes");
+    var minutesForDebate = App.checkNumerical(document.getElementById("votingtime").value, "Voting Time");
     var marginOfVotesForMajority = App.checkNumerical(document.getElementById("quorum").value, "Minimum required Quorum");
 
     var allMembers = document.getElementById("adresses").value;
@@ -78,7 +78,7 @@ App = {
       }
     }
 
-    App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
+    App.contracts.Congress.new(congressName, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
       sessionStorage.setItem("instanceAddress", instance.address);
 
       window.alert("Your congress has been successfully created! The address of your contract is: " + instance.address);
@@ -87,7 +87,9 @@ App = {
 
       web3.eth.filter('latest', function (error, result) {
         if (!error) {
-          window.location.href = "create_bmc.html";
+          App.createBMC();
+          document.getElementById("vote_proposal").style.visibility = 'visible';
+          App.getProposalDescriptions();
         } else {
           console.log(error.message);
         }
@@ -113,7 +115,7 @@ App = {
   /**
    * Add elements of BMC as individual proposals to contract.
    */
-  createBMC: function (event) {
+  createBMC: function () {
     var bmc = [App.sanitize(document.getElementById("partners").value, "Key Partners"),
     App.sanitize(document.getElementById("activities").value, "Key Activities"),
     App.sanitize(document.getElementById("resources").value, "Key Resources"),
@@ -134,7 +136,7 @@ App = {
                   instance.newProposal(bmc[6], "0x123").then(function (err, res) {
                     instance.newProposal(bmc[7], "0x123").then(function (err, res) {
                       instance.newProposal(bmc[8], "0x123").then(function (err, res) {
-                        window.location.href = "vote.html";
+                        //window.location.href = "vote.html";
                       });
                     });
                   });
@@ -341,6 +343,6 @@ $(function () {
     //    App.getProposalDescriptions();
     //  }
     //}, 100);
-    
+
   });
 });
