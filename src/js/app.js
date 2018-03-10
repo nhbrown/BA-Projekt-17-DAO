@@ -328,18 +328,19 @@ $(function () {
 
     App.init();
 
-    window.onbeforeunload = function () {
-      if (window.location.pathname == "/create_bmc.html") {
-        return "";
-      } else if (window.location.pathname == "/vote.html") {
-        return "";
-      }
-    };
+    //window.onbeforeunload = function () {
+    //  if (window.location.pathname == "/create_bmc.html") {
+    //    return "";
+    //  } else if (window.location.pathname == "/vote.html") {
+    //    return "";
+    //  }
+    //};
 
-    window.setTimeout(function () {
-      if (window.location.pathname == "/vote.html") {
-        App.getProposalDescriptions();
-      }
-    }, 100);
+    //window.setTimeout(function () {
+    //  if (window.location.pathname == "/vote.html") {
+    //    App.getProposalDescriptions();
+    //  }
+    //}, 100);
+    
   });
 });
