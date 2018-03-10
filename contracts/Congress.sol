@@ -57,7 +57,7 @@ contract Congress is owned, tokenRecipient {
         uint votingDeadline;
         bool executed;
         bool proposalPassed;
-        uint numberOfVotes;
+        uint numberOfVotes; 
         int currentResult; //counts positive votes
         bytes32 proposalHash;
         Vote[] votes;
@@ -303,6 +303,26 @@ contract Congress is owned, tokenRecipient {
      */
     function getProposalDescription(uint proposalID) public constant returns (string) {
         return proposals[proposalID].description;
+    }
+    
+    /**
+     * Return the current result of a given proposal.
+     *
+     * @param i The index where proposal is stored
+     * @return The current amount of positive votes of the proposal.
+     */
+    function getCurrentResults(uint proposalID) public constant returns (int) {
+        return proposals[proposalID].currentResult;
+    }
+    
+    /**
+     * Return the number of votes of a given proposal.
+     *
+     * @param i The index where the proposal ist stored.
+     * @return The current amount of votes of the proposal.
+     */
+    function getNumberOfVotes(uint proposalID) public constant returns (uint) {
+        return proposals[proposalID].numberOfVotes;
     }
     /**
      * Returns the address of this contract.
