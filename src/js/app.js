@@ -121,7 +121,7 @@ App = {
     App.sanitize(document.getElementById("resources").value, "Key Resources"),
     App.sanitize(document.getElementById("value").value, "Value Proposition"),
     App.sanitize(document.getElementById("cr").value, "Customer Relationships"),
-    App.sanitize(document.getElementById("channels").value, "Channels"),
+    App.sanitize(document.getElementById("channel").value, "Channels"),
     App.sanitize(document.getElementById("cs").value, "Customer Segments"),
     App.sanitize(document.getElementById("cost").value, "Cost Structure"),
     App.sanitize(document.getElementById("revenue").value, "Revenue Streams")];
