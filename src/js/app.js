@@ -321,24 +321,7 @@ App = {
       return input;
     }
   },
-  getProposalDescriptions: function () {
-    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-      for (var i = 0; i < 9; ++i) {
-        (function (cntr) {
-          instance.getProposalDescription.call(cntr).then(function (res, err) {
-            if (err) {
-              console.log(err);
-            } else {
-              var parent = document.getElementById("body-" + cntr);
-              parent.insertBefore(document.createTextNode(res), parent.firstChild);
-            }
-          });
-        })(i);
-      }
-    }).catch(function (err) {
-      console.log(err.message);
-    });
-  },
+
   /**
    * Fetch the voting restults from Congress
    */
