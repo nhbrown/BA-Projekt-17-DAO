@@ -38,6 +38,7 @@ interface Token {
 
 contract Congress is owned, tokenRecipient {
     // Contract Variables and events
+    string congressName;
     uint public minimumQuorum;
     uint public debatingPeriodInMinutes;
     uint public majorityMargin;
@@ -84,7 +85,8 @@ contract Congress is owned, tokenRecipient {
     /**
      * Constructor function
      */
-    function Congress (uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority)  payable public {
+    function Congress (string name, uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority)  payable public {
+        congressName = name;
         changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
         // It’s necessary to add an empty first member
         addMember(0, 0);
