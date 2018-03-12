@@ -47,8 +47,7 @@ App = {
    * Bind on-click events from HTML page to JS functions.
    */
   bindEvents: function () {
-    $("#create_button").click(App.createCongress);
-    //$(document).on('click', '.create_button', App.createCongress); // Bind Button "create_congress"
+    $("#create_button").click(App.createCongress); // Bind Button "create_congress"
     $(document).on('click', '.join', App.joinCongress); // Bind Button "Join" 
     $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
     $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
@@ -79,23 +78,30 @@ App = {
       }
     }
 
-    App.contracts.Congress.new(congressName, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
-      sessionStorage.setItem("instanceAddress", instance.address);
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      } else {
+        //temporary fix for MetaMask gas limit issue
+        App.contracts.Congress.new(congressName, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, {from: accounts[0], gas: 3718426}).then(function (instance) {
+          sessionStorage.setItem("instanceAddress", instance.address);
 
-      window.alert("Your congress has been successfully created! The address of your contract is: " + instance.address);
+          window.alert("Your congress has been successfully created! The address of your contract is: " + instance.address);
 
-      App.addMembers(instance, members);
-      App.createBMC();
+          App.addMembers(instance, members);
+          App.createBMC();
 
-      web3.eth.filter('latest', function (error, result) {
-        if (!error) {
-          document.getElementById("vote_proposal").style.visibility = 'visible';
-        } else {
-          console.log(error.message);
-        }
-      });
-    }).catch(function (err) {
-      console.log(err.message); // There was an error! Handle it.
+          web3.eth.filter('latest', function (error, result) {
+            if (!error) {
+              document.getElementById("vote_proposal").style.visibility = 'visible';
+            } else {
+              console.log(error.message);
+            }
+          });
+        }).catch(function (err) {
+          console.log(err.message); // There was an error! Handle it.
+        });
+      }
     });
   },
 
@@ -225,7 +231,8 @@ App = {
               console.log(err.message);
             } else {
               if (res) {
-                window.location.href = "vote.html";
+                document.getElementById("vote_proposal").style.visibility = 'visible';
+                App.getProposalDescriptions();
               } else {
                 window.alert("This account is not eligible to join this congress!");
               }
@@ -243,6 +250,7 @@ App = {
    */
   getProposalDescriptions: function () {
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+      //document.getElementById(cn_button).value = "Congress: " + instance.congressName;
       for (var i = 0; i < 9; ++i) {
         (function (cntr) {
           instance.getProposalDescription.call(cntr).then(function (res, err) {
@@ -327,22 +335,6 @@ App = {
 
 $(function () {
   $(window).on('load', function () {
-
     App.init();
-
-    //window.onbeforeunload = function () {
-    //  if (window.location.pathname == "/create_bmc.html") {
-    //    return "";
-    //  } else if (window.location.pathname == "/vote.html") {
-    //    return "";
-    //  }
-    //};
-
-    //window.setTimeout(function () {
-    //  if (window.location.pathname == "/vote.html") {
-    //    App.getProposalDescriptions();
-    //  }
-    //}, 100);
-
   });
 });

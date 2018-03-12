@@ -1,0 +1,6 @@
+
+build/contracts/Congress.json
+build/contracts/Migrations.json
+build/contracts/owned.json
+build/contracts/Token.json
+build/contracts/tokenRecipient.json
