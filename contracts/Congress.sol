@@ -308,7 +308,7 @@ contract Congress is owned, tokenRecipient {
     /**
      * Return the current result of a given proposal.
      *
-     * @param i The index where proposal is stored
+     * @param proposalID The index where proposal is stored
      * @return The current amount of positive votes of the proposal.
      */
     function getCurrentResults(uint proposalID) public constant returns (int) {
@@ -318,7 +318,7 @@ contract Congress is owned, tokenRecipient {
     /**
      * Return the number of votes of a given proposal.
      *
-     * @param i The index where the proposal ist stored.
+     * @param proposalID The index where the proposal ist stored.
      * @return The current amount of votes of the proposal.
      */
     function getNumberOfVotes(uint proposalID) public constant returns (uint) {
