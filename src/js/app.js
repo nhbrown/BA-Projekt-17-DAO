@@ -52,6 +52,7 @@ App = {
     $(document).on('click', '.btn-agree', App.votePositive); // Bind Buotton "Agree" on page "vote.html"
     $(document).on('click', '.btn-dismiss', App.voteNegative); // Bind Button "Dismiss" on page "vote.html" 
     $(document).on('click', '.btn-join-congress', App.joinCongress); // Bind Button "Join" on Page "join_congress.html"
+    $(document).on('click', '.btn-showResults', App.showResults);
   },
 
   /**
@@ -331,12 +332,12 @@ App = {
      var totalCounts = []; // Number of Votes of each unique Proposal
      var overAllCounts = []; // Array in which PositiveCounts and total Counts will be returned
 
-    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function(instance) {
       for (var i = 0; i < 9; ++i) {
-        (function (i) {
-          positiveCounts[i] = instance.getCurrentResults.call(i); 
-          totalCounts[i] = instance.getNumberOfVotes.call(i);
-        });
+        (function (cntr) {
+          positiveCounts[cntr] = instance.getCurrentResults.call(cntr); 
+          totalCounts[cntr] = instance.getNumberOfVotes.call(cntr);
+        })(i);
       }
          
     return overAllCounts[positiveCounts, totalCounts];
@@ -349,7 +350,9 @@ App = {
    /**
    * Calculate the voting restults. 
    */
-
+   calculateResultsTest: function(){
+     return 333;
+   },
    calculateResults: function(){
      var overAllCounts = App.getResults();
      var negativeVotes = []; // stores the number of negative votes of each proposal
@@ -371,6 +374,13 @@ App = {
    /**
    * Show the voting restults in the browser. 
    */
+   showResults2: function(event){
+    var test = App.calculateResultsTest();
+    document.getElementById('positivePartner').innerHTML = test; //werden nur für den Bruchteil einer Sekunde angezeigt (Warum?)
+    document.getElementById('negativePartner').innerHTML = test;
+    document.getElementById('positiveResources').innerHTML = "Test"; //werden nur für den Bruchteil einer Sekunde angezeigt (Warum?)
+    document.getElementById('negativeResources').innerHTML = "Test"; //werden nur für den Bruchteil einer Sekunde angezeigt (Warum?)
+   },
 
    showResults: function(event){
      var overallResults = App.calculateResults();
