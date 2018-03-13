@@ -337,6 +337,7 @@ App = {
           positiveCounts[i] = instance.getCurrentResults.call(i); 
           totalCounts[i] = instance.getNumberOfVotes.call(i);
         });
+      }
          
     return overAllCounts[positiveCounts, totalCounts];
 
