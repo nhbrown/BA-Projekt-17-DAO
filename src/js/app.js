@@ -334,8 +334,8 @@ App = {
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
       for (var i = 0; i < 9; ++i) {
         (function (i) {
-          positiveCounts[i] = [instance.getCurrentResults.call(i)]; 
-          totalCounts[i] = [instance.getNumberOfVotes.call(i)];
+          positiveCounts[i] = instance.getCurrentResults.call(i); 
+          totalCounts[i] = instance.getNumberOfVotes.call(i);
         });
          
     return overAllCounts[positiveCounts, totalCounts];
