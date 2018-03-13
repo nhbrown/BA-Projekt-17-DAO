@@ -49,7 +49,6 @@ App = {
   bindEvents: function () {
     $("#create_button").click(App.createCongress); // Bind Button "create_congress"
     $("#join").click(App.joinCongress); // Bind Button "join"
-    //$(document).on('click', '.join', App.joinCongress); // Bind Button "Join" 
     $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
     $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
   },
@@ -87,18 +86,11 @@ App = {
         App.contracts.Congress.new(congressName, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3718426 }).then(function (instance) {
           sessionStorage.setItem("instanceAddress", instance.address);
 
-          window.alert("Your congress has been successfully created! The address of your contract is: " + instance.address);
+          window.alert("Your congress has been successfully created! The address of the contract is: " + instance.address);
 
           App.addMembers(instance, members);
           App.createBMC();
 
-          web3.eth.filter('latest', function (error, result) {
-            if (!error) {
-              document.getElementById("vote_proposal").style.visibility = 'visible';
-            } else {
-              console.log(error.message);
-            }
-          });
         }).catch(function (err) {
           console.log(err.message); // There was an error! Handle it.
         });
@@ -162,7 +154,8 @@ App = {
    * Vote positively on selected proposal. 
    */
   votePositive: function (event) {
-    var proposalNumber = document.activeElement.id;
+    var proposalNumber = document.activeElement.id.charAt(0);
+    console.log(proposalNumber);
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
@@ -175,6 +168,8 @@ App = {
             } else {
               if (res) {
                 instance.vote(proposalNumber, true);
+                document.getElementById(proposalNumber + "-a").disabled = true;
+                document.getElementById(proposalNumber + "-d").disabled = true;
               } else {
                 window.alert("This account is not eligible to vote in this congress!");
               }
@@ -191,7 +186,8 @@ App = {
    * Vote negatively on selected proposal. 
    */
   voteNegative: function (event) {
-    var proposalNumber = document.activeElement.id;
+    var proposalNumber = document.activeElement.id.charAt(0);
+    console.log(proposalNumber);
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
@@ -204,6 +200,8 @@ App = {
             } else {
               if (res) {
                 instance.vote(proposalNumber, false);
+                document.getElementById(proposalNumber + "-a").disabled = true;
+                document.getElementById(proposalNumber + "-d").disabled = true;
               } else {
                 window.alert("This account is not eligible to vote in this congress!");
               }
@@ -232,7 +230,6 @@ App = {
               console.log(err.message);
             } else {
               if (res) {
-                document.getElementById("vote_proposal").style.visibility = 'visible';
                 App.getProposalDescriptions();
               } else {
                 window.alert("This account is not eligible to join this congress!");
@@ -251,6 +248,8 @@ App = {
    */
   getProposalDescriptions: function () {
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+      document.getElementById("vote_proposal").style.visibility = 'visible';
+
       instance.congressName.call().then(function (res, err) {
         if (err) {
           console.log(err);
