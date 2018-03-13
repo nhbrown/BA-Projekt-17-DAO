@@ -168,8 +168,16 @@ App = {
             } else {
               if (res) {
                 instance.vote(proposalNumber, true);
-                document.getElementById(proposalNumber + "-a").disabled = true;
-                document.getElementById(proposalNumber + "-d").disabled = true;
+
+                web3.eth.filter('latest', function (error, result) {
+                  if (!error) {
+                    document.getElementById(proposalNumber + "-a").disabled = true;
+                    document.getElementById(proposalNumber + "-d").disabled = true;
+                  } else {
+                    console.log(error.message);
+                  }
+                });
+
               } else {
                 window.alert("This account is not eligible to vote in this congress!");
               }
@@ -200,8 +208,16 @@ App = {
             } else {
               if (res) {
                 instance.vote(proposalNumber, false);
-                document.getElementById(proposalNumber + "-a").disabled = true;
-                document.getElementById(proposalNumber + "-d").disabled = true;
+
+                web3.eth.filter('latest', function (error, result) {
+                  if (!error) {
+                    document.getElementById(proposalNumber + "-a").disabled = true;
+                    document.getElementById(proposalNumber + "-d").disabled = true;
+                  } else {
+                    console.log(error.message);
+                  }
+                });
+                
               } else {
                 window.alert("This account is not eligible to vote in this congress!");
               }
