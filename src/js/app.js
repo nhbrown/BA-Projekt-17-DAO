@@ -324,23 +324,20 @@ App = {
   },
 
   /**
-   * Fetch the voting restults from Congress
+   * Get the number of positive votes for each proposal.
    */
+   getPositiveVotes: function() {
 
-   getResults: function() {
-     var positiveCounts = []; // Number of positive Votes of each unique proposal
-     var totalCounts = []; // Number of Votes of each unique Proposal
-     var overAllCounts = []; // Array in which PositiveCounts and total Counts will be returned
-
+    var positiveCounts = new Array(); // Number of positive Votes of each unique proposal
+     
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function(instance) {
       for (var i = 0; i < 9; ++i) {
         (function (cntr) {
           positiveCounts[cntr] = instance.getCurrentResults.call(cntr); 
-          totalCounts[cntr] = instance.getNumberOfVotes.call(cntr);
         })(i);
       }
          
-    return overAllCounts[positiveCounts, totalCounts];
+    return positiveCounts;
 
     }).catch(function (err) {
       console.log(err.message);
@@ -348,61 +345,100 @@ App = {
    },
 
    /**
-   * Calculate the voting restults. 
+   * Get the total number of Votes for each proposal.
    */
-   calculateResultsTest: function(){
-     return 333;
-   },
-   calculateResults: function(){
-     var overAllCounts = App.getResults();
-     var negativeVotes = []; // stores the number of negative votes of each proposal
-     var positiveRatios = []; // stores the percentage of in support votes
-     var negativeRatios = []; // stores the percentage of not in support votes
-     var overallResults = []; // // Array in which PositiveCounts and totalCounts from the fetchResultsFunction will be stored
-     // calculate negative votes
-     for (var i; i < 9; ++i){
-       negativeVotes[i] = overAllCounts[1][i] - overAllCounts[0][i]; // number of votes for each proposal minus number of positive Votes for each proposal
+   getTotalNumberOfVotes: function(){
+    
+   var totalCounts = new Array(); // Number of Votes of each unique Proposal
+
+   App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function(instance) {
+     for (var i = 0; i < 9; ++i) {
+       (function (cntr) {
+         totalCounts[cntr] = instance.getNumberOfVotes.call(cntr);
+       })(i);
      }
-     // calculate positive and negative voting-% for each BMC element (Proposal)
+        
+   return totalCounts;
+
+   }).catch(function (err) {
+     console.log(err.message);
+   });
+   },
+   
+   /**
+   * Calculate the ratios of positive votes for each proposal in % 
+   */
+   calculatePositiveRatios: function(){
+     var positiveRatios = new Array();
+     var positiveVotes = new Array();
+     var totalNumberOfVotes = new Array();
+     positiveVotes = App.getPositiveVotes();
+     totalNumberOfVotes = App.getTotalNumberOfVotes();
+
+    for(var i; i < 9; ++i){
+      positiveRatios[i] = positiveVotes[i] / totalNumberOfVotes[i] * 100; 
+     }
+     return positiveRatios;
+    },
+   
+   /**
+   * Calculate the ratios of negative votes for each proposal in % 
+   */
+   calculateNegativeRatios: function(){
+     var positiveRatios = new Array();
+     positiveRatios = App.calculatePositiveRatios();
+     var negativeRatios = new Array();
+
      for(var i; i < 9; ++i){
-       positiveRatios[i] = overAllCounts[0][i] / overAllCounts[1][i] * 100; // number of positive votes divided by the number of votes for each proposal times 100
-       negativeRatios[i] = negativeVotes[i] / overAllCounts[1][i] * 100; // number of negative votes divided by the number of votes for each proposal times 100
+      negativeRatios[i] = 100 - positiveRatios[i]; 
      }
-     return overallResults[positiveRatios, negativeRatios]
+     return negativeRatios;
    },
+   
+   /**
+   * Calculate the negative amount of votes for each Proposal. 
+   */
+   calculateNegativeVotes: function(){
+     var totalNumberOfVotes = new Array();
+     var positiveVotes = new Array();
+     totalNumberOfVotes = App.getTotalNumberOfVotes();
+     positiveVotes = App.getPositiveVotes();
+     var negativeVotes = new Array(); // stores the number of negative votes of each proposal
+     
+     for (var i; i < 9; ++i){
+      negativeVotes[i] = totalNumberOfVotes[i] - positiveVotes[i]; // number of votes for each proposal minus number of positive Votes for each proposal
+     }
+
+     return negativeVotes;
+    },
 
    /**
    * Show the voting restults in the browser. 
    */
-   showResults2: function(event){
-    var test = App.calculateResultsTest();
-    document.getElementById('positivePartner').innerHTML = test; //werden nur für den Bruchteil einer Sekunde angezeigt (Warum?)
-    document.getElementById('negativePartner').innerHTML = test;
-    document.getElementById('positiveResources').innerHTML = "Test"; //werden nur für den Bruchteil einer Sekunde angezeigt (Warum?)
-    document.getElementById('negativeResources').innerHTML = "Test"; //werden nur für den Bruchteil einer Sekunde angezeigt (Warum?)
-   },
-
    showResults: function(event){
-     var overallResults = App.calculateResults();
+     var positiveRatios = new Array();
+     var negativeRatios = new Array();
+     positiveRatios = App.calculatePositiveRatios();
+     negativeRatios = App.calculateNegativeRatios();
 
-     document.getElementById('positivePartner').innerHTML = overallResults[0][0] + '% positive';
-     document.getElementById('negativePartner').innerHTML = overallResults[1][0] + '% negative';
-     document.getElementById('positiveActivities').innerHTML = overallResults[0][1] + '% positive';
-     document.getElementById('negativeActivities').innerHTML = overallResults[1][1] + '% negative';
-     document.getElementById('positiveResources').innerHTML = overallResults[0][2] + '% positive';
-     document.getElementById('negativeResources').innerHTML = overallResults[1][2] + '% negative';
-     document.getElementById('positiveValue').innerHTML = overallResults[0][3] + '% positive';
-     document.getElementById('negativeValue').innerHTML = overallResults[1][3] + '% negative';
-     document.getElementById('positiveRelation').innerHTML = overallResults[0][4] + '% positive';
-     document.getElementById('negativeRelation').innerHTML = overallResults[1][4] + '% negative';
-     document.getElementById('positiveChannel').innerHTML = overallResults[0][5] + '% positive';
-     document.getElementById('negativeChannel').innerHTML = overallResults[1][5] + '% negative';
-     document.getElementById('positiveSegment').innerHTML = overallResults[0][6] + '% positive';
-     document.getElementById('negativeSegment').innerHTML = overallResults[1][6] + '% negative';
-     document.getElementById('positiveCosts').innerHTML = overallResults[0][7] + '% positive';
-     document.getElementById('negativeCosts').innerHTML = overallResults[1][7] + '% negative';
-     document.getElementById('positiveRevenue').innerHTML = overallResults[0][8] + '% positive';
-     document.getElementById('negativeRevenue').innerHTML = overallResults[1][8] + '% negative';
+     document.getElementById('positivePartner').innerHTML = positiveRatios[0] + '% positive';
+     document.getElementById('negativePartner').innerHTML = negativeRatios[0] + '% negative';
+     document.getElementById('positiveActivities').innerHTML = positiveRatios[1] + '% positive';
+     document.getElementById('negativeActivities').innerHTML = negativeRatios[1] + '% negative';
+     document.getElementById('positiveResources').innerHTML = positiveRatios[2] + '% positive';
+     document.getElementById('negativeResources').innerHTML = negativeRatios[2] + '% negative';
+     document.getElementById('positiveValue').innerHTML = positiveRatios[3] + '% positive';
+     document.getElementById('negativeValue').innerHTML = negativeRatios[3] + '% negative';
+     document.getElementById('positiveRelation').innerHTML = positiveRatios[4] + '% positive';
+     document.getElementById('negativeRelation').innerHTML = negativeRatios[4] + '% negative';
+     document.getElementById('positiveChannel').innerHTML = positiveRatios[5] + '% positive';
+     document.getElementById('negativeChannel').innerHTML = negativeRatios[5] + '% negative';
+     document.getElementById('positiveSegment').innerHTML = positiveRatios[6] + '% positive';
+     document.getElementById('negativeSegment').innerHTML = negativeRatios[6] + '% negative';
+     document.getElementById('positiveCosts').innerHTML = positiveRatios[7] + '% positive';
+     document.getElementById('negativeCosts').innerHTML = negativeRatios[7] + '% negative';
+     document.getElementById('positiveRevenue').innerHTML = positiveRatios[8] + '% positive';
+     document.getElementById('negativeRevenue').innerHTML = negativeRatios[8] + '% negative';
      
    }
 };
