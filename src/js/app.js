@@ -49,6 +49,7 @@ App = {
   bindEvents: function () {
     $("#create_button").click(App.createCongress); // Bind Button "create_congress"
     $("#join").click(App.joinCongress); // Bind Button "join"
+    $("#additional-Member").click(App.additionalMember); // Bind Button "additional-Member"
     $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
     $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
   },
@@ -96,6 +97,14 @@ App = {
         });
       }
     });
+  },
+
+  additionalMember: function () {
+    var clone = document.getElementById("input-group").cloneNode(true);
+    var parent = document.getElementById("second_card");
+    var button = document.getElementById("additional-Member");
+
+    parent.insertBefore(clone, button);
   },
 
   /**
@@ -155,7 +164,6 @@ App = {
    */
   votePositive: function (event) {
     var proposalNumber = document.activeElement.id.charAt(0);
-    console.log(proposalNumber);
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
@@ -195,7 +203,6 @@ App = {
    */
   voteNegative: function (event) {
     var proposalNumber = document.activeElement.id.charAt(0);
-    console.log(proposalNumber);
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
@@ -217,7 +224,7 @@ App = {
                     console.log(error.message);
                   }
                 });
-                
+
               } else {
                 window.alert("This account is not eligible to vote in this congress!");
               }
