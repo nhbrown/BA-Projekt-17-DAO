@@ -48,7 +48,8 @@ App = {
    */
   bindEvents: function () {
     $("#create_button").click(App.createCongress); // Bind Button "create_congress"
-    $(document).on('click', '.join', App.joinCongress); // Bind Button "Join" 
+    $("#join").click(App.joinCongress); // Bind Button "join"
+    //$(document).on('click', '.join', App.joinCongress); // Bind Button "Join" 
     $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
     $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
   },
@@ -82,8 +83,8 @@ App = {
       if (error) {
         console.log(error);
       } else {
-        //temporary fix for MetaMask gas limit issue
-        App.contracts.Congress.new(congressName, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, {from: accounts[0], gas: 3718426}).then(function (instance) {
+        //temporary fix for MetaMask gas limit issue: hardcoding the gas limit
+        App.contracts.Congress.new(congressName, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3718426 }).then(function (instance) {
           sessionStorage.setItem("instanceAddress", instance.address);
 
           window.alert("Your congress has been successfully created! The address of your contract is: " + instance.address);
@@ -223,7 +224,7 @@ App = {
       if (error) {
         console.log(error);
       } else {
-        App.contracts.Congress.at(document.getElementById("addressField").value).then(function (instance) {
+        App.contracts.Congress.at(document.getElementById("congressadress").value).then(function (instance) {
           sessionStorage.setItem("instanceAddress", instance.address);
 
           instance.memberExists.call(accounts[0]).then(function (res, err) {
@@ -250,7 +251,14 @@ App = {
    */
   getProposalDescriptions: function () {
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-      //document.getElementById(cn_button).value = "Congress: " + instance.congressName;
+      instance.congressName.call().then(function (res, err) {
+        if (err) {
+          console.log(err);
+        } else {
+          document.getElementById("cn_button").innerHTML = "Congress: " + res;
+        }
+      });
+
       for (var i = 0; i < 9; ++i) {
         (function (cntr) {
           instance.getProposalDescription.call(cntr).then(function (res, err) {

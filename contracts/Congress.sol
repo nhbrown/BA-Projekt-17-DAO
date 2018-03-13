@@ -38,7 +38,7 @@ interface Token {
 
 contract Congress is owned, tokenRecipient {
     // Contract Variables and events
-    string congressName;
+    string public congressName;
     uint public minimumQuorum;
     uint public debatingPeriodInMinutes;
     uint public majorityMargin;
