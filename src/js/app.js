@@ -326,7 +326,7 @@ App = {
    * Fetch the voting restults from Congress
    */
 
-   fetchResults: function() {
+   getResults: function() {
      var positiveCounts = []; // Number of positive Votes of each unique proposal
      var totalCounts = []; // Number of Votes of each unique Proposal
      var overAllCounts = []; // Array in which PositiveCounts and total Counts will be returned
@@ -350,7 +350,7 @@ App = {
    */
 
    calculateResults: function(){
-     var overAllCounts = App.fetchResults();
+     var overAllCounts = App.getResults();
      var negativeVotes = []; // stores the number of negative votes of each proposal
      var positiveRatios = []; // stores the percentage of in support votes
      var negativeRatios = []; // stores the percentage of not in support votes
