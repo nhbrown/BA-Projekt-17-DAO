@@ -115,9 +115,9 @@ App = {
       } else {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
           for (var i = 0; i < members.length; i += 2) {
-            if (members[i] != '0x0000000000000000000000000000000000000000') {
+            if (members[i].value != '0x0000000000000000000000000000000000000000') {
               try {
-                if (App.isAddress(members[i].value), "Member Address") {
+                if (App.isAddress(members[i].value, "Member Address")) {
                   instance.addMember(members[i].value, members[i + 1].value, { from: accounts[0] });
                 }
               } catch (err) {
@@ -316,13 +316,13 @@ App = {
    * Checks wether or not a given input is a valid Ethereum address.
    */
   isAddress: function (input, fieldName) {
-    var re = /^0x[a-fA-F0-9]{40}$~/;
+    var re = /^0x[a-fA-F0-9]{40}$/;
     if (input === "") {
       window.alert("Please enter a value for " + fieldName + "!");
       throw new Error("Incorrect user input! Cancelling all further execution.")
     } else {
       if (!re.test(input)) {
-        window.alert(fieldName + " is not a valid Ethereum address!");
+        window.alert(input + " is not a valid Ethereum address!");
         throw new Error("Incorrect user input! Cancelling all further execution.")
       } else {
         return true;
