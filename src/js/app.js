@@ -69,6 +69,8 @@ App = {
       console.log(err)
     }
 
+    var members = document.getElementsByName("address-weight");
+
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
@@ -79,11 +81,17 @@ App = {
 
           window.alert("Your congress has been successfully created! The address of the contract is: " + instance.address);
 
-          App.addMembers();
-          App.createBMC();
+          App.addMembers(members);
 
+          instance.MembershipChanged().watch(function (err, response) {  // set up listener
+            var res = response.args.member;
+            var last = members[members.length - 2].value;
+            if (res.localeCompare(last.toLowerCase()) === 0) { // if the latest block contains the last member
+              App.createBMC();
+            }
+          });
         }).catch(function (err) {
-          console.log(err.message); // There was an error! Handle it.
+          console.log(err.message);
         });
       }
     });
@@ -107,8 +115,6 @@ App = {
      * Add member addresses to contract as individual transactions.
      */
   addMembers: function (members) {
-    var members = document.getElementsByName("address-weight");
-
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
@@ -357,46 +363,6 @@ App = {
       return input;
     }
   }
-
-  /**
-   * Check user input to contain only numeric characters.
-   * 
-   * @dev Not needed, since HTML5 checks input forms of type number automatically.
-   */
-  //checkNumerical: function (input, fieldName) {
-  //  var re = /^[0-9]/; // regular expression to match only numeric characters
-  //  if (input === "") {
-  //    window.alert("Please enter a value for " + fieldName + "!");
-  //    throw new Error("Incorrect user input! Cancelling all further execution.")
-  //  } else {
-  //    if (!re.test(input)) {
-  //      window.alert(fieldName + " contains invalid charactes! Only numeric characters are allowed.");
-  //      throw new Error("Incorrect user input! Cancelling all further execution.")
-  //    } else {
-  //      return input;
-  //    }
-  //  }
-  //},
-
-  /**
-   * Check user input to contain only alphanumeric characters.
-   * 
-   * @dev Replaced by isAddress
-   */
-  //checkAlphanumerical: function (input, fieldName) {
-  //  var re = /^[\w ]+$/; // regular expression to match only alphanumeric characters and spaces
-  //  if (input === "") {
-  //    window.alert("Please enter a value for " + fieldName + "!");
-  //    throw new Error("Incorrect user input! Cancelling all further execution.")
-  //  } else {
-  //    if (!re.test(input)) {
-  //      window.alert(fieldName + " contains invalid charactes! Only alphanumeric characters are allowed.");
-  //      throw new Error("Incorrect user input! Cancelling all further execution.")
-  //    } else {
-  //      return input;
-  //    }
-  //  }
-  //},
 };
 
 $(function () {
