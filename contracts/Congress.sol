@@ -265,7 +265,7 @@ contract Congress is owned, tokenRecipient {
         require(now > p.votingDeadline && !p.executed && p.proposalHash == keccak256(transactionBytecode) && p.numberOfVotes >= minimumQuorum);                                  
 
         // ...then execute result
-        if (p.currentResult > majorityMargin) {
+        if (p.currentResult >= majorityMargin) {
             // Proposal passed; execute the transaction
 
             p.executed = true; // Avoid recursive calling

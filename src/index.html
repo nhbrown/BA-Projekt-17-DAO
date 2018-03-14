@@ -29,16 +29,16 @@
                   <input type="text" class="form-control" id="congressname" placeholder="Enter Congress Name">
                 </div>
                 <div class="form-group">
-                  <label for="numberofvotes">Number of Minimum Required Votes</label>
-                  <input type="number" class="form-control" id="numberofvotes" placeholder="Enter Minimum Number of Votes">
+                  <label for="numberofvotes">Minimum required Votes</label>
+                  <input type="number" class="form-control" id="quorum" placeholder="Enter minimum number of votes" min="0">
                 </div>
                 <div class="form-group">
                   <label for="votingtime">Voting Time</label>
-                  <input type="number" class="form-control" id="votingtime" placeholder="Enter Voting Time in Minutes">
+                  <input type="number" class="form-control" id="votingtime" placeholder="Enter voting time in minutes" min="1">
                 </div>
                 <div class="form-group">
-                  <label for="quorum">Minimum Required Quorum</label>
-                  <input type="number" class="form-control" id="quorum" placeholder="Enter Minimum Quorum in %">
+                  <label for="quorum">Majority Margin</label>
+                  <input type="number" class="form-control" id="margin" placeholder="Enter majority margin" min="0">
                 </div>
               </form>
             </div>
@@ -58,7 +58,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">Weight</span>
                 </div>
-                <input type="number" class="form-control" placeholder="1" name="address-weight">
+                <input type="number" class="form-control" placeholder="1" name="address-weight" min="0">
               </div>
 
               <button type="button" class="btn btn-secondary" id="addMemberBtn">Additional Member</button>

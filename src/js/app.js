@@ -60,10 +60,14 @@ App = {
   createCongress: function (event) {
     event.preventDefault();
 
-    var congressName = App.sanitize(document.getElementById("congressname").value, "Congress Name");
-    var minimumQuorumForProposals = App.checkNumerical(document.getElementById("numberofvotes").value, "Number of minimum required Votes");
-    var minutesForDebate = App.checkNumerical(document.getElementById("votingtime").value, "Voting Time");
-    var marginOfVotesForMajority = App.checkNumerical(document.getElementById("quorum").value, "Minimum required Quorum");
+    try {
+      var congressName = App.sanitize(document.getElementById("congressname").value, "Congress Name");
+      var minimumQuorumForProposals = App.sanitize(document.getElementById("quorum").value, "Minimum Votes");
+      var minutesForDebate = App.sanitize(document.getElementById("votingtime").value, "Voting Time");
+      var marginOfVotesForMajority = App.sanitize(document.getElementById("margin").value, "Majority Margin");
+    } catch (err) {
+      console.log(err)
+    }
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
@@ -112,9 +116,13 @@ App = {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
           for (var i = 0; i < members.length; i += 2) {
             if (members[i] != '0x0000000000000000000000000000000000000000') {
-              instance.addMember(members[i].value, members[i + 1].value, {from: accounts[0]}).catch(function (err) {
-                console.log(err)
-              });
+              try {
+                if (App.isAddress(members[i].value), "Member Address") {
+                  instance.addMember(members[i].value, members[i + 1].value, { from: accounts[0] });
+                }
+              } catch (err) {
+                console.log(err);
+              }
             }
           }
         }).catch(function (err) {
@@ -249,23 +257,25 @@ App = {
       if (error) {
         console.log(error);
       } else {
-        App.contracts.Congress.at(document.getElementById("congressadress").value).then(function (instance) {
-          sessionStorage.setItem("instanceAddress", instance.address);
+        if (App.isAddress(document.getElementById("congressaddress").value, "Congress Address")) {
+          App.contracts.Congress.at(document.getElementById("congressadress").value).then(function (instance) {
+            sessionStorage.setItem("instanceAddress", instance.address);
 
-          instance.memberExists.call(accounts[0]).then(function (res, err) {
-            if (err) {
-              console.log(err.message);
-            } else {
-              if (res) {
-                App.getProposalDescriptions();
+            instance.memberExists.call(accounts[0]).then(function (res, err) {
+              if (err) {
+                console.log(err.message);
               } else {
-                window.alert("This account is not eligible to join this congress!");
+                if (res) {
+                  App.getProposalDescriptions();
+                } else {
+                  window.alert("This account is not eligible to join this congress!");
+                }
               }
-            }
+            });
+          }).catch(function (err) {
+            console.log(err.message); // There was an error! Handle it.
           });
-        }).catch(function (err) {
-          console.log(err.message); // There was an error! Handle it.
-        });
+        }
       }
     });
   },
@@ -303,37 +313,19 @@ App = {
   },
 
   /**
-   * Check user input to contain only numeric characters.
+   * Checks wether or not a given input is a valid Ethereum address.
    */
-  checkNumerical: function (input, fieldName) {
-    var re = /^[0-9]/; // regular expression to match only numeric characters
+  isAddress: function (input, fieldName) {
+    var re = /^0x[a-fA-F0-9]{40}$~/;
     if (input === "") {
       window.alert("Please enter a value for " + fieldName + "!");
       throw new Error("Incorrect user input! Cancelling all further execution.")
     } else {
       if (!re.test(input)) {
-        window.alert(fieldName + " contains invalid charactes! Only numeric characters are allowed.");
+        window.alert(fieldName + " is not a valid Ethereum address!");
         throw new Error("Incorrect user input! Cancelling all further execution.")
       } else {
-        return input;
-      }
-    }
-  },
-
-  /**
-   * Check user input to contain only alphanumeric characters.
-   */
-  checkAlphanumerical: function (input, fieldName) {
-    var re = /^[\w ]+$/; // regular expression to match only alphanumeric characters and spaces
-    if (input === "") {
-      window.alert("Please enter a value for " + fieldName + "!");
-      throw new Error("Incorrect user input! Cancelling all further execution.")
-    } else {
-      if (!re.test(input)) {
-        window.alert(fieldName + " contains invalid charactes! Only alphanumeric characters are allowed.");
-        throw new Error("Incorrect user input! Cancelling all further execution.")
-      } else {
-        return input;
+        return true;
       }
     }
   },
@@ -365,6 +357,46 @@ App = {
       return input;
     }
   }
+
+  /**
+   * Check user input to contain only numeric characters.
+   * 
+   * @dev Not needed, since HTML5 checks input forms of type number automatically.
+   */
+  //checkNumerical: function (input, fieldName) {
+  //  var re = /^[0-9]/; // regular expression to match only numeric characters
+  //  if (input === "") {
+  //    window.alert("Please enter a value for " + fieldName + "!");
+  //    throw new Error("Incorrect user input! Cancelling all further execution.")
+  //  } else {
+  //    if (!re.test(input)) {
+  //      window.alert(fieldName + " contains invalid charactes! Only numeric characters are allowed.");
+  //      throw new Error("Incorrect user input! Cancelling all further execution.")
+  //    } else {
+  //      return input;
+  //    }
+  //  }
+  //},
+
+  /**
+   * Check user input to contain only alphanumeric characters.
+   * 
+   * @dev Replaced by isAddress
+   */
+  //checkAlphanumerical: function (input, fieldName) {
+  //  var re = /^[\w ]+$/; // regular expression to match only alphanumeric characters and spaces
+  //  if (input === "") {
+  //    window.alert("Please enter a value for " + fieldName + "!");
+  //    throw new Error("Incorrect user input! Cancelling all further execution.")
+  //  } else {
+  //    if (!re.test(input)) {
+  //      window.alert(fieldName + " contains invalid charactes! Only alphanumeric characters are allowed.");
+  //      throw new Error("Incorrect user input! Cancelling all further execution.")
+  //    } else {
+  //      return input;
+  //    }
+  //  }
+  //},
 };
 
 $(function () {
