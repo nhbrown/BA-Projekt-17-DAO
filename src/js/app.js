@@ -83,11 +83,15 @@ App = {
 
           App.addMembers(members);
 
-          instance.MembershipChanged().watch(function (err, response) {  // set up listener
+          // event needs to be a variable for some reason, otherwise the filter triggers twice
+          var event = instance.MembershipChanged(); // get the MembershipChanged event
+
+          event.watch(function (err, response) {  // install listener to event
             var res = response.args.member;
             var last = members[members.length - 2].value;
             if (res.localeCompare(last.toLowerCase()) === 0) { // if the latest block contains the last member
-              App.createBMC();
+              App.createBMC();                                 // than start creating the proposals
+              event.stopWatching();                            // and uninstall the listener
             }
           });
         }).catch(function (err) {
