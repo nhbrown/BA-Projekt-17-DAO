@@ -44,14 +44,14 @@ App = {
   },
 
   /**
-   * Bind on-click events from HTML pages to JS functions.
+   * Bind on-click events from HTML page to JS functions.
    */
   bindEvents: function () {
-    $(document).on('click', '.btn-create-congress', App.createCongress); // Bind Button "create_congress" on page "create_congress.html"
-    $(document).on('click', '.btn-create-bmc', App.createBMC); // Bind Button "Create BMC" on page "create_bmc.html"
-    $(document).on('click', '.btn-agree', App.votePositive); // Bind Buotton "Agree" on page "vote.html"
-    $(document).on('click', '.btn-dismiss', App.voteNegative); // Bind Button "Dismiss" on page "vote.html" 
-    $(document).on('click', '.btn-join-congress', App.joinCongress); // Bind Button "Join" on Page "join_congress.html"
+    $("#create_button").click(App.createCongress); // Bind Button "create_congress"
+    $("#join").click(App.joinCongress); // Bind Button "join"
+    $("#addMemberBtn").click(App.additionalMember); // Bind Button "addMemberBtn"
+    $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
+    $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
   },
 
   /**
@@ -60,66 +60,94 @@ App = {
   createCongress: function (event) {
     event.preventDefault();
 
-    var minimumQuorumForProposals = App.checkNumerical(document.getElementById("votes").value, "Number of minimum required Votes");
-    var minutesForDebate = App.checkNumerical(document.getElementById("time").value, "Voting Time");
-    var marginOfVotesForMajority = App.checkNumerical(document.getElementById("quorum").value, "Minimum required Quorum");
-
-    var allMembers = document.getElementById("adresses").value;
-    var members = [];
-    var member = "";
-
-    for (var i = 0; i < allMembers.length; ++i) {
-      if (allMembers[i] != ",") {
-        member += allMembers[i];
-      }
-      else {
-        members[members.length] = App.checkAlphanumerical(member, "congress member addresses");
-        member = "";
-      }
+    try {
+      var congressName = App.sanitize(document.getElementById("congressname").value, "Congress Name");
+      var minimumQuorumForProposals = App.sanitize(document.getElementById("quorum").value, "Minimum Votes");
+      var minutesForDebate = App.sanitize(document.getElementById("votingtime").value, "Voting Time");
+      var marginOfVotesForMajority = App.sanitize(document.getElementById("margin").value, "Majority Margin");
+    } catch (err) {
+      console.log(err)
     }
 
-    App.contracts.Congress.new(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority).then(function (instance) {
-      sessionStorage.setItem("instanceAddress", instance.address);
+    var members = document.getElementsByName("address-weight");
 
-      window.alert("Your congress has been successfully created! The address of your contract is: " + instance.address);
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      } else {
+        //temporary fix for MetaMask gas limit issue: hardcoding the gas limit
+        App.contracts.Congress.new(congressName, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3718426 }).then(function (instance) {
+          sessionStorage.setItem("instanceAddress", instance.address);
 
-      App.addMembers(instance, members);
+          window.alert("Your congress has been successfully created! The address of the contract is: " + instance.address);
 
-      web3.eth.filter('latest', function (error, result) {
-        if (!error) {
-          window.location.href = "create_bmc.html";
-        } else {
-          console.log(error.message);
-        }
-      });
-    }).catch(function (err) {
-      console.log(err.message); // There was an error! Handle it.
+          App.addMembers(members);
+
+          instance.MembershipChanged().watch(function (err, response) {  // set up listener
+            var res = response.args.member;
+            var last = members[members.length - 2].value;
+            if (res.localeCompare(last.toLowerCase()) === 0) { // if the latest block contains the last member
+              App.createBMC();
+            }
+          });
+        }).catch(function (err) {
+          console.log(err.message);
+        });
+      }
     });
+  },
+
+  /**
+   * Clones the existing input group for address and weight of a member,
+   * assigns a unique Id to it and inserts it before the button in the same card.
+   */
+  additionalMember: function () {
+    var clone = document.getElementById("input_group").cloneNode(true);
+
+    $(clone).find('input').val(''); // clear all values
+
+    clone.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now(); // create unique id
+
+    document.getElementById("second_card").insertBefore(clone, document.getElementById("addMemberBtn"));
   },
 
   /**
      * Add member addresses to contract as individual transactions.
      */
-  addMembers: function (instance, members) {
-    for (i = 0; i < members.length; ++i) {
-      if (members[i] !== '0x0000000000000000000000000000000000000000') {
-        instance.addMember(members[i]).catch(function (err) {
-          console.log(err.message);
+  addMembers: function (members) {
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      } else {
+        App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+          for (var i = 0; i < members.length; i += 2) {
+            if (members[i].value != '0x0000000000000000000000000000000000000000') {
+              try {
+                if (App.isAddress(members[i].value, "Member Address")) {
+                  instance.addMember(members[i].value, members[i + 1].value, { from: accounts[0] });
+                }
+              } catch (err) {
+                console.log(err);
+              }
+            }
+          }
+        }).catch(function (err) {
+          console.log(err);
         });
       }
-    }
+    });
   },
 
   /**
    * Add elements of BMC as individual proposals to contract.
    */
-  createBMC: function (event) {
+  createBMC: function () {
     var bmc = [App.sanitize(document.getElementById("partners").value, "Key Partners"),
     App.sanitize(document.getElementById("activities").value, "Key Activities"),
     App.sanitize(document.getElementById("resources").value, "Key Resources"),
     App.sanitize(document.getElementById("value").value, "Value Proposition"),
     App.sanitize(document.getElementById("cr").value, "Customer Relationships"),
-    App.sanitize(document.getElementById("channels").value, "Channels"),
+    App.sanitize(document.getElementById("channel").value, "Channels"),
     App.sanitize(document.getElementById("cs").value, "Customer Segments"),
     App.sanitize(document.getElementById("cost").value, "Cost Structure"),
     App.sanitize(document.getElementById("revenue").value, "Revenue Streams")];
@@ -134,7 +162,7 @@ App = {
                   instance.newProposal(bmc[6], "0x123").then(function (err, res) {
                     instance.newProposal(bmc[7], "0x123").then(function (err, res) {
                       instance.newProposal(bmc[8], "0x123").then(function (err, res) {
-                        window.location.href = "vote.html";
+                        App.getProposalDescriptions();
                       });
                     });
                   });
@@ -153,7 +181,7 @@ App = {
    * Vote positively on selected proposal. 
    */
   votePositive: function (event) {
-    var proposalNumber = document.activeElement.id;
+    var proposalNumber = document.activeElement.id.charAt(0);
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
@@ -166,6 +194,16 @@ App = {
             } else {
               if (res) {
                 instance.vote(proposalNumber, true);
+
+                web3.eth.filter('latest', function (error, result) {
+                  if (!error) {
+                    document.getElementById(proposalNumber + "-a").disabled = true;
+                    document.getElementById(proposalNumber + "-d").disabled = true;
+                  } else {
+                    console.log(error.message);
+                  }
+                });
+
               } else {
                 window.alert("This account is not eligible to vote in this congress!");
               }
@@ -182,7 +220,7 @@ App = {
    * Vote negatively on selected proposal. 
    */
   voteNegative: function (event) {
-    var proposalNumber = document.activeElement.id;
+    var proposalNumber = document.activeElement.id.charAt(0);
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
@@ -195,6 +233,16 @@ App = {
             } else {
               if (res) {
                 instance.vote(proposalNumber, false);
+
+                web3.eth.filter('latest', function (error, result) {
+                  if (!error) {
+                    document.getElementById(proposalNumber + "-a").disabled = true;
+                    document.getElementById(proposalNumber + "-d").disabled = true;
+                  } else {
+                    console.log(error.message);
+                  }
+                });
+
               } else {
                 window.alert("This account is not eligible to vote in this congress!");
               }
@@ -215,23 +263,25 @@ App = {
       if (error) {
         console.log(error);
       } else {
-        App.contracts.Congress.at(document.getElementById("addressField").value).then(function (instance) {
-          sessionStorage.setItem("instanceAddress", instance.address);
+        if (App.isAddress(document.getElementById("congressaddress").value, "Congress Address")) {
+          App.contracts.Congress.at(document.getElementById("congressadress").value).then(function (instance) {
+            sessionStorage.setItem("instanceAddress", instance.address);
 
-          instance.memberExists.call(accounts[0]).then(function (res, err) {
-            if (err) {
-              console.log(err.message);
-            } else {
-              if (res) {
-                window.location.href = "vote.html";
+            instance.memberExists.call(accounts[0]).then(function (res, err) {
+              if (err) {
+                console.log(err.message);
               } else {
-                window.alert("This account is not eligible to join this congress!");
+                if (res) {
+                  App.getProposalDescriptions();
+                } else {
+                  window.alert("This account is not eligible to join this congress!");
+                }
               }
-            }
+            });
+          }).catch(function (err) {
+            console.log(err.message); // There was an error! Handle it.
           });
-        }).catch(function (err) {
-          console.log(err.message); // There was an error! Handle it.
-        });
+        }
       }
     });
   },
@@ -241,6 +291,16 @@ App = {
    */
   getProposalDescriptions: function () {
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+      document.getElementById("vote_proposal").style.visibility = 'visible';
+
+      instance.congressName.call().then(function (res, err) {
+        if (err) {
+          console.log(err);
+        } else {
+          document.getElementById("cn_button").innerHTML = "Congress: " + res;
+        }
+      });
+
       for (var i = 0; i < 9; ++i) {
         (function (cntr) {
           instance.getProposalDescription.call(cntr).then(function (res, err) {
@@ -259,37 +319,19 @@ App = {
   },
 
   /**
-   * Check user input to contain only numeric characters.
+   * Checks wether or not a given input is a valid Ethereum address.
    */
-  checkNumerical: function (input, fieldName) {
-    var re = /^[0-9]/; // regular expression to match only numeric characters
+  isAddress: function (input, fieldName) {
+    var re = /^0x[a-fA-F0-9]{40}$/;
     if (input === "") {
       window.alert("Please enter a value for " + fieldName + "!");
       throw new Error("Incorrect user input! Cancelling all further execution.")
     } else {
       if (!re.test(input)) {
-        window.alert(fieldName + " contains invalid charactes! Only numeric characters are allowed.");
+        window.alert(input + " is not a valid Ethereum address!");
         throw new Error("Incorrect user input! Cancelling all further execution.")
       } else {
-        return input;
-      }
-    }
-  },
-
-  /**
-   * Check user input to contain only alphanumeric characters.
-   */
-  checkAlphanumerical: function (input, fieldName) {
-    var re = /^[\w ]+$/; // regular expression to match only alphanumeric characters and spaces
-    if (input === "") {
-      window.alert("Please enter a value for " + fieldName + "!");
-      throw new Error("Incorrect user input! Cancelling all further execution.")
-    } else {
-      if (!re.test(input)) {
-        window.alert(fieldName + " contains invalid charactes! Only alphanumeric characters are allowed.");
-        throw new Error("Incorrect user input! Cancelling all further execution.")
-      } else {
-        return input;
+        return true;
       }
     }
   },
@@ -324,22 +366,7 @@ App = {
 };
 
 $(function () {
-  $(window).load(function () {
-
+  $(window).on('load', function () {
     App.init();
-
-    window.onbeforeunload = function () {
-      if (window.location.pathname == "/create_bmc.html") {
-        return "";
-      } else if (window.location.pathname == "/vote.html") {
-        return "";
-      }
-    };
-
-    window.setTimeout(function () {
-      if (window.location.pathname == "/vote.html") {
-        App.getProposalDescriptions();
-      }
-    }, 100);
   });
 });

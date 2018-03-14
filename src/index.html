@@ -29,16 +29,16 @@
                   <input type="text" class="form-control" id="congressname" placeholder="Enter Congress Name">
                 </div>
                 <div class="form-group">
-                  <label for="numberofvotes">Number of Minimum Required Votes</label>
-                  <input type="number" class="form-control" id="numberofvotes" placeholder="Enter Minimum Number of Votes">
+                  <label for="numberofvotes">Minimum required Votes</label>
+                  <input type="number" class="form-control" id="quorum" placeholder="Enter minimum number of votes" min="0">
                 </div>
                 <div class="form-group">
                   <label for="votingtime">Voting Time</label>
-                  <input type="number" class="form-control" id="votingtime" placeholder="Enter Voting Time in Minutes">
+                  <input type="number" class="form-control" id="votingtime" placeholder="Enter voting time in minutes" min="1">
                 </div>
                 <div class="form-group">
-                  <label for="quorum">Minimum Required Quorum</label>
-                  <input type="number" class="form-control" id="quorum" placeholder="Enter Minimum Quorum in %">
+                  <label for="quorum">Majority Margin</label>
+                  <input type="number" class="form-control" id="margin" placeholder="Enter majority margin" min="0">
                 </div>
               </form>
             </div>
@@ -48,75 +48,87 @@
           <div class="col">
 
             <div class="card card-body" id="second_card">
-              <p>Congress Member Addresses (separate with commata)</p>
-              <textarea id="adresses" class="form-control" rows="12" placeholder="0x123,0x456,0x789,"></textarea>
-            </div>
+              <p>Add members by address and specify their voting weight</p>
 
+              <div class="input-group mb-3" id="input_group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Address</span>
+                </div>
+                <input type="text" class="form-control" placeholder="0x123456789" name="address-weight">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Weight</span>
+                </div>
+                <input type="number" class="form-control" placeholder="1" name="address-weight" min="0">
+              </div>
+
+              <button type="button" class="btn btn-secondary" id="addMemberBtn">Additional Member</button>
+
+            </div>
           </div>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col">
+      <div class="row">
+        <div class="col">
 
-            <div class="card card-body" id="third_card">
-              <div class="form-group">
-                <p>Key Partners</p>
-                <textarea id="partners" class="form-control" rows="4"></textarea>
-              </div>
-              <div class="form-group">
-                <p>Key Activities </p>
-                <textarea id="activites" class="form-control" rows="4"></textarea>
-              </div>
-              <div class="form-group">
-                <p>Key Ressources</p>
-                <textarea id="ressources" class="form-control" rows="4"></textarea>
-              </div>
+          <div class="card card-body" id="third_card">
+            <div class="form-group">
+              <p>Key Partners</p>
+              <textarea id="partners" class="form-control" rows="4"></textarea>
             </div>
-
+            <div class="form-group">
+              <p>Key Activities </p>
+              <textarea id="activities" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <p>Key Resources</p>
+              <textarea id="resources" class="form-control" rows="4"></textarea>
+            </div>
           </div>
 
-          <div class="col">
+        </div>
 
-            <div class="card card-body" id="fourth_card">
-              <div class="form-group">
-                <p>Customer Relationship</p>
-                <textarea id="relationship" class="form-control" rows="4"></textarea>
-              </div>
-              <div class="form-group">
-                <p>Channels</p>
-                <textarea id="channel" class="form-control" rows="4"></textarea>
-              </div>
-              <div class="form-group">
-                <p>Curtomer Segments</p>
-                <textarea id="segment" class="form-control" rows="4"></textarea>
-              </div>
+        <div class="col">
+
+          <div class="card card-body" id="fourth_card">
+            <div class="form-group">
+              <p>Customer Relationship</p>
+              <textarea id="cr" class="form-control" rows="4"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary" id="create_button">Create</button>
-
+            <div class="form-group">
+              <p>Channels</p>
+              <textarea id="channel" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <p>Customer Segments</p>
+              <textarea id="cs" class="form-control" rows="4"></textarea>
+            </div>
           </div>
+          <button type="submit" class="btn btn-primary" id="create_button">Create</button>
 
-          <div class="col">
+        </div>
 
-            <div class="card card-body" id="fifth_card">
-              <div class="form-group">
-                <p>Value Proposition</p>
-                <textarea id="value" class="form-control" rows="4"></textarea>
-              </div>
-              <div class="form-group">
-                <p>Revenue Streams</p>
-                <textarea id="revenue" class="form-control" rows="4"></textarea>
-              </div>
-              <div class="form-group">
-                <p>Cost Structure</p>
-                <textarea id="cost" class="form-control" rows="4"></textarea>
-              </div>
+        <div class="col">
+
+          <div class="card card-body" id="fifth_card">
+            <div class="form-group">
+              <p>Value Proposition</p>
+              <textarea id="value" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <p>Revenue Streams</p>
+              <textarea id="revenue" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <p>Cost Structure</p>
+              <textarea id="cost" class="form-control" rows="4"></textarea>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-
+    </div>
+  
 
   <section id="join_congress">
     <p>
@@ -130,7 +142,8 @@
             <div class="form-group">
               <label for="congressadress">Congress Address</label>
               <input type="text" class="form-control" id="congressadress" placeholder="Enter Congress Address">
-              <button type="submit" class="btn btn-primary" id="join">Join</button>
+
+              <button type="button" class="btn btn-primary" id="join">Join</button>
             </div>
           </form>
         </div>
@@ -138,7 +151,8 @@
     </div>
   </section>
 
-  <section id="vote_proposal">
+
+  <section id="vote_proposal" style="visibility:hidden">
     <p>
       <button type="button" data-toggle="collapse" data-target="#existingcongress" aria-expanded="false" aria-controls="existingcongress"
         id="v_button">Vote on Proposals</button>
@@ -164,17 +178,18 @@
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
-                      ...
+                    <div class="modal-body" id="body-0">
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success">Agree</button>
-                      <button type="button" class="btn btn-danger">Disagree</button>
+                      <button type="button" class="btn btn-success" id="0-a">Agree</button>
+                      <button type="button" class="btn btn-danger" id="0-d">Disagree</button>
                     </div>
                   </div>
                 </div>
               </div>
-
+              
+              
+              
               <button type="button" class="col-sm-4" data-toggle="modal" data-target="#customerrelationships">
                 Customer Relationship
               </button>
@@ -189,12 +204,11 @@
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
-                      ...
+                    <div class="modal-body" id="body-4">
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success">Agree</button>
-                      <button type="button" class="btn btn-danger">Disagree</button>
+                      <button type="button" class="btn btn-success" id="4-a">Agree</button>
+                      <button type="button" class="btn btn-danger" id="4-d">Disagree</button>
                     </div>
                   </div>
                 </div>
@@ -216,12 +230,11 @@
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
-                      ...
+                    <div class="modal-body" id="body-3">
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success">Agree</button>
-                      <button type="button" class="btn btn-danger">Disagree</button>
+                      <button type="button" class="btn btn-success" id="3-a">Agree</button>
+                      <button type="button" class="btn btn-danger" id="3-d">Disagree</button>
                     </div>
                   </div>
                 </div>
@@ -244,7 +257,6 @@
             <!--second row of modals-->
             <div class="row">
 
-
               <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keyactivities">
                 Key Activities
               </button>
@@ -259,12 +271,11 @@
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
-                      ...
+                    <div class="modal-body" id="body-1">
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success">Agree</button>
-                      <button type="button" class="btn btn-danger">Disagree</button>
+                      <button type="button" class="btn btn-success" id="1-a">Agree</button>
+                      <button type="button" class="btn btn-danger" id="1-d">Disagree</button>
                     </div>
                   </div>
                 </div>
@@ -281,17 +292,16 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="channels">Channel</h5>
+                      <h5 class="modal-title" id="channels">Channels</h5>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
-                      ...
+                    <div class="modal-body" id="body-5">
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success">Agree</button>
-                      <button type="button" class="btn btn-danger">Disagree</button>
+                      <button type="button" class="btn btn-success" id="5-a">Agree</button>
+                      <button type="button" class="btn btn-danger" id="5-d">Disagree</button>
                     </div>
                   </div>
                 </div>
@@ -313,12 +323,11 @@
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
-                      ...
+                    <div class="modal-body" id="body-8">
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success">Agree</button>
-                      <button type="button" class="btn btn-danger">Disagree</button>
+                      <button type="button" class="btn btn-success" id="8-a">Agree</button>
+                      <button type="button" class="btn btn-danger" id="8-d">Disagree</button>
                     </div>
                   </div>
                 </div>
@@ -342,7 +351,7 @@
             <div class="row">
 
               <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keyresourcess">
-                Key Ressources
+                Key Resources
               </button>
 
               <!-- Modal -->
@@ -350,17 +359,16 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="keyresourcess">Key Ressources</h5>
+                      <h5 class="modal-title" id="keyresourcess">Key Resources</h5>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
-                      ...
+                    <div class="modal-body" id="body-2">
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success">Agree</button>
-                      <button type="button" class="btn btn-danger">Disagree</button>
+                      <button type="button" class="btn btn-success" id="2-a">Agree</button>
+                      <button type="button" class="btn btn-danger" id="2-d">Disagree</button>
                     </div>
                   </div>
                 </div>
@@ -384,12 +392,11 @@
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
-                      ...
+                    <div class="modal-body" id="body-6">
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success">Agree</button>
-                      <button type="button" class="btn btn-danger">Disagree</button>
+                      <button type="button" class="btn btn-success" id="6-a">Agree</button>
+                      <button type="button" class="btn btn-danger" id="6-d">Disagree</button>
                     </div>
                   </div>
                 </div>
@@ -404,17 +411,16 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="coststructure">Cost structure</h5>
+                      <h5 class="modal-title" id="coststructure">Cost Structure</h5>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
-                      ...
+                    <div class="modal-body" id="body-7">
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success">Agree</button>
-                      <button type="button" class="btn btn-danger">Disagree</button>
+                      <button type="button" class="btn btn-success" id="7-a">Agree</button>
+                      <button type="button" class="btn btn-danger" id="7-d">Disagree</button>
                     </div>
                   </div>
                 </div>
@@ -431,8 +437,6 @@
               <p class="col-sm-4">Voted for:
                 <br> Voted against: </p>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -440,11 +444,14 @@
     </div>
   </section>
 
-
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  <!-- JQuery and Bootstrap dependencies -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <script src="js/app.js"></script>
 </body>
-
 </html>
