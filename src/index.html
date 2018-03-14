@@ -48,20 +48,20 @@
           <div class="col">
 
             <div class="card card-body" id="second_card">
-              <p>Add members to your Congress and specify their voting weight</p>
+              <p>Add members by address and specify their voting weight</p>
 
-              <div class="input-group mb-3" id="input-group">
+              <div class="input-group mb-3" id="input_group">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="memberAddress">Address</span>
+                  <span class="input-group-text">Address</span>
                 </div>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" placeholder="0x123456789" name="address-weight">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="memberAddress">Weight</span>
+                  <span class="input-group-text">Weight</span>
                 </div>
-                <input type="text" class="form-control">
+                <input type="number" class="form-control" placeholder="1" name="address-weight">
               </div>
 
-              <button type="button" class="btn btn-secondary" id="additional-Member">Additional Member</button>
+              <button type="button" class="btn btn-secondary" id="addMemberBtn">Additional Member</button>
 
             </div>
           </div>

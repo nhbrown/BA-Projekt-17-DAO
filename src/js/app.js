@@ -49,7 +49,7 @@ App = {
   bindEvents: function () {
     $("#create_button").click(App.createCongress); // Bind Button "create_congress"
     $("#join").click(App.joinCongress); // Bind Button "join"
-    $("#additional-Member").click(App.additionalMember); // Bind Button "additional-Member"
+    $("#addMemberBtn").click(App.additionalMember); // Bind Button "addMemberBtn"
     $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
     $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
   },
@@ -65,20 +65,6 @@ App = {
     var minutesForDebate = App.checkNumerical(document.getElementById("votingtime").value, "Voting Time");
     var marginOfVotesForMajority = App.checkNumerical(document.getElementById("quorum").value, "Minimum required Quorum");
 
-    var allMembers = document.getElementById("adresses").value;
-    var members = [];
-    var member = "";
-
-    for (var i = 0; i < allMembers.length; ++i) {
-      if (allMembers[i] != ",") {
-        member += allMembers[i];
-      }
-      else {
-        members[members.length] = App.checkAlphanumerical(member, "congress member addresses");
-        member = "";
-      }
-    }
-
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
@@ -89,7 +75,7 @@ App = {
 
           window.alert("Your congress has been successfully created! The address of the contract is: " + instance.address);
 
-          App.addMembers(instance, members);
+          App.addMembers();
           App.createBMC();
 
         }).catch(function (err) {
@@ -99,25 +85,43 @@ App = {
     });
   },
 
+  /**
+   * Clones the existing input group for address and weight of a member,
+   * assigns a unique Id to it and inserts it before the button in the same card.
+   */
   additionalMember: function () {
-    var clone = document.getElementById("input-group").cloneNode(true);
-    var parent = document.getElementById("second_card");
-    var button = document.getElementById("additional-Member");
+    var clone = document.getElementById("input_group").cloneNode(true);
 
-    parent.insertBefore(clone, button);
+    $(clone).find('input').val(''); // clear all values
+
+    clone.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now(); // create unique id
+
+    document.getElementById("second_card").insertBefore(clone, document.getElementById("addMemberBtn"));
   },
 
   /**
      * Add member addresses to contract as individual transactions.
      */
-  addMembers: function (instance, members) {
-    for (i = 0; i < members.length; ++i) {
-      if (members[i] !== '0x0000000000000000000000000000000000000000') {
-        instance.addMember(members[i], 1).catch(function (err) {
-          console.log(err.message);
+  addMembers: function (members) {
+    var members = document.getElementsByName("address-weight");
+
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      } else {
+        App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+          for (var i = 0; i < members.length; i += 2) {
+            if (members[i] != '0x0000000000000000000000000000000000000000') {
+              instance.addMember(members[i].value, members[i + 1].value, {from: accounts[0]}).catch(function (err) {
+                console.log(err)
+              });
+            }
+          }
+        }).catch(function (err) {
+          console.log(err);
         });
       }
-    }
+    });
   },
 
   /**
