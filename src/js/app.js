@@ -365,6 +365,14 @@ App = {
    });
    },
    
+   getPositiveVotes1: function(){ //nur für Testzwecke
+     return new Array(10,10,10,10,10,10,10,10,10);
+   },
+
+   getTotalNumberOfVotes1: function(){ //nur für Testzwecke
+    return new Array(14,14,14,14,14,14,14,14,14);
+  },
+
    /**
    * Calculate the ratios of positive votes for each proposal in % 
    */
@@ -375,7 +383,7 @@ App = {
      positiveVotes = App.getPositiveVotes();
      totalNumberOfVotes = App.getTotalNumberOfVotes();
 
-    for(var i; i < 9; ++i){
+    for(var i = 0; i < 9; ++i){
       positiveRatios[i] = positiveVotes[i] / totalNumberOfVotes[i] * 100; 
      }
      return positiveRatios;
@@ -388,8 +396,8 @@ App = {
      var positiveRatios = new Array();
      positiveRatios = App.calculatePositiveRatios();
      var negativeRatios = new Array();
-
-     for(var i; i < 9; ++i){
+     
+     for(var i = 0; i < 9; ++i){
       negativeRatios[i] = 100 - positiveRatios[i]; 
      }
      return negativeRatios;
@@ -405,7 +413,7 @@ App = {
      positiveVotes = App.getPositiveVotes();
      var negativeVotes = new Array(); // stores the number of negative votes of each proposal
      
-     for (var i; i < 9; ++i){
+     for (var i = 0; i < 9; ++i){
       negativeVotes[i] = totalNumberOfVotes[i] - positiveVotes[i]; // number of votes for each proposal minus number of positive Votes for each proposal
      }
 
