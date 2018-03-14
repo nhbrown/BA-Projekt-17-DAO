@@ -356,9 +356,7 @@ App = {
   getPositiveCount: function (i){
     var positiveCount = 0;
     var positiveCount = App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function(instance, positiveCount) {
-      
-      positiveCount = (function(i, positiveCount){
-        
+      positiveCount = (function(i, positiveCount){ 
         positiveCount = instance.getCurrentResults.call(i);
         return positiveCount;
         })
@@ -371,7 +369,6 @@ App = {
    * Get the total number of Votes for each proposal.
    */
   getTotalNumberOfVotes: function() {
-
     var totalVoteCount = new Array(); // Number of Votes of each unique proposal
     for (var i = 0; i < 9; i++){
       totalVoteCount[i] = App.getTotalVoteCount(i);
@@ -381,11 +378,9 @@ App = {
 
   getTotalVoteCount: function (i){
     var voteCount = 0;
-    var voteCount = App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function(instance, voteCount) {
-      
-      voteCount = (function(i, voteCount){
-        
-        voteCount = instance.getCurrentResults.call(i);
+    var voteCount = App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function(instance, voteCount) {      
+      voteCount = (function(i, voteCount){      
+        voteCount = instance.getNumberOfVotes.call(i);
         return voteCount;
         })
       return voteCount;
@@ -515,5 +510,11 @@ $(function () {
         App.getProposalDescriptions();
       }
     }, 100);
+  // aktuell noch über den Button btn-showresults gelöst
+  //  window.setTimeout(function () {
+    //  if (window.location.pathname == "/results.html") {
+      //  App.showResults();
+      //}
+    //}, 100);
   });
 });
