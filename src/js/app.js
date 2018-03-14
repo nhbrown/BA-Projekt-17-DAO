@@ -326,7 +326,7 @@ App = {
   /**
    * Get the number of positive votes for each proposal.
    */
-   getPositiveVotes: function() {
+   getPositiveVotes1: function() {  //alter Ansatz
 
     var positiveCounts = new Array(); // Number of positive Votes of each unique proposal
      
@@ -344,10 +344,56 @@ App = {
     });
    },
 
+   getPositiveVotes: function() { //neuer Ansatz
+
+    var positiveCounts = new Array(); // Number of positive Votes of each unique proposal
+    for (var i = 0; i < 9; i++){
+      positiveCounts[i] = App.getPositiveCount(i);
+    }
+    return positiveCounts;
+  },
+
+  getPositiveCount: function (i){
+    var positiveCount = 0;
+    var positiveCount = App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function(instance, positiveCount) {
+      
+      positiveCount = (function(i, positiveCount){
+        
+        positiveCount = instance.getCurrentResults.call(i);
+        return positiveCount;
+        })
+      return positiveCount;
+    })        
+    return positiveCount;
+   },
+  
    /**
    * Get the total number of Votes for each proposal.
    */
-   getTotalNumberOfVotes: function(){
+  getTotalNumberOfVotes: function() {
+
+    var totalVoteCount = new Array(); // Number of Votes of each unique proposal
+    for (var i = 0; i < 9; i++){
+      totalVoteCount[i] = App.getTotalVoteCount(i);
+    }
+    return totalVoteCount;
+  },
+
+  getTotalVoteCount: function (i){
+    var voteCount = 0;
+    var voteCount = App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function(instance, voteCount) {
+      
+      voteCount = (function(i, voteCount){
+        
+        voteCount = instance.getCurrentResults.call(i);
+        return voteCount;
+        })
+      return voteCount;
+    })        
+    return voteCount;
+   },
+
+   getTotalNumberOfVotes1: function(){ //alter Ansatz
     
    var totalCounts = new Array(); // Number of Votes of each unique Proposal
 
@@ -365,11 +411,11 @@ App = {
    });
    },
    
-   getPositiveVotes1: function(){ //nur für Testzwecke
+   getPositiveVotes3: function(){ //nur für Testzwecke
      return new Array(10,10,10,10,10,10,10,10,10);
    },
 
-   getTotalNumberOfVotes1: function(){ //nur für Testzwecke
+   getTotalNumberOfVotes3: function(){ //nur für Testzwecke
     return new Array(14,14,14,14,14,14,14,14,14);
   },
 
