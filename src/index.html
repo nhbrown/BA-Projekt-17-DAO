@@ -66,62 +66,63 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col">
 
-          <div class="card card-body" id="third_card">
-            <div class="form-group">
-              <p>Key Partners</p>
-              <textarea id="partners" class="form-control" rows="4"></textarea>
+        <div class="row">
+          <div class="col" id="third_col">
+
+            <div class="card card-body" id="third_card">
+              <div class="form-group">
+                <p>Key Partners</p>
+                <textarea id="partners" class="form-control" rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <p>Key Activities </p>
+                <textarea id="activities" class="form-control" rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <p>Key Resources</p>
+                <textarea id="resources" class="form-control" rows="4"></textarea>
+              </div>
             </div>
-            <div class="form-group">
-              <p>Key Activities </p>
-              <textarea id="activities" class="form-control" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-              <p>Key Resources</p>
-              <textarea id="resources" class="form-control" rows="4"></textarea>
-            </div>
+
           </div>
 
-        </div>
+          <div class="col" id="fourth_col">
 
-        <div class="col">
+            <div class="card card-body" id="fourth_card">
+              <div class="form-group">
+                <p>Customer Relationship</p>
+                <textarea id="cr" class="form-control" rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <p>Channels</p>
+                <textarea id="channel" class="form-control" rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <p>Customer Segments</p>
+                <textarea id="cs" class="form-control" rows="4"></textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="create_button">Create</button>
 
-          <div class="card card-body" id="fourth_card">
-            <div class="form-group">
-              <p>Customer Relationship</p>
-              <textarea id="cr" class="form-control" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-              <p>Channels</p>
-              <textarea id="channel" class="form-control" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-              <p>Customer Segments</p>
-              <textarea id="cs" class="form-control" rows="4"></textarea>
-            </div>
           </div>
-          <button type="submit" class="btn btn-primary" id="create_button">Create</button>
 
-        </div>
+          <div class="col" id="fifth_col">
 
-        <div class="col">
-
-          <div class="card card-body" id="fifth_card">
-            <div class="form-group">
-              <p>Value Proposition</p>
-              <textarea id="value" class="form-control" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-              <p>Revenue Streams</p>
-              <textarea id="revenue" class="form-control" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-              <p>Cost Structure</p>
-              <textarea id="cost" class="form-control" rows="4"></textarea>
+            <div class="card card-body" id="fifth_card">
+              <div class="form-group">
+                <p>Value Proposition</p>
+                <textarea id="value" class="form-control" rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <p>Revenue Streams</p>
+                <textarea id="revenue" class="form-control" rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <p>Cost Structure</p>
+                <textarea id="cost" class="form-control" rows="4"></textarea>
+              </div>
             </div>
           </div>
         </div>
@@ -132,8 +133,7 @@
 
     <section id="join_congress">
       <p>
-        <button type="button" data-toggle="collapse" data-target="#joincongress" aria-expanded="false" aria-controls="joincongress"
-          id="j_button">Join a Congress</button>
+        <button type="button" data-toggle="collapse" data-target="#joincongress" aria-expanded="false" aria-controls="joincongress" id="j_button">Join a Congress</button>
       </p>
       <div class="col">
         <div class="collapse multi-collapse" id="joincongress">
@@ -152,7 +152,7 @@
     </section>
 
 
-    <section id="vote_proposal" style="visibility:hidden">
+    <section id="vote_proposal" style="visibility:visible">
       <p>
         <button type="button" data-toggle="collapse" data-target="#existingcongress" aria-expanded="false" aria-controls="existingcongress"
           id="v_button">Vote on Proposals</button>
@@ -403,7 +403,7 @@
                 </div>
 
                 <button type="button" class="col-sm-4" data-toggle="modal" data-target="#coststructure">
-                  Cost structure
+                  Cost Structure
                 </button>
 
                 <!-- Modal -->

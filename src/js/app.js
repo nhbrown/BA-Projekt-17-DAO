@@ -182,7 +182,7 @@ App = {
   },
 
   /**
-   * Vote positively on selected proposal. 
+   * Vote in favour of the selected proposal. 
    */
   votePositive: function (event) {
     var proposalNumber = document.activeElement.id.charAt(0);
@@ -221,7 +221,7 @@ App = {
   },
 
   /**
-   * Vote negatively on selected proposal. 
+   * Vote not in favour of the selected proposal. 
    */
   voteNegative: function (event) {
     var proposalNumber = document.activeElement.id.charAt(0);

@@ -7,6 +7,8 @@
 
 #create_congress{
     font-family: Bell MT;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 #cc_button{
@@ -47,6 +49,7 @@
 
 #join_congress{
     font-family: Bell MT;
+    padding-top: 15px;
 }
 
 #j_button{
@@ -66,6 +69,8 @@
 
 #vote_proposal{
     font-family: Bell MT;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 #v_button{
