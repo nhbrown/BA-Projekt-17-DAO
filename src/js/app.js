@@ -50,7 +50,6 @@ App = {
     $("#create_button").click(App.createCongress); // Bind Button "create_congress"
     $("#join").click(App.joinCongress); // Bind Button "join"
     $("#addMemberBtn").click(App.additionalMember); // Bind Button "addMemberBtn"
-    $("#testBTN").click(App.showResults); // this is just a test button
     $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
     $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
   },
@@ -77,7 +76,8 @@ App = {
       if (error) {
         console.log(error);
       } else {
-        App.contracts.Congress.new(congressName, ownerWeight, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3718426 }).then(function (instance) { //temporary fix for MetaMask gas limit issue: hardcoding the gas limit
+        //temporary fix for MetaMask gas limit issue: hardcoding the gas limit
+        App.contracts.Congress.new(congressName, ownerWeight, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3718426 }).then(function (instance) {
           sessionStorage.setItem("instanceAddress", instance.address);
 
           window.alert("Your congress has been successfully created! The address of the contract is: " + instance.address);
@@ -367,16 +367,47 @@ App = {
    */
   checkVotingDeadline: function (currentTime, callback) {
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-      instance.proposals.call(0).then(function (res, err) {
+      instance.proposals.call(8).then(function (res, err) {
         if (err) {
           console.log(err);
         } else {
           if (currentTime >= res[1].c[0]) {
-            App.showResults();
-            callback();
+            App.executeProposals();           // execute the proposals
+            $('.modal').modal('hide');        // hide all open modals
+            callback();                       // and execute the callback
           }
         }
       });
+    });
+  },
+
+
+  /**
+   * Executes the proposals.
+   */
+  executeProposals: function () {
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      } else {
+        App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+          for (var i = 0; i < 9; ++i) {
+            (function (cntr) {
+              instance.executeProposal(cntr);
+            })(i);
+          }
+
+          var event = instance.ProposalTallied(); // get the ProposalsTallied event
+
+          event.watch(function (err, response) {  // install listener to event
+            var res = response.args.proposalID.c[0];
+            if (res === 8) {                      // if the latest block contains the last proposal
+              App.showResults();                  // display the results
+              event.stopWatching();               // and uninstall the listener
+            }
+          });
+        });
+      }
     });
   },
 
@@ -443,7 +474,6 @@ $(function () {
         });
       }
     }
-
   });
 
   window.onbeforeunload = function () {

@@ -264,22 +264,18 @@ contract Congress is owned, tokenRecipient {
      * Count the votes proposal #`proposalNumber` and execute it if approved
      *
      * @param proposalNumber proposal number
-     * @param transactionBytecode optional: if the transaction contained a bytecode, you need to send it
      */
-    function executeProposal(uint proposalNumber, bytes transactionBytecode) public {
+    function executeProposal(uint proposalNumber) onlyOwner payable public {
         Proposal storage p = proposals[proposalNumber];
 
         // If it is past the voting deadline and it has not already been executed
         // and the supplied code matches the proposal and a minimum quorum has been reached...
-        require(now > p.votingDeadline && !p.executed && p.proposalHash == keccak256(transactionBytecode) && p.numberOfVotes >= minimumQuorum);                                  
+        require(now >= p.votingDeadline && !p.executed);                                  
 
         // ...then execute result
-        if (p.currentResult >= majorityMargin) {
+        if (p.currentResult >= majorityMargin && p.numberOfVotes >= minimumQuorum) {
             // Proposal passed; execute the transaction
-
-            p.executed = true; // Avoid recursive calling
-            //require(p.recipient.call.value(p.amount)(transactionBytecode));
-
+            p.executed = true;
             p.proposalPassed = true;
         } else {
             // Proposal failed
