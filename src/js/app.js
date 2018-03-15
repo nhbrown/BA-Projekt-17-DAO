@@ -168,6 +168,7 @@ App = {
                     instance.newProposal(bmc[7], "0x123").then(function (err, res) {
                       instance.newProposal(bmc[8], "0x123").then(function (err, res) {
                         App.getProposalDescriptions();
+                        sessionStorage.setItem("proposalsAdded", "true");
                       });
                     });
                   });
@@ -278,6 +279,7 @@ App = {
               } else {
                 if (res) {
                   App.getProposalDescriptions();
+                  sessionStorage.setItem("proposalsAdded", "true");
                 } else {
                   window.alert("This account is not eligible to join this congress!");
                 }
@@ -386,7 +388,7 @@ App = {
             App.executeProposals();           // execute the proposals
             $('.modal').modal('hide');        // hide all open modals
             callback();                       // and execute the callback
-          } else {
+          } else if (currentTime >= res[1].c[0] && res[2] == true) {
             App.showResults();
             callback();
           }
@@ -407,7 +409,7 @@ App = {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
           for (var i = 0; i < 9; ++i) {
             (function (cntr) {
-              instance.executeProposal(cntr);
+              instance.executeProposal(cntr, { from: accounts[0], gas: 80000 });
             })(i);
           }
 
@@ -479,7 +481,7 @@ $(function () {
     var timer = window.setInterval(timerFunc, 15000);
 
     function timerFunc() {
-      if (sessionStorage.getItem("instanceAddress")) {
+      if (sessionStorage.getItem("instanceAddress") && sessionStorage.getItem("proposalsAdded")) {
         var date = new Date();
         var secondsSinceEpoch = Math.round(date.getTime() / 1000);
 
