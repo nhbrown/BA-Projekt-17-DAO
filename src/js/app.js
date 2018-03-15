@@ -339,8 +339,8 @@ App = {
               console.log(err);
             } else {
               var totalVotes = "Total Votes: " + res[4];
-              var inFavour = "<br> Votes in favour: " + res[5];
-              var opposed = "<br> Votes opposed: " + res[6];
+              var inFavour = "<br> Votes in favour: " + App.toPercentage(res[5], res[4]) + "%";
+              var opposed = "<br> Votes opposed: " + App.toPercentage(res[6], res[4]) + "%";
               var result = "<br> Result: " + res[8] + " to " + res[7];
 
               var proposalButton = document.getElementById("btn-" + cntr);
@@ -363,6 +363,17 @@ App = {
   },
 
   /**
+   * Returns percentage.
+   */
+  toPercentage: function (x, total) {
+    if (total == 0) {
+      return 0;
+    } else {
+      return x / total * 100;
+    }
+  },
+
+  /**
    * Checks wether or not the votind deadline has been reached.
    */
   checkVotingDeadline: function (currentTime, callback) {
@@ -371,10 +382,13 @@ App = {
         if (err) {
           console.log(err);
         } else {
-          if (currentTime >= res[1].c[0]) {
+          if (currentTime >= res[1].c[0] && res[2] == false) {
             App.executeProposals();           // execute the proposals
             $('.modal').modal('hide');        // hide all open modals
             callback();                       // and execute the callback
+          } else {
+            App.showResults();
+            callback();
           }
         }
       });

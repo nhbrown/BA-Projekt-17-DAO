@@ -269,8 +269,8 @@ contract Congress is owned, tokenRecipient {
         Proposal storage p = proposals[proposalNumber];
 
         // If it is past the voting deadline and it has not already been executed
-        // and the supplied code matches the proposal and a minimum quorum has been reached...
-        require(now >= p.votingDeadline && !p.executed);                                  
+        require(now >= p.votingDeadline);
+        require(!p.executed);                                  
 
         // ...then execute result
         if (p.currentResult >= majorityMargin && p.numberOfVotes >= minimumQuorum) {
@@ -279,6 +279,7 @@ contract Congress is owned, tokenRecipient {
             p.proposalPassed = true;
         } else {
             // Proposal failed
+            p.executed = true;
             p.proposalPassed = false;
         }
 
