@@ -323,6 +323,9 @@ App = {
     });
   },
 
+  /**
+   * Displays the results of the proposals.
+   */
   showResults: function (event) {
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
       document.getElementById("res1").hidden = false;
@@ -356,6 +359,24 @@ App = {
           });
         })(i);
       }
+    });
+  },
+
+  /**
+   * Checks wether or not the votind deadline has been reached.
+   */
+  checkVotingDeadline: function (currentTime, callback) {
+    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+      instance.proposals.call(0).then(function (res, err) {
+        if (err) {
+          console.log(err);
+        } else {
+          if (currentTime >= res[1].c[0]) {
+            App.showResults();
+            callback();
+          }
+        }
+      });
     });
   },
 
@@ -409,5 +430,23 @@ App = {
 $(function () {
   $(window).on('load', function () {
     App.init();
+
+    var timer = window.setInterval(timerFunc, 15000);
+
+    function timerFunc() {
+      if (sessionStorage.getItem("instanceAddress")) {
+        var date = new Date();
+        var secondsSinceEpoch = Math.round(date.getTime() / 1000);
+
+        App.checkVotingDeadline(secondsSinceEpoch, function () {
+          clearInterval(timer);
+        });
+      }
+    }
+
   });
+
+  window.onbeforeunload = function () {
+    sessionStorage.clear();
+  };
 });
