@@ -38,19 +38,20 @@ interface Token {
 
 contract Congress is owned, tokenRecipient {
     // Contract Variables and events
+    string public congressName;
     uint public minimumQuorum;
     uint public debatingPeriodInMinutes;
-    int public majorityMargin;
+    uint public majorityMargin;
     Proposal[] public proposals;
     uint public numProposals;
     mapping (address => uint) public memberId;
-    address[] public members;
+    Member[] public members;
 
     event ProposalAdded(uint proposalID, string description);
     event Voted(uint proposalID, bool position, address voter);
-    event ProposalTallied(uint proposalID, int result, uint quorum, bool active);
+    event ProposalTallied(uint proposalID, uint result, uint quorum, bool active);
     event MembershipChanged(address member, bool isMember);
-    event ChangeOfRules(uint newMinimumQuorum, uint newDebatingPeriodInMinutes, int newMajorityMargin);
+    event ChangeOfRules(uint newMinimumQuorum, uint newDebatingPeriodInMinutes, uint newMajorityMargin);
 
     struct Proposal {
         string description;
@@ -58,11 +59,19 @@ contract Congress is owned, tokenRecipient {
         bool executed;
         bool proposalPassed;
         uint numberOfVotes;
-        int currentResult;
+        uint inFavour;
+        uint opposedTo;
+        uint weightedOpposedTo;
+        uint currentResult;
         bytes32 proposalHash;
         Vote[] votes;
         mapping (address => bool) voted;
         bool isValid; //set to true when data is added
+    }
+
+    struct Member {
+        address memberAddress; // address of this member
+        uint weight; // vote weight of this member
     }
 
     struct Vote {
@@ -70,7 +79,7 @@ contract Congress is owned, tokenRecipient {
         address voter;
     }
 
-    // Modifier that allows only shareholders to vote and create new proposals
+    // Modifier that allows only members to vote and create new proposals
     modifier onlyMembers {
         require(memberId[msg.sender] != 0);
         _;
@@ -79,12 +88,13 @@ contract Congress is owned, tokenRecipient {
     /**
      * Constructor function
      */
-    function Congress (uint minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority)  payable public {
+    function Congress (string name, uint weight, uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority)  payable public {
+        congressName = name;
         changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
         // It’s necessary to add an empty first member
-        addMember(0);
+        addMember(0, 0);
         // and let's add the founder, to save a step later
-        addMember(owner);
+        addMember(owner, weight);
     }
 
     /**
@@ -94,7 +104,7 @@ contract Congress is owned, tokenRecipient {
      *
      * @param targetMember ethereum address to be added
      */
-    function addMember(address targetMember) onlyOwner public {
+    function addMember(address targetMember, uint voteWeight) onlyOwner public {
         uint id = memberId[targetMember];
 
         if (id == 0) {
@@ -102,7 +112,9 @@ contract Congress is owned, tokenRecipient {
             id = members.length++;
         }
 
-        members[id] = targetMember;
+        members[id].memberAddress = targetMember;
+        members[id].weight = voteWeight;
+
         MembershipChanged(targetMember, true);
     }
 
@@ -119,8 +131,21 @@ contract Congress is owned, tokenRecipient {
         for (uint i = memberId[targetMember]; i<members.length-1; i++) {
             members[i] = members[i+1];
         }
+
         delete members[members.length-1];
         members.length--;
+    }
+
+    /**
+     * Changes the voting weight of the specified member.
+     *
+     * @param targetMember ethereum address of the member which voting weight should be changed
+     * @param newWeight the new voting weight
+     */
+    function changeVoteWeight(address targetMember, uint newWeight) onlyOwner public {
+        require(memberId[targetMember] != 0);
+
+        members[memberId[targetMember]].weight = newWeight;
     }
 
     /**
@@ -133,7 +158,7 @@ contract Congress is owned, tokenRecipient {
      * @param minutesForDebate the minimum amount of delay between when a proposal is made and when it can be executed
      * @param marginOfVotesForMajority the proposal needs to have 50% plus this number
      */
-    function changeVotingRules(uint minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority) onlyOwner public {
+    function changeVotingRules(uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority) onlyOwner public {
         minimumQuorum = minimumQuorumForProposals;
         debatingPeriodInMinutes = minutesForDebate;
         majorityMargin = marginOfVotesForMajority;
@@ -164,6 +189,9 @@ contract Congress is owned, tokenRecipient {
         p.executed = false;
         p.proposalPassed = false;
         p.numberOfVotes = 0;
+        p.inFavour = 0;
+        p.opposedTo = 0;
+        p.weightedOpposedTo = 0;
         ProposalAdded(proposalID, jobDescription);
         numProposals = proposalID+1;
 
@@ -204,18 +232,29 @@ contract Congress is owned, tokenRecipient {
         onlyMembers public
         returns (uint voteID)
     {
-        Proposal storage p = proposals[proposalNumber];         // Get the proposal
-        require(!p.voted[msg.sender]);         // If has already voted, cancel
+        Proposal storage p = proposals[proposalNumber]; // Get the proposal
+
+        require(!p.voted[msg.sender]);                  // If has already voted, cancel
         p.voted[msg.sender] = true;                     // Set this voter as having voted
         p.numberOfVotes++;                              // Increase the number of votes
+
+        uint voteWeight = members[memberId[msg.sender]].weight;
+
         if (supportsProposal) {                         // If they support the proposal
-            p.currentResult++;                          // Increase score
+            p.currentResult += voteWeight;              // Increase score by vote weight
+            p.inFavour += 1;
         } else {                                        // If they don't
-            p.currentResult--;                          // Decrease the score
+            p.opposedTo += 1;
+            p.weightedOpposedTo += voteWeight;
+            if (voteWeight > p.currentResult) {         // and the weight is bigger than the current result
+                p.currentResult = 0;                    // set the current result to zero
+            } else {                                    // else
+                p.currentResult -= voteWeight;          // Decrease the score by vote weight
+            }
         }
 
         // Create a log of this event
-        Voted(proposalNumber,  supportsProposal, msg.sender);
+        Voted(proposalNumber, supportsProposal, msg.sender);
         return p.numberOfVotes;
     }
 
@@ -225,25 +264,22 @@ contract Congress is owned, tokenRecipient {
      * Count the votes proposal #`proposalNumber` and execute it if approved
      *
      * @param proposalNumber proposal number
-     * @param transactionBytecode optional: if the transaction contained a bytecode, you need to send it
      */
-    function executeProposal(uint proposalNumber, bytes transactionBytecode) public {
+    function executeProposal(uint proposalNumber) onlyOwner payable public {
         Proposal storage p = proposals[proposalNumber];
 
         // If it is past the voting deadline and it has not already been executed
-        // and the supplied code matches the proposal and a minimum quorum has been reached...
-        require(now > p.votingDeadline && !p.executed && p.proposalHash == keccak256(transactionBytecode) && p.numberOfVotes >= minimumQuorum);                                  
+        require(now >= p.votingDeadline);
+        require(!p.executed);                                  
 
         // ...then execute result
-        if (p.currentResult > majorityMargin) {
+        if (p.currentResult >= majorityMargin && p.numberOfVotes >= minimumQuorum) {
             // Proposal passed; execute the transaction
-
-            p.executed = true; // Avoid recursive calling
-            //require(p.recipient.call.value(p.amount)(transactionBytecode));
-
+            p.executed = true;
             p.proposalPassed = true;
         } else {
             // Proposal failed
+            p.executed = true;
             p.proposalPassed = false;
         }
 
@@ -264,7 +300,7 @@ contract Congress is owned, tokenRecipient {
             return false;
         }
 
-        return members[id] == targetMember;
+        return members[id].memberAddress == targetMember;
     }
 
     /**
@@ -304,26 +340,4 @@ contract Congress is owned, tokenRecipient {
     function getProposalDescription(uint proposalID) public constant returns (string) {
         return proposals[proposalID].description;
     }
-    /**
-     * Returns the address of this contract.
-     *
-     * @dev Disabled because it is not useful. The address of a contract is public
-            and therefore has an automatic getter method.
-     * @return An address representing this contract.
-     */
-    //function getContractAddress() external view returns (address) {
-    //    return this;
-    //}
-
-    /**
-     * Getter for the array which holds the addresses of the members of this contract.
-     * 
-     * @dev Not really useful, because indexes are based on a mapping of the addresses 
-            to unsigned integers, which could make accesing them outside of this contract
-            potentially harder. The function memberExists is way more useful.
-     * @return An array of addresses.
-     */
-    //function getMembers() external view returns (address[]) {
-    //    return members;
-    //}
 }

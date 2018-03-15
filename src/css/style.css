@@ -1,247 +1,82 @@
-.col-container {
-    display: table;
+#title{
+    font-family: Bell MT;
+    text-align: center;
+    padding-bottom: 0.5cm;
+    padding-top: 0.4cm;
+}
 
-    /* Make the container element behave like a table */
+#create_congress{
+    font-family: Bell MT;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#cc_button{
     width: 100%;
-
-    /* Set full-width to expand the whole page */
 }
 
-.col {
-    display: table-cell;
-
-    /* Make elements inside the container behave like table cells */
+#first_row{
+    padding-bottom: 1cm;
 }
 
-#indicators {
-    left: 17%;
-    padding-top: 5px;
-    margin-bottom: 50px;
-    height: 15px;
-    background-color: #2e2e2e;
-    width: 330px;
+#first_card{
+    border-color: black;
 }
 
-#adresses {
-    box-sizing: border-box;
+#second_card{
+    border-color: black;
 }
 
-#slide_buttons {
-    margin-top: 50px;
+#third_card{
+    border-color: black;
+    text-align: center;
 }
 
-/*for bmc*/
-.modal-dialog {
+#fourth_card{
+    border-color: black;
+    text-align: center; 
+}
+
+#fifth_card{
+    border-color: black;
+    text-align: center;
+}
+
+#create_button{
     width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
+    margin-top: 1cm;
 }
 
-.modal-content {
-    height: 100%;
-    border-radius: 0;
-    color: white;
-    overflow: auto;
-}
-
-.close {
-    color: white ! important;
-    opacity: 1.0;
-}
-
-#first-child {
-    top: 20%;
-    left: 0;
-    width: 20%;
-    height: 40%;
+#join_congress{
     font-family: Bell MT;
-    color: #000000;
-    text-align: center;
+    padding-top: 15px;
 }
 
-#second-child {
-    top: 20%;
-    left: 20%;
-    width: 20%;
-    height: 20%;
-    color: black;
-    font-family: Bell MT;
-    text-align: center;
+#j_button{
+    width: 100%;
 }
 
-#third-child {
-    top: 40%;
-    left: 20%;
-    width: 20%;
-    height: 20%;
-    font-family: Bell MT;
-    color: #000000;
-    text-align: center;
-}
-
-#fourth-child {
-    top: 20%;
-    left: 40%;
-    width: 20%;
-    height: 40%;
-    color: black;
-    font-family: Bell MT;
-    text-align: center;
-}
-
-#fifth-child {
-    top: 20%;
-    left: 60%;
-    width: 20%;
-    height: 20%;
-    color: black;
-    font-family: Bell MT;
-    text-align: center;
-}
-
-#sixth-child {
-    top: 40%;
-    left: 60%;
-    width: 20%;
-    height: 20%;
-    color: black;
-    font-family: Bell MT;
-    text-align: center;
-}
-
-#seventh-child {
-    top: 20%;
-    left: 80%;
-    width: 20%;
-    height: 40%;
-    color: black;
-    font-family: Bell MT;
-    text-align: center;
-}
-
-#eight-child {
-    top: 60%;
-    left: 0;
-    height: 20%;
-    color: black;
-    font-family: Bell MT;
-    text-align: center;
-}
-
-#ninth-child {
-    top: 60%;
-    left: 50%;
-    height: 20%;
-    color: black;
-    font-family: Bell MT;
-    text-align: center;
-}
-
-#tenth-child {
-    top: 85%;
-    left: 42%;
-    width: 16.7%;
-    height: 10% ;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin: 0;
-}
-
-.big-box {
-    position: absolute;
+#jc_card{
+    margin-left: 25%;
     width: 50%;
-    height: 50%;
-    color: white;
-}
-
-.big-box h2 {
     text-align: center;
-    margin-top: 20%;
-    padding: 20px;
-    width: 100%;
-    font-size: 1.8em;
-    letter-spacing: 2px;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
+    border-color: black;
 }
 
-@media screen and (max-width: 46.5em) 
-    {
-    .big-box h2 {
-        font-size: 16px;
-        padding-left: 0px;
-    }
+#join{
+    margin-top: 0.5cm;
 }
 
-@media screen and (max-width: 20.5em) 
-    {
-    .big-box h2 {
-        font-size: 12px;
-        padding-left: 0px;
-        margin-top: 30%;
-    }
-}
-
-.modal-dialog {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-}
-
-.modal-content {
-    height: 100%;
-    border-radius: 0;
-    color: white;
-    overflow: auto;
-    color: black;
-    font-family: Times New Roman;
-}
-
-.modal-title {
-    font-size: 3em;
-    font-weight: 300;
-    margin: 0 0 20px 0;
-    color: black;
+#vote_proposal{
     font-family: Bell MT;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
-.modal-content-one {
-    background-color: #e3dbdb;
+#v_button{
+    width: 100%;
 }
 
-.modal-content-two {
-    background-color: #e3dbdb;
-}
-
-.modal-content-three {
-    background-color: #e3dbdb;
-}
-
-.modal-content-four {
-    background-color: #e3dbdb;
-}
-
-.modal-content-five {
-    background-color: #e3dbdb;
-}
-
-.modal-content-six {
-    background-color: #e3dbdb;
-}
-
-.modal-content-seven {
-    background-color: #e3dbdb;
-}
-
-.modal-content-eight {
-    background-color: #e3dbdb;
-}
-
-.modal-content-nine {
-    background-color: #e3dbdb;
+#vote_card{
+    border-color: black;
 }
