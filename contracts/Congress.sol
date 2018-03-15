@@ -59,6 +59,9 @@ contract Congress is owned, tokenRecipient {
         bool executed;
         bool proposalPassed;
         uint numberOfVotes;
+        uint inFavour;
+        uint opposedTo;
+        uint weightedOpposedTo;
         uint currentResult;
         bytes32 proposalHash;
         Vote[] votes;
@@ -85,13 +88,13 @@ contract Congress is owned, tokenRecipient {
     /**
      * Constructor function
      */
-    function Congress (string name, uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority)  payable public {
+    function Congress (string name, uint weight, uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority)  payable public {
         congressName = name;
         changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
         // It’s necessary to add an empty first member
         addMember(0, 0);
         // and let's add the founder, to save a step later
-        addMember(owner, 1);
+        addMember(owner, weight);
     }
 
     /**
@@ -186,6 +189,9 @@ contract Congress is owned, tokenRecipient {
         p.executed = false;
         p.proposalPassed = false;
         p.numberOfVotes = 0;
+        p.inFavour = 0;
+        p.opposedTo = 0;
+        p.weightedOpposedTo = 0;
         ProposalAdded(proposalID, jobDescription);
         numProposals = proposalID+1;
 
@@ -235,17 +241,20 @@ contract Congress is owned, tokenRecipient {
         uint voteWeight = members[memberId[msg.sender]].weight;
 
         if (supportsProposal) {                         // If they support the proposal
-            p.currentResult + voteWeight;               // Increase score by vote weight
+            p.currentResult += voteWeight;              // Increase score by vote weight
+            p.inFavour += 1;
         } else {                                        // If they don't
+            p.opposedTo += 1;
+            p.weightedOpposedTo += voteWeight;
             if (voteWeight > p.currentResult) {         // and the weight is bigger than the current result
                 p.currentResult = 0;                    // set the current result to zero
             } else {                                    // else
-                p.currentResult - voteWeight;           // Decrease the score by vote weight
+                p.currentResult -= voteWeight;          // Decrease the score by vote weight
             }
         }
 
         // Create a log of this event
-        Voted(proposalNumber,  supportsProposal, msg.sender);
+        Voted(proposalNumber, supportsProposal, msg.sender);
         return p.numberOfVotes;
     }
 

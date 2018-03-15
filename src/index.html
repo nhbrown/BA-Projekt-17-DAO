@@ -49,6 +49,12 @@
 
             <div class="card card-body" id="second_card">
               <p>Add members by address and specify their voting weight</p>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Owner Weight</span>
+                </div>
+                <input type="number" class="form-control" placeholder="1" min="0"  id="ownerWeight">
+              </div>
 
               <div class="input-group mb-3" id="input_group">
                 <div class="input-group-prepend">
@@ -133,7 +139,8 @@
 
     <section id="join_congress">
       <p>
-        <button type="button" data-toggle="collapse" data-target="#joincongress" aria-expanded="false" aria-controls="joincongress" id="j_button">Join a Congress</button>
+        <button type="button" data-toggle="collapse" data-target="#joincongress" aria-expanded="false" aria-controls="joincongress"
+          id="j_button">Join a Congress</button>
       </p>
       <div class="col">
         <div class="collapse multi-collapse" id="joincongress">
@@ -142,7 +149,6 @@
               <div class="form-group">
                 <label for="congressadress">Congress Address</label>
                 <input type="text" class="form-control" id="congressadress" placeholder="Enter Congress Address">
-
                 <button type="button" class="btn btn-primary" id="join">Join</button>
               </div>
             </form>
@@ -152,7 +158,11 @@
     </section>
 
 
-    <section id="vote_proposal" style="visibility:visible">
+    <section id="vote_proposal" style="visibility:hidden">
+      <p>
+        <button type="button" id="testBTN">TEST</button>
+      </p>
+
       <p>
         <button type="button" data-toggle="collapse" data-target="#existingcongress" aria-expanded="false" aria-controls="existingcongress"
           id="v_button">Vote on Proposals</button>
@@ -164,7 +174,7 @@
           <div class="collapse multi-collapse" id="test">
             <div class="card card-body">
               <div class="row">
-                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keypartners">
+                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keypartners" id="btn-0">
                   Key Partners
                 </button>
 
@@ -190,7 +200,7 @@
 
 
 
-                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#customerrelationships">
+                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#customerrelationships" id="btn-4">
                   Customer Relationship
                 </button>
 
@@ -216,7 +226,7 @@
 
 
 
-                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#valueproposition">
+                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#valueproposition" id="btn-3">
                   Value Proposition
                 </button>
 
@@ -244,20 +254,17 @@
 
 
               <!--first row of results-->
-              <div class="row">
-                <p class="col-sm-4">Voted for:
-                  <br> Voted against: </p>
-                <p class="col-sm-4">Voted for:
-                  <br> Voted against: </p>
-                <p class="col-sm-4">Voted for:
-                  <br> Voted against: </p>
+              <div class="row" id="res1" hidden>
+                <p class="col-sm-4" id="prop-0"></p>
+                <p class="col-sm-4" id="prop-4"></p>
+                <p class="col-sm-4" id="prop-3"></p>
               </div>
 
 
               <!--second row of modals-->
               <div class="row">
 
-                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keyactivities">
+                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keyactivities" id="btn-1">
                   Key Activities
                 </button>
 
@@ -283,7 +290,7 @@
 
 
 
-                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#channels">
+                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#channels" id="btn-5">
                   Channels
                 </button>
 
@@ -309,7 +316,7 @@
 
 
 
-                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#revenuestreams">
+                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#revenuestreams" id="btn-8">
                   Revenue Streams
                 </button>
 
@@ -337,20 +344,17 @@
 
 
               <!--second row of results-->
-              <div class="row">
-                <p class="col-sm-4">Voted for:
-                  <br> Voted against: </p>
-                <p class="col-sm-4">Voted for:
-                  <br> Voted against: </p>
-                <p class="col-sm-4">Voted for:
-                  <br> Voted against: </p>
+              <div class="row" id="res2" hidden>
+                <p class="col-sm-4" id="prop-1"></p>
+                <p class="col-sm-4" id="prop-5"></p>
+                <p class="col-sm-4" id="prop-8"></p>
               </div>
 
 
               <!--third row of modals-->
               <div class="row">
 
-                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keyresourcess">
+                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#keyresourcess" id="btn-2">
                   Key Resources
                 </button>
 
@@ -378,7 +382,7 @@
 
 
 
-                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#customersegments">
+                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#customersegments" id="btn-6">
                   Customer Segments
                 </button>
 
@@ -402,7 +406,7 @@
                   </div>
                 </div>
 
-                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#coststructure">
+                <button type="button" class="col-sm-4" data-toggle="modal" data-target="#coststructure" id="btn-7">
                   Cost Structure
                 </button>
 
@@ -429,14 +433,12 @@
               </div>
 
               <!--third row of results-->
-              <div class="row">
-                <p class="col-sm-4">Voted for:
-                  <br> Voted against: </p>
-                <p class="col-sm-4">Voted for:
-                  <br> Voted against: </p>
-                <p class="col-sm-4">Voted for:
-                  <br> Voted against: </p>
+              <div class="row" id="res3" hidden>
+                <p class="col-sm-4" id="prop-2"></p>
+                <p class="col-sm-4" id="prop-6"></p>
+                <p class="col-sm-4" id="prop-7"></p>
               </div>
+
             </div>
           </div>
         </div>

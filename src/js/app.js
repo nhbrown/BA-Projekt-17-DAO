@@ -50,6 +50,7 @@ App = {
     $("#create_button").click(App.createCongress); // Bind Button "create_congress"
     $("#join").click(App.joinCongress); // Bind Button "join"
     $("#addMemberBtn").click(App.additionalMember); // Bind Button "addMemberBtn"
+    $("#testBTN").click(App.showResults); // this is just a test button
     $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
     $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
   },
@@ -70,13 +71,13 @@ App = {
     }
 
     var members = document.getElementsByName("address-weight");
+    var ownerWeight = document.getElementById("ownerWeight").value;
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
       } else {
-        //temporary fix for MetaMask gas limit issue: hardcoding the gas limit
-        App.contracts.Congress.new(congressName, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3718426 }).then(function (instance) {
+        App.contracts.Congress.new(congressName, ownerWeight, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3718426 }).then(function (instance) { //temporary fix for MetaMask gas limit issue: hardcoding the gas limit
           sessionStorage.setItem("instanceAddress", instance.address);
 
           window.alert("Your congress has been successfully created! The address of the contract is: " + instance.address);
@@ -267,7 +268,7 @@ App = {
       if (error) {
         console.log(error);
       } else {
-        if (App.isAddress(document.getElementById("congressaddress").value, "Congress Address")) {
+        if (App.isAddress(document.getElementById("congressadress").value, "Congress Address")) {
           App.contracts.Congress.at(document.getElementById("congressadress").value).then(function (instance) {
             sessionStorage.setItem("instanceAddress", instance.address);
 
@@ -319,6 +320,42 @@ App = {
       }
     }).catch(function (err) {
       console.log(err.message);
+    });
+  },
+
+  showResults: function (event) {
+    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+      document.getElementById("res1").hidden = false;
+      document.getElementById("res2").hidden = false;
+      document.getElementById("res3").hidden = false;
+
+      for (var i = 0; i < 9; ++i) {
+        (function (cntr) {
+          instance.proposals.call(cntr).then(function (res, err) {
+            if (err) {
+              console.log(err);
+            } else {
+              var totalVotes = "Total Votes: " + res[4];
+              var inFavour = "<br> Votes in favour: " + res[5];
+              var opposed = "<br> Votes opposed: " + res[6];
+              var result = "<br> Result: " + res[8] + " to " + res[7];
+
+              var proposalButton = document.getElementById("btn-" + cntr);
+
+              proposalButton.disabled = true;
+              document.getElementById("prop-" + cntr).innerHTML = totalVotes + inFavour + opposed + result;
+
+              if (res[3]) {
+                proposalButton.style.backgroundColor = "#28a745";
+                proposalButton.style.color = "#fff";
+              } else {
+                proposalButton.style.backgroundColor = "#dc3545";
+                proposalButton.style.color = "#fff";
+              }
+            }
+          });
+        })(i);
+      }
     });
   },
 
