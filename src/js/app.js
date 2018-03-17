@@ -77,7 +77,7 @@ App = {
         console.log(error);
       } else {
         //temporary fix for MetaMask gas limit issue: hardcoding the gas limit
-        App.contracts.Congress.new(congressName, ownerWeight, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3718426 }).then(function (instance) {
+        App.contracts.Congress.new(congressName, ownerWeight, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3800000 }).then(function (instance) {
           sessionStorage.setItem("instanceAddress", instance.address);
 
           window.alert("Your congress has been successfully created! The address of the contract is: " + instance.address);
@@ -169,6 +169,9 @@ App = {
                       instance.newProposal(bmc[8], "0x123").then(function (err, res) {
                         App.getProposalDescriptions();
                         sessionStorage.setItem("proposalsAdded", "true");
+                        document.getElementById("addMemberBtn").disabled = true;
+                        document.getElementById("create_button").disabled = true;
+                        document.getElementById("j_button").disabled = true;
                       });
                     });
                   });
@@ -280,6 +283,8 @@ App = {
                 if (res) {
                   App.getProposalDescriptions();
                   sessionStorage.setItem("proposalsAdded", "true");
+                  document.getElementById("join").disabled = true;
+                  document.getElementById("cc_button").disabled = true;
                 } else {
                   window.alert("This account is not eligible to join this congress!");
                 }
@@ -343,7 +348,7 @@ App = {
               var totalVotes = "Total Votes: " + res[4];
               var inFavour = "<br> Votes in favour: " + App.toPercentage(res[5], res[4]) + "%";
               var opposed = "<br> Votes opposed: " + App.toPercentage(res[6], res[4]) + "%";
-              var result = "<br> Result: " + res[8] + " to " + res[7];
+              var result = "<br> Result: " + res[7] + " to " + res[8];
 
               var proposalButton = document.getElementById("btn-" + cntr);
 

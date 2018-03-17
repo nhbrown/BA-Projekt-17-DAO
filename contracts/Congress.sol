@@ -61,6 +61,7 @@ contract Congress is owned, tokenRecipient {
         uint numberOfVotes;
         uint inFavour;
         uint opposedTo;
+        uint weightedInFavour;
         uint weightedOpposedTo;
         uint currentResult;
         bytes32 proposalHash;
@@ -88,7 +89,7 @@ contract Congress is owned, tokenRecipient {
     /**
      * Constructor function
      */
-    function Congress (string name, uint weight, uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority)  payable public {
+    function Congress (string name, uint weight, uint minimumQuorumForProposals, uint minutesForDebate, uint marginOfVotesForMajority) payable public {
         congressName = name;
         changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
         // It’s necessary to add an empty first member
@@ -191,6 +192,7 @@ contract Congress is owned, tokenRecipient {
         p.numberOfVotes = 0;
         p.inFavour = 0;
         p.opposedTo = 0;
+        p.weightedInFavour = 0;
         p.weightedOpposedTo = 0;
         ProposalAdded(proposalID, jobDescription);
         numProposals = proposalID+1;
@@ -241,15 +243,16 @@ contract Congress is owned, tokenRecipient {
         uint voteWeight = members[memberId[msg.sender]].weight;
 
         if (supportsProposal) {                         // If they support the proposal
-            p.currentResult += voteWeight;              // Increase score by vote weight
-            p.inFavour += 1;
+            p.inFavour += 1;                            // increase in favour votes by one and
+            p.currentResult += voteWeight;              // increase score by vote weight and
+            p.weightedInFavour += voteWeight;           // increase weighted in favour votes by vote weight.
         } else {                                        // If they don't
-            p.opposedTo += 1;
-            p.weightedOpposedTo += voteWeight;
-            if (voteWeight > p.currentResult) {         // and the weight is bigger than the current result
+            p.opposedTo += 1;                           // increase opposed to votes by one and
+            p.weightedOpposedTo += voteWeight;          // increase weighted opposed to and
+            if (voteWeight > p.currentResult) {         // if the weight is bigger than the current result
                 p.currentResult = 0;                    // set the current result to zero
-            } else {                                    // else
-                p.currentResult -= voteWeight;          // Decrease the score by vote weight
+            } else {                                    // otherweise
+                p.currentResult -= voteWeight;          // decrease the score by vote weight.
             }
         }
 
