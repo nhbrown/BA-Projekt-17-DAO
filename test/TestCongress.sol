@@ -4,6 +4,10 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/Congress.sol";
 
+// @dev Might not pass anymore, since we changed a lot in the contract
+//      since we wrote this test cases. Needs to be rewritten if the
+//      contract need to be tested.
+
 contract TestCongress {
   Congress congress = new Congress(1, 5, 0);
 
