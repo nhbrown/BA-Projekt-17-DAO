@@ -47,11 +47,11 @@ App = {
    * Bind on-click events from HTML page to JS functions.
    */
   bindEvents: function () {
-    $("#create_button").click(App.createCongress);              // Bind Button "create_congress"
-    $("#join").click(App.joinCongress);                         // Bind Button "join"
-    $("#addMemberBtn").click(App.additionalMember);             // Bind Button "addMemberBtn"
-    $(document).on('click', '.btn-success', App.votePositive);  // Bind Button "Agree" 
-    $(document).on('click', '.btn-danger', App.voteNegative);   // Bind Button "Dismiss"
+    $("#create_button").click(App.createCongress);     // Bind Button "create_congress"
+    $("#join").click(App.joinCongress);                // Bind Button "join"
+    $("#addMemberBtn").click(App.additionalMember);    // Bind Button "addMemberBtn"
+    $(document).on('click', '.btn-success', function (event) { App.vote(true); });  // Bind Button "Agree" 
+    $(document).on('click', '.btn-danger', function (event) { App.vote(false); });  // Bind Button "Dismiss"
   },
 
   /**
@@ -62,12 +62,13 @@ App = {
 
     try {
       var congressName = App.sanitize(document.getElementById("congressname").value, "Congress Name");
-      var minimumQuorumForProposals = App.sanitize(document.getElementById("quorum").value, "Minimum Votes");
-      var minutesForDebate = App.sanitize(document.getElementById("votingtime").value, "Voting Time");
-      var marginOfVotesForMajority = App.sanitize(document.getElementById("margin").value, "Majority Margin");
     } catch (err) {
       console.log(err)
     }
+
+    var minimumQuorumForProposals = document.getElementById("quorum").value;
+    var minutesForDebate = document.getElementById("votingtime").value;
+    var marginOfVotesForMajority = document.getElementById("margin").value;
 
     var members = document.getElementsByName("address-weight");
     var ownerWeight = document.getElementById("ownerWeight").value;
@@ -147,88 +148,58 @@ App = {
    * Add elements of BMC as individual proposals to contract.
    */
   createBMC: function () {
-    var bmc = [App.sanitize(document.getElementById("partners").value, "Key Partners"),
-    App.sanitize(document.getElementById("activities").value, "Key Activities"),
-    App.sanitize(document.getElementById("resources").value, "Key Resources"),
-    App.sanitize(document.getElementById("value").value, "Value Proposition"),
-    App.sanitize(document.getElementById("cr").value, "Customer Relationships"),
-    App.sanitize(document.getElementById("channel").value, "Channels"),
-    App.sanitize(document.getElementById("cs").value, "Customer Segments"),
-    App.sanitize(document.getElementById("cost").value, "Cost Structure"),
-    App.sanitize(document.getElementById("revenue").value, "Revenue Streams")];
-
-    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-      instance.newProposal(bmc[0]).then(function (err, res) {
-        instance.newProposal(bmc[1]).then(function (err, res) {
-          instance.newProposal(bmc[2]).then(function (err, res) {
-            instance.newProposal(bmc[3]).then(function (err, res) {
-              instance.newProposal(bmc[4]).then(function (err, res) {
-                instance.newProposal(bmc[5]).then(function (err, res) {
-                  instance.newProposal(bmc[6]).then(function (err, res) {
-                    instance.newProposal(bmc[7]).then(function (err, res) {
-                      instance.newProposal(bmc[8]).then(function (err, res) {
-                        App.getProposalDescriptions();
-                        sessionStorage.setItem("proposalsAdded", "true");
-                        document.getElementById("addMemberBtn").disabled = true;
-                        document.getElementById("create_button").disabled = true;
-                        document.getElementById("j_button").disabled = true;
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    }).catch(function (err) {
-      console.log(err.message);
-    });
-  },
-
-  /**
-   * Vote in favour of the selected proposal. 
-   */
-  votePositive: function (event) {
-    var proposalNumber = document.activeElement.id.charAt(0);
+    try {
+      var bmc = [App.sanitize(document.getElementById("partners").value, "Key Partners"),
+      App.sanitize(document.getElementById("activities").value, "Key Activities"),
+      App.sanitize(document.getElementById("resources").value, "Key Resources"),
+      App.sanitize(document.getElementById("value").value, "Value Proposition"),
+      App.sanitize(document.getElementById("cr").value, "Customer Relationships"),
+      App.sanitize(document.getElementById("channel").value, "Channels"),
+      App.sanitize(document.getElementById("cs").value, "Customer Segments"),
+      App.sanitize(document.getElementById("cost").value, "Cost Structure"),
+      App.sanitize(document.getElementById("revenue").value, "Revenue Streams")];
+    } catch (err) {
+      console.log(err);
+    }
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
       } else {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-          instance.memberExists.call(accounts[0]).then(function (res, err) {
-            if (err) {
-              console.log(err.message);
-            } else {
-              if (res) {
-                instance.vote(proposalNumber, true);
+          for (var i = 0; i < 9; ++i) {
+            (function (cntr) {
+              instance.newProposal(bmc[cntr], { from: accounts[0] }).catch(function (err) {
+                console.log(err.message);
+              });
+            })(i);
+          }
 
-                web3.eth.filter('latest', function (error, result) {
-                  if (!error) {
-                    document.getElementById(proposalNumber + "-a").disabled = true;
-                    document.getElementById(proposalNumber + "-d").disabled = true;
-                  } else {
-                    console.log(error.message);
-                  }
-                });
+          var event = instance.ProposalAdded();     // get the ProposalAdded event
 
-              } else {
-                window.alert("This account is not eligible to vote in this congress!");
-              }
+          event.watch(function (err, response) {    // install listener to event
+            var res = response.args.proposalID.c[0];
+            if (res === 8) {                        // if the latest block contains the last proposal
+              App.getProposalDescriptions();        // then get the descriptions of the proposals
+              sessionStorage.setItem("proposalsAdded", "true");
+              document.getElementById("addMemberBtn").disabled = true;
+              document.getElementById("create_button").disabled = true;
+              document.getElementById("j_button").disabled = true;
+              event.stopWatching();
             }
           });
+
         }).catch(function (err) {
-          console.log(err.message); // There was an error! Handle it.
+          console.log(err.message);
         });
       }
     });
   },
 
   /**
-   * Vote not in favour of the selected proposal. 
+   * Vote on the selected proposal.
    */
-  voteNegative: function (event) {
+  vote: function (supportsProposal) {
     var proposalNumber = document.activeElement.id.charAt(0);
 
     web3.eth.getAccounts(function (error, accounts) {
@@ -241,7 +212,7 @@ App = {
               console.log(err.message);
             } else {
               if (res) {
-                instance.vote(proposalNumber, false);
+                instance.vote(proposalNumber, supportsProposal, { from: accounts[0] });
 
                 web3.eth.filter('latest', function (error, result) {
                   if (!error) {
@@ -268,6 +239,8 @@ App = {
    * Join a contract at a specific address.
    */
   joinCongress: function (event) {
+    event.preventDefault();
+
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
