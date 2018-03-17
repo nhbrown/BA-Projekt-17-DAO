@@ -1,5 +1,5 @@
 var Congress = artifacts.require("Congress");
 
 module.exports = function(deployer){
-    deployer.deploy(Congress, "Initial Deployment", 0, 0, 1, 0);
+    deployer.deploy(Congress, "Initial Deployment", 0, 1, 1, 1);
 };

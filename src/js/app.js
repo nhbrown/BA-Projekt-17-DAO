@@ -3,7 +3,7 @@ App = {
   contracts: {},
 
   /**
-   * Initialize this app by initializing Web3 instance.
+   * Startup procedure.
    */
   init: function () {
     return App.initWeb3();
@@ -19,7 +19,7 @@ App = {
     } else {
       // If no injected web3 instance is detected, fallback to the TestRPC
       // NOT SUITABLE FOR PRODUCTION!!!
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+      App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
     }
 
     web3 = new Web3(App.web3Provider);
@@ -28,7 +28,7 @@ App = {
   },
 
   /**
-   * Pull contract artifact file and initialize it with truffle-contract.
+   * Pull contract artifact file and initialize them with truffle-contract.
    */
   initContract: function () {
     $.getJSON('Congress.json', function (data) {
@@ -47,27 +47,28 @@ App = {
    * Bind on-click events from HTML page to JS functions.
    */
   bindEvents: function () {
-    $("#create_button").click(App.createCongress); // Bind Button "create_congress"
-    $("#join").click(App.joinCongress); // Bind Button "join"
-    $("#addMemberBtn").click(App.additionalMember); // Bind Button "addMemberBtn"
-    $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
-    $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
+    $("#create_button").click(App.createCongress);     // Bind Button "create_congress"
+    $("#join").click(App.joinCongress);                // Bind Button "join"
+    $("#addMemberBtn").click(App.additionalMember);    // Bind Button "addMemberBtn"
+    $(document).on('click', '.btn-success', function (event) { App.vote(true); });  // Bind Button "Agree" 
+    $(document).on('click', '.btn-danger', function (event) { App.vote(false); });  // Bind Button "Dismiss"
   },
 
   /**
-   * Create a new congress with given parameters and parse addresses.
+   * Create a new congress with given parameters.
    */
   createCongress: function (event) {
     event.preventDefault();
 
     try {
       var congressName = App.sanitize(document.getElementById("congressname").value, "Congress Name");
-      var minimumQuorumForProposals = App.sanitize(document.getElementById("quorum").value, "Minimum Votes");
-      var minutesForDebate = App.sanitize(document.getElementById("votingtime").value, "Voting Time");
-      var marginOfVotesForMajority = App.sanitize(document.getElementById("margin").value, "Majority Margin");
     } catch (err) {
       console.log(err)
     }
+
+    var minimumQuorumForProposals = document.getElementById("quorum").value;
+    var minutesForDebate = document.getElementById("votingtime").value;
+    var marginOfVotesForMajority = document.getElementById("margin").value;
 
     var members = document.getElementsByName("address-weight");
     var ownerWeight = document.getElementById("ownerWeight").value;
@@ -76,13 +77,14 @@ App = {
       if (error) {
         console.log(error);
       } else {
-        //temporary fix for MetaMask gas limit issue: hardcoding the gas limit
-        App.contracts.Congress.new(congressName, ownerWeight, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3718426 }).then(function (instance) {
-          sessionStorage.setItem("instanceAddress", instance.address);
+        // temporary fix for MetaMask gas limit issue: hardcoding the gas limit
+        // create a new instance of the contract with the given parameters
+        App.contracts.Congress.new(congressName, ownerWeight, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3800000 }).then(function (instance) {
+          sessionStorage.setItem("instanceAddress", instance.address); // store the new instances address
 
           window.alert("Your congress has been successfully created! The address of the contract is: " + instance.address);
 
-          App.addMembers(members);
+          App.addMembers(members); // start adding members
 
           // event needs to be a variable for some reason, otherwise the filter triggers twice
           var event = instance.MembershipChanged(); // get the MembershipChanged event
@@ -107,28 +109,30 @@ App = {
    * assigns a unique Id to it and inserts it before the button in the same card.
    */
   additionalMember: function () {
-    var clone = document.getElementById("input_group").cloneNode(true);
+    var clone = document.getElementById("input_group").cloneNode(true); // clone input group
 
     $(clone).find('input').val(''); // clear all values
 
     clone.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now(); // create unique id
 
-    document.getElementById("second_card").insertBefore(clone, document.getElementById("addMemberBtn"));
+    document.getElementById("second_card").insertBefore(clone, document.getElementById("addMemberBtn")); // attach clone
   },
 
   /**
-     * Add member addresses to contract as individual transactions.
-     */
+   * Add member addresses to contract as individual transactions.
+   */
   addMembers: function (members) {
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
       } else {
+        // find the contract at the stored address
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
           for (var i = 0; i < members.length; i += 2) {
             if (members[i].value != '0x0000000000000000000000000000000000000000') {
               try {
                 if (App.isAddress(members[i].value, "Member Address")) {
+                  // if the value is an address, then add it as a member
                   instance.addMember(members[i].value, members[i + 1].value, { from: accounts[0] });
                 }
               } catch (err) {
@@ -147,85 +151,59 @@ App = {
    * Add elements of BMC as individual proposals to contract.
    */
   createBMC: function () {
-    var bmc = [App.sanitize(document.getElementById("partners").value, "Key Partners"),
-    App.sanitize(document.getElementById("activities").value, "Key Activities"),
-    App.sanitize(document.getElementById("resources").value, "Key Resources"),
-    App.sanitize(document.getElementById("value").value, "Value Proposition"),
-    App.sanitize(document.getElementById("cr").value, "Customer Relationships"),
-    App.sanitize(document.getElementById("channel").value, "Channels"),
-    App.sanitize(document.getElementById("cs").value, "Customer Segments"),
-    App.sanitize(document.getElementById("cost").value, "Cost Structure"),
-    App.sanitize(document.getElementById("revenue").value, "Revenue Streams")];
-
-    App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-      instance.newProposal(bmc[0], "0x123").then(function (err, res) {
-        instance.newProposal(bmc[1], "0x123").then(function (err, res) {
-          instance.newProposal(bmc[2], "0x123").then(function (err, res) {
-            instance.newProposal(bmc[3], "0x123").then(function (err, res) {
-              instance.newProposal(bmc[4], "0x123").then(function (err, res) {
-                instance.newProposal(bmc[5], "0x123").then(function (err, res) {
-                  instance.newProposal(bmc[6], "0x123").then(function (err, res) {
-                    instance.newProposal(bmc[7], "0x123").then(function (err, res) {
-                      instance.newProposal(bmc[8], "0x123").then(function (err, res) {
-                        App.getProposalDescriptions();
-                        sessionStorage.setItem("proposalsAdded", "true");
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    }).catch(function (err) {
-      console.log(err.message);
-    });
-  },
-
-  /**
-   * Vote in favour of the selected proposal. 
-   */
-  votePositive: function (event) {
-    var proposalNumber = document.activeElement.id.charAt(0);
+    try {
+      var bmc = [App.sanitize(document.getElementById("partners").value, "Key Partners"),
+      App.sanitize(document.getElementById("activities").value, "Key Activities"),
+      App.sanitize(document.getElementById("resources").value, "Key Resources"),
+      App.sanitize(document.getElementById("value").value, "Value Proposition"),
+      App.sanitize(document.getElementById("cr").value, "Customer Relationships"),
+      App.sanitize(document.getElementById("channel").value, "Channels"),
+      App.sanitize(document.getElementById("cs").value, "Customer Segments"),
+      App.sanitize(document.getElementById("cost").value, "Cost Structure"),
+      App.sanitize(document.getElementById("revenue").value, "Revenue Streams")];
+    } catch (err) {
+      console.log(err);
+    }
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
       } else {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-          instance.memberExists.call(accounts[0]).then(function (res, err) {
-            if (err) {
-              console.log(err.message);
-            } else {
-              if (res) {
-                instance.vote(proposalNumber, true);
+          for (var i = 0; i < 9; ++i) {
+            (function (cntr) {
+              // add all the proposals to the contract
+              instance.newProposal(bmc[cntr], { from: accounts[0] }).catch(function (err) {
+                console.log(err.message);
+              });
+            })(i);
+          }
 
-                web3.eth.filter('latest', function (error, result) {
-                  if (!error) {
-                    document.getElementById(proposalNumber + "-a").disabled = true;
-                    document.getElementById(proposalNumber + "-d").disabled = true;
-                  } else {
-                    console.log(error.message);
-                  }
-                });
+          var event = instance.ProposalAdded();     // get the ProposalAdded event
 
-              } else {
-                window.alert("This account is not eligible to vote in this congress!");
-              }
+          event.watch(function (err, response) {    // install listener to event
+            var res = response.args.proposalID.c[0];
+            if (res === 8) {                        // if the latest block contains the last proposal
+              App.getProposalDescriptions();        // then get the descriptions of the proposals
+              sessionStorage.setItem("proposalsAdded", "true");
+              document.getElementById("addMemberBtn").disabled = true;
+              document.getElementById("create_button").disabled = true;
+              document.getElementById("j_button").disabled = true;
+              event.stopWatching();                 // uninstall listener
             }
           });
+
         }).catch(function (err) {
-          console.log(err.message); // There was an error! Handle it.
+          console.log(err.message);
         });
       }
     });
   },
 
   /**
-   * Vote not in favour of the selected proposal. 
+   * Vote on the selected proposal.
    */
-  voteNegative: function (event) {
+  vote: function (supportsProposal) {
     var proposalNumber = document.activeElement.id.charAt(0);
 
     web3.eth.getAccounts(function (error, accounts) {
@@ -233,17 +211,19 @@ App = {
         console.log(error);
       } else {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+          // if the current address is a member
           instance.memberExists.call(accounts[0]).then(function (res, err) {
             if (err) {
               console.log(err.message);
             } else {
               if (res) {
-                instance.vote(proposalNumber, false);
+                // then vote on the currently selected proposal
+                instance.vote(proposalNumber, supportsProposal, { from: accounts[0] });
 
-                web3.eth.filter('latest', function (error, result) {
+                web3.eth.filter('latest', function (error, result) { // if the transaction was succesfull
                   if (!error) {
-                    document.getElementById(proposalNumber + "-a").disabled = true;
-                    document.getElementById(proposalNumber + "-d").disabled = true;
+                    document.getElementById(proposalNumber + "-a").disabled = true; // disable the voting buttons
+                    document.getElementById(proposalNumber + "-d").disabled = true; // on this proposal
                   } else {
                     console.log(error.message);
                   }
@@ -265,6 +245,8 @@ App = {
    * Join a contract at a specific address.
    */
   joinCongress: function (event) {
+    event.preventDefault();
+
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
         console.log(error);
@@ -280,6 +262,8 @@ App = {
                 if (res) {
                   App.getProposalDescriptions();
                   sessionStorage.setItem("proposalsAdded", "true");
+                  document.getElementById("join").disabled = true;
+                  document.getElementById("cc_button").disabled = true;
                 } else {
                   window.alert("This account is not eligible to join this congress!");
                 }
@@ -300,6 +284,7 @@ App = {
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
       document.getElementById("vote_proposal").style.visibility = 'visible';
 
+      // get the name of the congress and add it to the document
       instance.congressName.call().then(function (res, err) {
         if (err) {
           console.log(err);
@@ -308,6 +293,7 @@ App = {
         }
       });
 
+      // get all the proposal descriptions and add them to the document
       for (var i = 0; i < 9; ++i) {
         (function (cntr) {
           instance.getProposalDescription.call(cntr).then(function (res, err) {
@@ -343,7 +329,7 @@ App = {
               var totalVotes = "Total Votes: " + res[4];
               var inFavour = "<br> Votes in favour: " + App.toPercentage(res[5], res[4]) + "%";
               var opposed = "<br> Votes opposed: " + App.toPercentage(res[6], res[4]) + "%";
-              var result = "<br> Result: " + res[8] + " to " + res[7];
+              var result = "<br> Result: " + res[7] + " to " + res[8];
 
               var proposalButton = document.getElementById("btn-" + cntr);
 
@@ -384,13 +370,13 @@ App = {
         if (err) {
           console.log(err);
         } else {
-          if (currentTime >= res[1].c[0] && res[2] == false) {
-            App.executeProposals();           // execute the proposals
-            $('.modal').modal('hide');        // hide all open modals
-            callback();                       // and execute the callback
-          } else if (currentTime >= res[1].c[0] && res[2] == true) {
-            App.showResults();
-            callback();
+          if (currentTime >= res[1].c[0] && res[2] == false) {          // if the deadline has been reached and the proposals have not been executed
+            App.executeProposals();                                     // then execute the proposals,
+            $('.modal').modal('hide');                                  // hide all open modals
+            callback();                                                 // and execute the callback.
+          } else if (currentTime >= res[1].c[0] && res[2] == true) {    // if the deadline has been reached and the proposals have been executed
+            App.showResults();                                          // then show the results
+            callback();                                                 // and execute the callback.
           }
         }
       });
@@ -413,13 +399,13 @@ App = {
             })(i);
           }
 
-          var event = instance.ProposalTallied(); // get the ProposalsTallied event
+          var event = instance.ProposalTallied();   // get the ProposalsTallied event
 
-          event.watch(function (err, response) {  // install listener to event
+          event.watch(function (err, response) {    // install listener to event
             var res = response.args.proposalID.c[0];
-            if (res === 8) {                      // if the latest block contains the last proposal
-              App.showResults();                  // display the results
-              event.stopWatching();               // and uninstall the listener
+            if (res === 8) {                        // if the latest block contains the last proposal
+              App.showResults();                    // display the results
+              event.stopWatching();                 // and uninstall the listener
             }
           });
         });
@@ -476,16 +462,17 @@ App = {
 
 $(function () {
   $(window).on('load', function () {
-    App.init();
+    App.init(); // initialize the application
 
-    var timer = window.setInterval(timerFunc, 15000);
+    var timer = window.setInterval(timerFunc, 15000); // set a timer for every 15 seconds
 
     function timerFunc() {
+      // if there's a valid contract address and the proposals have been added
       if (sessionStorage.getItem("instanceAddress") && sessionStorage.getItem("proposalsAdded")) {
         var date = new Date();
         var secondsSinceEpoch = Math.round(date.getTime() / 1000);
 
-        App.checkVotingDeadline(secondsSinceEpoch, function () {
+        App.checkVotingDeadline(secondsSinceEpoch, function () { // check if the voting deadline has been reached
           clearInterval(timer);
         });
       }
@@ -493,6 +480,6 @@ $(function () {
   });
 
   window.onbeforeunload = function () {
-    sessionStorage.clear();
+    sessionStorage.clear(); // clear sessionStorage before the page unloads
   };
 });
