@@ -1,6 +1,6 @@
 pragma solidity ^0.4.16;
 
-contract Owned {
+contract owned {
     address public owner;
 
     function owned()  public {
@@ -17,7 +17,7 @@ contract Owned {
     }
 }
 
-contract Congress is Owned {
+contract Congress is owned {
     // Global variables of this contract
     string public congressName;                     // user defined name of this contract
     uint public minimumQuorum;                      // minimum amount of votes needed for a proposal to pass

@@ -19,7 +19,7 @@ App = {
     } else {
       // If no injected web3 instance is detected, fallback to the TestRPC
       // NOT SUITABLE FOR PRODUCTION!!!
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+      App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
     }
 
     web3 = new Web3(App.web3Provider);
@@ -47,11 +47,11 @@ App = {
    * Bind on-click events from HTML page to JS functions.
    */
   bindEvents: function () {
-    $("#create_button").click(App.createCongress); // Bind Button "create_congress"
-    $("#join").click(App.joinCongress); // Bind Button "join"
-    $("#addMemberBtn").click(App.additionalMember); // Bind Button "addMemberBtn"
-    $(document).on('click', '.btn-success', App.votePositive); // Bind Button "Agree" 
-    $(document).on('click', '.btn-danger', App.voteNegative); // Bind Button "Dismiss"
+    $("#create_button").click(App.createCongress);              // Bind Button "create_congress"
+    $("#join").click(App.joinCongress);                         // Bind Button "join"
+    $("#addMemberBtn").click(App.additionalMember);             // Bind Button "addMemberBtn"
+    $(document).on('click', '.btn-success', App.votePositive);  // Bind Button "Agree" 
+    $(document).on('click', '.btn-danger', App.voteNegative);   // Bind Button "Dismiss"
   },
 
   /**
@@ -117,8 +117,8 @@ App = {
   },
 
   /**
-     * Add member addresses to contract as individual transactions.
-     */
+   * Add member addresses to contract as individual transactions.
+   */
   addMembers: function (members) {
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
@@ -158,15 +158,15 @@ App = {
     App.sanitize(document.getElementById("revenue").value, "Revenue Streams")];
 
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
-      instance.newProposal(bmc[0], "0x123").then(function (err, res) {
-        instance.newProposal(bmc[1], "0x123").then(function (err, res) {
-          instance.newProposal(bmc[2], "0x123").then(function (err, res) {
-            instance.newProposal(bmc[3], "0x123").then(function (err, res) {
-              instance.newProposal(bmc[4], "0x123").then(function (err, res) {
-                instance.newProposal(bmc[5], "0x123").then(function (err, res) {
-                  instance.newProposal(bmc[6], "0x123").then(function (err, res) {
-                    instance.newProposal(bmc[7], "0x123").then(function (err, res) {
-                      instance.newProposal(bmc[8], "0x123").then(function (err, res) {
+      instance.newProposal(bmc[0]).then(function (err, res) {
+        instance.newProposal(bmc[1]).then(function (err, res) {
+          instance.newProposal(bmc[2]).then(function (err, res) {
+            instance.newProposal(bmc[3]).then(function (err, res) {
+              instance.newProposal(bmc[4]).then(function (err, res) {
+                instance.newProposal(bmc[5]).then(function (err, res) {
+                  instance.newProposal(bmc[6]).then(function (err, res) {
+                    instance.newProposal(bmc[7]).then(function (err, res) {
+                      instance.newProposal(bmc[8]).then(function (err, res) {
                         App.getProposalDescriptions();
                         sessionStorage.setItem("proposalsAdded", "true");
                         document.getElementById("addMemberBtn").disabled = true;
@@ -418,13 +418,13 @@ App = {
             })(i);
           }
 
-          var event = instance.ProposalTallied(); // get the ProposalsTallied event
+          var event = instance.ProposalTallied();   // get the ProposalsTallied event
 
-          event.watch(function (err, response) {  // install listener to event
+          event.watch(function (err, response) {    // install listener to event
             var res = response.args.proposalID.c[0];
-            if (res === 8) {                      // if the latest block contains the last proposal
-              App.showResults();                  // display the results
-              event.stopWatching();               // and uninstall the listener
+            if (res === 8) {                        // if the latest block contains the last proposal
+              App.showResults();                    // display the results
+              event.stopWatching();                 // and uninstall the listener
             }
           });
         });
