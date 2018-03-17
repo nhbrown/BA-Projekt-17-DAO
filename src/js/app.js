@@ -3,7 +3,7 @@ App = {
   contracts: {},
 
   /**
-   * Initialize this app by initializing Web3 instance.
+   * Startup procedure.
    */
   init: function () {
     return App.initWeb3();
@@ -28,7 +28,7 @@ App = {
   },
 
   /**
-   * Pull contract artifact file and initialize it with truffle-contract.
+   * Pull contract artifact file and initialize them with truffle-contract.
    */
   initContract: function () {
     $.getJSON('Congress.json', function (data) {
@@ -55,7 +55,7 @@ App = {
   },
 
   /**
-   * Create a new congress with given parameters and parse addresses.
+   * Create a new congress with given parameters.
    */
   createCongress: function (event) {
     event.preventDefault();
@@ -77,13 +77,14 @@ App = {
       if (error) {
         console.log(error);
       } else {
-        //temporary fix for MetaMask gas limit issue: hardcoding the gas limit
+        // temporary fix for MetaMask gas limit issue: hardcoding the gas limit
+        // create a new instance of the contract with the given parameters
         App.contracts.Congress.new(congressName, ownerWeight, minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority, { from: accounts[0], gas: 3800000 }).then(function (instance) {
-          sessionStorage.setItem("instanceAddress", instance.address);
+          sessionStorage.setItem("instanceAddress", instance.address); // store the new instances address
 
           window.alert("Your congress has been successfully created! The address of the contract is: " + instance.address);
 
-          App.addMembers(members);
+          App.addMembers(members); // start adding members
 
           // event needs to be a variable for some reason, otherwise the filter triggers twice
           var event = instance.MembershipChanged(); // get the MembershipChanged event
@@ -108,13 +109,13 @@ App = {
    * assigns a unique Id to it and inserts it before the button in the same card.
    */
   additionalMember: function () {
-    var clone = document.getElementById("input_group").cloneNode(true);
+    var clone = document.getElementById("input_group").cloneNode(true); // clone input group
 
     $(clone).find('input').val(''); // clear all values
 
     clone.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now(); // create unique id
 
-    document.getElementById("second_card").insertBefore(clone, document.getElementById("addMemberBtn"));
+    document.getElementById("second_card").insertBefore(clone, document.getElementById("addMemberBtn")); // attach clone
   },
 
   /**
@@ -125,11 +126,13 @@ App = {
       if (error) {
         console.log(error);
       } else {
+        // find the contract at the stored address
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
           for (var i = 0; i < members.length; i += 2) {
             if (members[i].value != '0x0000000000000000000000000000000000000000') {
               try {
                 if (App.isAddress(members[i].value, "Member Address")) {
+                  // if the value is an address, then add it as a member
                   instance.addMember(members[i].value, members[i + 1].value, { from: accounts[0] });
                 }
               } catch (err) {
@@ -169,6 +172,7 @@ App = {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
           for (var i = 0; i < 9; ++i) {
             (function (cntr) {
+              // add all the proposals to the contract
               instance.newProposal(bmc[cntr], { from: accounts[0] }).catch(function (err) {
                 console.log(err.message);
               });
@@ -185,7 +189,7 @@ App = {
               document.getElementById("addMemberBtn").disabled = true;
               document.getElementById("create_button").disabled = true;
               document.getElementById("j_button").disabled = true;
-              event.stopWatching();
+              event.stopWatching();                 // uninstall listener
             }
           });
 
@@ -207,17 +211,19 @@ App = {
         console.log(error);
       } else {
         App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
+          // if the current address is a member
           instance.memberExists.call(accounts[0]).then(function (res, err) {
             if (err) {
               console.log(err.message);
             } else {
               if (res) {
+                // then vote on the currently selected proposal
                 instance.vote(proposalNumber, supportsProposal, { from: accounts[0] });
 
-                web3.eth.filter('latest', function (error, result) {
+                web3.eth.filter('latest', function (error, result) { // if the transaction was succesfull
                   if (!error) {
-                    document.getElementById(proposalNumber + "-a").disabled = true;
-                    document.getElementById(proposalNumber + "-d").disabled = true;
+                    document.getElementById(proposalNumber + "-a").disabled = true; // disable the voting buttons
+                    document.getElementById(proposalNumber + "-d").disabled = true; // on this proposal
                   } else {
                     console.log(error.message);
                   }
@@ -278,6 +284,7 @@ App = {
     App.contracts.Congress.at(sessionStorage.getItem("instanceAddress")).then(function (instance) {
       document.getElementById("vote_proposal").style.visibility = 'visible';
 
+      // get the name of the congress and add it to the document
       instance.congressName.call().then(function (res, err) {
         if (err) {
           console.log(err);
@@ -286,6 +293,7 @@ App = {
         }
       });
 
+      // get all the proposal descriptions and add them to the document
       for (var i = 0; i < 9; ++i) {
         (function (cntr) {
           instance.getProposalDescription.call(cntr).then(function (res, err) {
@@ -362,13 +370,13 @@ App = {
         if (err) {
           console.log(err);
         } else {
-          if (currentTime >= res[1].c[0] && res[2] == false) {
-            App.executeProposals();           // execute the proposals
-            $('.modal').modal('hide');        // hide all open modals
-            callback();                       // and execute the callback
-          } else if (currentTime >= res[1].c[0] && res[2] == true) {
-            App.showResults();
-            callback();
+          if (currentTime >= res[1].c[0] && res[2] == false) {          // if the deadline has been reached and the proposals have not been executed
+            App.executeProposals();                                     // then execute the proposals,
+            $('.modal').modal('hide');                                  // hide all open modals
+            callback();                                                 // and execute the callback.
+          } else if (currentTime >= res[1].c[0] && res[2] == true) {    // if the deadline has been reached and the proposals have been executed
+            App.showResults();                                          // then show the results
+            callback();                                                 // and execute the callback.
           }
         }
       });
@@ -454,16 +462,17 @@ App = {
 
 $(function () {
   $(window).on('load', function () {
-    App.init();
+    App.init(); // initialize the application
 
-    var timer = window.setInterval(timerFunc, 15000);
+    var timer = window.setInterval(timerFunc, 15000); // set a timer for every 15 seconds
 
     function timerFunc() {
+      // if there's a valid contract address and the proposals have been added
       if (sessionStorage.getItem("instanceAddress") && sessionStorage.getItem("proposalsAdded")) {
         var date = new Date();
         var secondsSinceEpoch = Math.round(date.getTime() / 1000);
 
-        App.checkVotingDeadline(secondsSinceEpoch, function () {
+        App.checkVotingDeadline(secondsSinceEpoch, function () { // check if the voting deadline has been reached
           clearInterval(timer);
         });
       }
@@ -471,6 +480,6 @@ $(function () {
   });
 
   window.onbeforeunload = function () {
-    sessionStorage.clear();
+    sessionStorage.clear(); // clear sessionStorage before the page unloads
   };
 });
